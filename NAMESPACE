@@ -2,5 +2,7 @@
 
 S3method(print,eq.cat)
 S3method(print,eq.esm)
+S3method(print,eq.indvars)
 export(eq.cat)
 export(eq.esm)
+export(eq.indvars)
