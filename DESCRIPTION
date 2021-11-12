@@ -1,6 +1,6 @@
 Package: negligible
 Type: Package
-Title: A Collection of Functions for Equivalence Testing
+Title: A Collection of Functions for Negligible Effect/Equivalence Testing
 Version: 0.1.0
 Authors@R:
     c(person(given = "Robert",
