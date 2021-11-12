@@ -1,0 +1,39 @@
+Package: negligible
+Type: Package
+Title: A Collection of Functions for Equivalence Testing
+Version: 0.1.0
+Authors@R:
+    c(person(given = "Robert",
+             family = "Cribbie",
+             role = c("aut", "cre"),
+             email = "cribbie@yorku.ca"),
+      person(given = "Udi",
+             family = "Alter",
+             role = "aut"),
+      person(given = "Nataly",
+             family = "Beribisky",
+             role = "aut"),
+      person(given = "Phil",
+             family = "Chalmers",
+             role = "aut"),
+      person(given = "Alyssa",
+             family = "Counsell",
+             role = "aut"),
+      person(given = "Linda",
+             family = "Farmus",
+             role = "aut"),
+      person(given = "Naomi",
+             family = "Martinez Gutierrez",
+             role = "aut"),
+      person(given = "Victoria",
+             family = "Ng",
+             role = "ctb"))
+Maintainer: Robert Cribbie <cribbie@yorku.ca>
+Description: This package provides functions that are useful for conducting
+    equivalence testing. For example, evaluating the equivalence of means or
+    the presence of a negligible association. 
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: DescTools, lavaan
+RoxygenNote: 7.1.2
