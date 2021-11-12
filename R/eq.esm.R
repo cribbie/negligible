@@ -13,6 +13,7 @@
 #' @param nboot number of boostraps (default = 50L)
 #' @param data optional data argument
 #' @param ... extra arguments
+#'
 #' @return returns a \code{list} containing each analysis and their respective statistics
 #'   and decision
 #'
