@@ -9,28 +9,25 @@
 #' @param eiU upper limit of equivalence interval
 #' @param data data file containing the categorical variables
 #' @param alpha nominal acceptable Type I error rate level
-#' @param ... extra arguments
+#'
 #' @return
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' #Example 1
 #' x<-rbinom(10,1,.5)
 #' y<-rbinom(10,1,.5)
-#' eq.cat(x,y)
+#' neg.cat(x,y)
 #' #Example 2
 #' sex<-rep(c("m","f"),c(12,22))
 #' haircol<-rep(c("bld","brn","bld","brn"),c(9,7,11,7))
 #' d <- data.frame(sex,haircol)
 #' tab<-table(sex,haircol)
-#' eq.cat(tab=tab, alpha=.05)
-#' eq.cat(x=sex,y=haircol)
-#' eq.cat(x=sex,y=haircol,data=d)
-#' }
-eq.cat <- function (x = NULL, y = NULL,
-      tab = NULL, eiU = .2, data = NULL,
-      alpha = .05, ...) {
+#' neg.cat(tab=tab, alpha=.05)
+#' neg.cat(x=sex,y=haircol)
+#' neg.cat(x=sex,y=haircol,data=d)
+neg.cat <- function (x = NULL, y = NULL,
+      tab = NULL, eiU = .2, data = NULL, alpha = .05) {
 
   if (is.null(x) & is.null(y) & !is.null(data)) {
     tab <- deparse(substitute(tab))
@@ -56,7 +53,7 @@ eq.cat <- function (x = NULL, y = NULL,
                   eiU = eiU,
                   decis = decis,
                   alpha = alpha)
-  class(ret) <- "eq.cat"
+  class(ret) <- "neg.cat"
   return(ret)
 }
 

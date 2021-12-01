@@ -1,4 +1,4 @@
-#' Title Function for Evaluating the Equivalence of the Variances of Independent Populations
+#' Title Negligible Effect Test for Variances of Independent Populations
 #'
 #' @param dv Outcome Variable
 #' @param iv Independent Variable
@@ -12,7 +12,7 @@
 #'   and decision
 #' @author Rob Cribbie \email{cribbie@@yorku.ca} and
 #'   Constance Mara \email{Constance.Mara@@cchmc.org}
-#' @export eq.indvars
+#' @export neg.indvars
 #'
 #' @examples
 #' \dontrun{
@@ -20,19 +20,19 @@
 #' indvar<-rep(c("a","b"),c(10,12))
 #' depvar<-rnorm(22)
 #' d<-data.frame(indvar,depvar)
-#' var_equiv(depvar,indvar)
-#' var_equiv(dv=depvar,iv=indvar,eps=.25,data=d)
-#' var_equiv(dv=depvar,iv=indvar,eps=.5)
+#' neg.indvars(depvar,indvar)
+#' neg.indvars(dv=depvar,iv=indvar,eps=.25,data=d)
+#' neg.indvars(dv=depvar,iv=indvar,eps=.5)
 #'
 #' #Four Group Example
 #' indvar<-rep(c("a","b","c","d"),c(10,12,15,13))
 #' depvar<-rnorm(50)
 #' d<-data.frame(indvar,depvar)
-#' var_equiv(dv=depvar,iv=indvar,eps=.25,data=d)
-#' var_equiv(dv=depvar,iv=indvar)
+#' neg.indvars(dv=depvar,iv=indvar,eps=.25,data=d)
+#' neg.indvars(dv=depvar,iv=indvar)
 #' }
 
-eq.indvars<-function(dv, iv, eps = .5, alpha = .05,
+neg.indvars<-function(dv, iv, eps = .5, alpha = .05,
             na.rm=TRUE, data = NULL, ...) {
   if (!is.null(data)) {
     dv<-deparse(substitute(dv))
@@ -40,40 +40,40 @@ eq.indvars<-function(dv, iv, eps = .5, alpha = .05,
     dv<-as.numeric(data[[dv]])
     iv<-as.factor(data[[iv]])
   }
-  medians <- tapply(dv, iv, median)
+  medians <- tapply(dv, iv, stats::median)
   n <- tapply(dv, iv, length)
   resp.median <- abs(dv - medians[iv])
   ngroup<-length(unique(iv))
-  vars<-(tapply(dv, iv, var))
+  vars<-(tapply(dv, iv, stats::var))
   ratio_lsvar<-max(vars)/min(vars)
 
   ## Equivalence test for Equivalence of Variances ##
-  LWW_md<-oneway.test(resp.median~iv)$statistic*((ngroup-1)/(mean(n)))
-  crit_LWW_md<-((ngroup-1)/(mean(n)))*qf(p=alpha, df1=ngroup-1,
-                              df2=oneway.test(resp.median~iv)$parameter[2],
+  LWW_md<-stats::oneway.test(resp.median~iv)$statistic*((ngroup-1)/(mean(n)))
+  crit_LWW_md<-((ngroup-1)/(mean(n)))*stats::qf(p=alpha, df1=ngroup-1,
+                              df2=stats::oneway.test(resp.median~iv)$parameter[2],
                               ncp=(mean(n))*eps^2)
   ifelse (LWW_md <= crit_LWW_md,
           decis_equiv<-"The null hypothesis that the differences between the population variances falls outside the equivalence interval can be rejected.",
           decis_equiv<-"The null hypothesis that the differences between the population variances falls outside the equivalence interval cannot be rejected")
   ret <- data.frame(vars = vars,
-                    sds = tapply(dv,iv,sd),
-                    mads = tapply(dv,iv,mad),
+                    sds = tapply(dv,iv,stats::sd),
+                    mads = tapply(dv,iv,stats::mad),
                     ratio = ratio_lsvar,
                     eps = eps,
                     LWW_md = LWW_md,
                     crit_LWW_md = crit_LWW_md,
                     decis = decis_equiv,
                     alpha = alpha)
-  class(ret) <- "eq.indvars"
+  class(ret) <- "neg.indvars"
   return(ret)
 }
 
-#' @rdname eq.indvars
-#' @param x object of class \code{eq.indvars}
+#' @rdname neg.indvars
+#' @param x object of class \code{neg.indvars}
 #' @return
 #' @export
 #'
-print.eq.indvars <- function(x, ...) {
+print.neg.indvars <- function(x, ...) {
   cat("-- Equivalence of Population Variances --\n")
   cat("-- Independent Groups --\n\n")
   cat("Group Variances: ", "\n", x$vars, "\n\n")

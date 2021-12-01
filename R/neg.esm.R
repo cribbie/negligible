@@ -2,7 +2,7 @@
 #'
 #' Function computes the equivalence testing method (total effect) for evaluating substantial mediation and Kenny method for full mediation.
 #'
-#' @aliases eq.esm
+#' @aliases neg.esm
 #' @param x predictor variable
 #' @param y outcome variable
 #' @param m mediator variable
@@ -19,19 +19,19 @@
 #'
 #' @author Rob Cribbie \email{cribbie@@yorku.ca} and
 #'   Nataly Beribisky \email{natalyb1@@yorku.ca}
-#' @export eq.esm
+#' @export neg.esm
 #' @examples
 #' \dontrun{
 #' #equivalence test for substantial mediation
 #' with an equivalenceinterval of -.15 to .15
-#' x<-rnorm(200,sd=2)
-#' m<-.5*x + rnorm(100)
-#' y<-.5*m + rnorm(100)
+#' x<-stats::rnorm(200,sd=2)
+#' m<-.5*x + stats::rnorm(100)
+#' y<-.5*m + stats::rnorm(100)
 #' eq.esm(x,y,m, eil = -.15, eiu = .15)
 #'}
 
 
-eq.esm<-function(x,y,m,alpha=.05,minc=.15,
+neg.esm<-function(x,y,m,alpha=.05,minc=.15,
               eil=-.15,eiu=.15,nboot=50L,
               data=NULL, ...) {
   if (is.null(data)) {
@@ -39,7 +39,7 @@ eq.esm<-function(x,y,m,alpha=.05,minc=.15,
     if(!is.numeric(m)) stop('Variably m must be a numeric variable!')
     if(!is.numeric(y)) stop('Variably y must be a numeric variable!')
     dat<-data.frame(x,y,m) # returns values with incomplete cases removed
-    dat <- na.omit(dat)
+    dat <- stats::na.omit(dat)
 
   }
 
@@ -53,7 +53,7 @@ eq.esm<-function(x,y,m,alpha=.05,minc=.15,
     m<-as.numeric(data[[m]])
 
     dat<-data.frame(x,y,m)
-    dat <- na.omit(dat)
+    dat <- stats::na.omit(dat)
 
   }
 
@@ -80,10 +80,10 @@ eq.esm<-function(x,y,m,alpha=.05,minc=.15,
   cil <-pel$ci.lower[pel$label=='c']
   ciu <- pel$ci.upper[pel$label=='c']
   abdivc_k <- ab_par/c_par
-  corxy <- cor(dat$x,dat$y)
+  corxy <- stats::cor(dat$x,dat$y)
   ifelse(pel$ci.lower[pel$label=='c']>eil &
            pel$ci.upper[pel$label=='c']<eiu &
-           abs(cor(dat$y,dat$x))>=minc,esm_dec<-"Substantial Mediation CAN be concluded",
+           abs(stats::cor(dat$y,dat$x))>=minc,esm_dec<-"Substantial Mediation CAN be concluded",
          esm_dec<-"Substantial Mediation CANNOT be concluded")
   #Kenny Method for Full Mediation
   #"One rule of thumb is that if one wants to claim complete
@@ -134,16 +134,16 @@ eq.esm<-function(x,y,m,alpha=.05,minc=.15,
                     title1 = title1,
                     title2 = title2
   )
-  class(ret) <- "eq.esm"
+  class(ret) <- "neg.esm"
   return(ret)
 }
-#' @rdname eq.esm
-#' @param x object of class \code{eq.esm}
+#' @rdname neg.esm
+#' @param x object of class \code{neg.esm}
 #' @return
 #' @export
 #'
 
-print.eq.esm <- function(x, ...) {
+print.neg.esm <- function(x, ...) {
 
   cat("----",x$title1, "----\n\n")
   cat("Indirect effect:", x$ab_par,"\n")

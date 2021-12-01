@@ -1,6 +1,6 @@
-#' @title Print function for the eq.cat function
+#' @title Print function for the neg.cat function
 #'
-#' @param x Data frame from eq.cat
+#' @param x Data frame from neg.cat
 #' @param ... extra arguments
 #' @return
 #' @export
@@ -8,10 +8,10 @@
 #' @examples
 #' \dontrun{
 #' }
-print.eq.cat <- function (x, ...) {
+print.neg.cat <- function (x, ...) {
   cat("\n\n")
   cat("--------------------", "\n\n")
-  cat("-- Equivalence Test of the Relationship --", "\n")
+  cat("-- Negligible Effect Test of the Relationship --", "\n")
   cat("-- Between Two Categorical Variables --", "\n\n")
   cat("-------------------", "\n\n")
   cat("Nominal Type I error rate (alpha):", x$alpha, "\n\n")
