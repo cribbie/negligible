@@ -2,12 +2,15 @@
 % Please edit documentation in R/neg.cat.R
 \name{neg.cat}
 \alias{neg.cat}
+\alias{print.neg.cat}
 \title{Equivalence Testing for Categorical Variables}
 \usage{
 neg.cat(x = NULL, y = NULL, tab = NULL, eiU = 0.2, data = NULL, alpha = 0.05)
+
+\method{print}{neg.cat}(x, ...)
 }
 \arguments{
-\item{x}{first categorical variable}
+\item{x}{Data frame from neg.cat}
 
 \item{y}{second categorical variable}
 
@@ -18,14 +21,20 @@ neg.cat(x = NULL, y = NULL, tab = NULL, eiU = 0.2, data = NULL, alpha = 0.05)
 \item{data}{data file containing the categorical variables}
 
 \item{alpha}{nominal acceptable Type I error rate level}
+
+\item{...}{extra arguments}
 }
 \value{
+returns a \code{list} containing each analysis and their respective statistics
+  and decision
+
 
 }
 \description{
 Testing for the presence of a negligible association between two categorical variables
 }
 \examples{
+\dontrun{
 #Example 1
 x<-rbinom(10,1,.5)
 y<-rbinom(10,1,.5)
@@ -38,4 +47,5 @@ tab<-table(sex,haircol)
 neg.cat(tab=tab, alpha=.05)
 neg.cat(x=sex,y=haircol)
 neg.cat(x=sex,y=haircol,data=d)
+}
 }

@@ -10,10 +10,12 @@
 #' @param data data file containing the categorical variables
 #' @param alpha nominal acceptable Type I error rate level
 #'
-#' @return
+#' @return returns a \code{list} containing each analysis and their respective statistics
+#'   and decision
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' #Example 1
 #' x<-rbinom(10,1,.5)
 #' y<-rbinom(10,1,.5)
@@ -26,6 +28,7 @@
 #' neg.cat(tab=tab, alpha=.05)
 #' neg.cat(x=sex,y=haircol)
 #' neg.cat(x=sex,y=haircol,data=d)
+#' }
 neg.cat <- function (x = NULL, y = NULL,
       tab = NULL, eiU = .2, data = NULL, alpha = .05) {
 
@@ -35,7 +38,7 @@ neg.cat <- function (x = NULL, y = NULL,
   }
   if (is.null(tab) & !is.null(data)) {
     d <- data.frame(x,y)
-    d <- d[complete.cases(d),]
+    d <- d[stats::complete.cases(d),]
     tab <- table(d$x, d$y)
   }
   if (is.null(tab) & is.null(data)) {
@@ -56,7 +59,29 @@ neg.cat <- function (x = NULL, y = NULL,
   class(ret) <- "neg.cat"
   return(ret)
 }
-
-
-
+#' @rdname neg.cat
+#' @param x Data frame from neg.cat
+#' @param ... extra arguments
+#' @return
+#' @export
+#'
+print.neg.cat <- function (x, ...) {
+  cat("\n\n")
+  cat("--------------------", "\n\n")
+  cat("-- Negligible Effect Test of the Relationship --", "\n")
+  cat("-- Between Two Categorical Variables --", "\n\n")
+  cat("-------------------", "\n\n")
+  cat("Nominal Type I error rate (alpha):", x$alpha, "\n\n")
+  cat("-------------------", "\n\n")
+  cat("Cramer's V: ", x$cramv, "\n\n")
+  cat(100*(1-2*x$alpha), "% CI for Cramer's V: ", "(",x$cil,", ",x$ciu,")", "\n\n", sep="")
+  cat("-------------------", "\n\n")
+  cat("Proportion of Shared Variability: ", x$propvar, "\n\n")
+  cat("-------------------", "\n\n")
+  cat("Upper Bound of the Equivalence Interval (Correlation Metric): ", x$eiU, "\n\n")
+  cat("Upper Bound of the ", 100*(1-2*x$alpha), "% CI for Cramer's V: ", x$ciu, "\n\n", sep="")
+  cat("NHST Decision:", "\n")
+  cat(x$decis,"\n\n")
+  cat("-------------------", "\n\n")
+}
 
