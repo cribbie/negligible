@@ -1,6 +1,6 @@
 # negligible
 
-R package for negligble effect/equivalence testing. 
+R package for negligible effect/equivalence testing. 
 
 ## Install the Package
 
