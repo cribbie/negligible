@@ -3,7 +3,7 @@
 \name{neg.indvars}
 \alias{neg.indvars}
 \alias{print.neg.indvars}
-\title{Title Negligible Effect Test for Variances of Independent Populations}
+\title{Negligible Effect Test for Variances of Independent Populations}
 \usage{
 neg.indvars(dv, iv, eps = 0.5, alpha = 0.05, na.rm = TRUE, data = NULL, ...)
 
@@ -14,7 +14,7 @@ neg.indvars(dv, iv, eps = 0.5, alpha = 0.05, na.rm = TRUE, data = NULL, ...)
 
 \item{iv}{Independent Variable}
 
-\item{eps}{Used to Establish the Equivalence Interval}
+\item{eps}{Used to Establish the Equivalence Interval (Conservative: .25; Liberal: .50, according to Wellek, 2010)}
 
 \item{alpha}{Nominal Type I Error Rate}
 
@@ -30,10 +30,17 @@ neg.indvars(dv, iv, eps = 0.5, alpha = 0.05, na.rm = TRUE, data = NULL, ...)
 returns a \code{list} containing each analysis and their respective statistics
   and decision
 
+\describe{
+  \item{vars} {Sample variances of the independent groups}
+  }
+
 
 }
 \description{
-Title Negligible Effect Test for Variances of Independent Populations
+This function allows researchers to test whether the difference
+in the variances of independent populations is negligible, where
+negligible represents the smallest meaningful effect size (MMES, where
+in this case the effect is the difference in population variances)
 }
 \examples{
 \dontrun{

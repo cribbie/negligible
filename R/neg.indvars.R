@@ -1,8 +1,14 @@
-#' Title Negligible Effect Test for Variances of Independent Populations
+#' @title Negligible Effect Test for Variances of Independent Populations
+#'
+#' @description This function allows researchers to test whether the difference
+#' in the variances of independent populations is negligible, where
+#' negligible represents the smallest meaningful effect size (MMES, where
+#' in this case the effect is the difference in population variances)
+#'
 #'
 #' @param dv Outcome Variable
 #' @param iv Independent Variable
-#' @param eps Used to Establish the Equivalence Interval
+#' @param eps Used to Establish the Equivalence Bound (Conservative: .25; Liberal: .50, according to Wellek, 2010)
 #' @param alpha Nominal Type I Error Rate
 #' @param na.rm Missing Data Treatment
 #' @param data Dataset containing dv and iv
@@ -10,6 +16,10 @@
 #'
 #' @return returns a \code{list} containing each analysis and their respective statistics
 #'   and decision
+#'
+#' \describe{
+#'   \item{vars} {Sample variances of the independent groups}
+#'   }
 #' @author Rob Cribbie \email{cribbie@@yorku.ca} and
 #'   Constance Mara \email{Constance.Mara@@cchmc.org}
 #' @export neg.indvars
