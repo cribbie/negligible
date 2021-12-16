@@ -74,6 +74,7 @@ depvar<-rnorm(22)
 d<-data.frame(indvar,depvar)
 neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1,plot=TRUE,data=d)
 neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
+neg.twoindmeans(x=depvar[iv=="a"],y=depvar[iv=="b"],eil=-1,eiu=1)
 xx<-neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
 xx$decis
 }

@@ -19,7 +19,7 @@
 #' 1+1
 #' }
 
-ProportionalDistance<-function(effect, PD, EIsign,
+neg.pd<-function(effect, PD, EIsign,
         PDcil, PDciu,  cil, ciu, Elevel, Plevel, save) {
 
   EIp<-c(EIsign,0) #actual value
@@ -66,6 +66,8 @@ ProportionalDistance<-function(effect, PD, EIsign,
 
   #create a dataframe containing all the co-ordinates of interest
 
+  X1<-NULL
+  X2<-NULL
   dat<-rbind(BPDthird, BPDsecond, BPDfirst, start1, PDp, PDextraL, PDextraU, PDfirst, PDsecond, PDthird, Bthird, Bsecond, Bfirst, start2, effectp, EIp, extraL, extraU, first, second, third)
   dat<- data.frame(dat)
   print(

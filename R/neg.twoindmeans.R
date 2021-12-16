@@ -35,6 +35,7 @@
 #' d<-data.frame(indvar,depvar)
 #' neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1,plot=TRUE,data=d)
 #' neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
+#' neg.twoindmeans(x=depvar[iv=="a"],y=depvar[iv=="b"],eil=-1,eiu=1)
 #' xx<-neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
 #' xx$decis
 #' }
@@ -265,7 +266,7 @@ print.neg.twoindmeans <- function(x, ...) {
   cat("**********************\n\n")
 
   if (x$pl == TRUE) {
-    ProportionalDistance(effect = x$effsizeraw,
+    neg.pd(effect = x$effsizeraw,
                          PD = x$effsizepd,
                          EIsign=x$eisign,
                          PDcil=x$cilpd,
