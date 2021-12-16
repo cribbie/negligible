@@ -19,8 +19,7 @@ neg.twoindmeans(
   alpha = 0.05,
   plot = TRUE,
   saveplot = FALSE,
-  data = NULL,
-  ...
+  data = NULL
 )
 
 \method{print}{neg.twoindmeans}(x, ...)
@@ -54,7 +53,7 @@ neg.twoindmeans(
 
 \item{data}{Dataset containing x/y or iv/dv}
 
-\item{...}{}
+\item{...}{extra arguments}
 }
 \value{
 returns a \code{list} containing each analysis and their respective statistics

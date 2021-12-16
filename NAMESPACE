@@ -2,5 +2,6 @@
 
 S3method(print,neg.indvars)
 S3method(print,neg.twoindmeans)
+export(ProportionalDistance)
 export(neg.indvars)
 export(neg.twoindmeans)

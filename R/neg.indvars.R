@@ -17,9 +17,6 @@
 #' @return returns a \code{list} containing each analysis and their respective statistics
 #'   and decision
 #'
-#' \describe{
-#'   \item{vars} {Sample variances of the independent groups}
-#'   }
 #' @author Rob Cribbie \email{cribbie@@yorku.ca} and
 #'   Constance Mara \email{Constance.Mara@@cchmc.org}
 #' @export neg.indvars

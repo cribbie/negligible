@@ -19,7 +19,6 @@
 #' @param plot Should a plot of the results be produced?
 #' @param saveplot Should the plot be saved?
 #' @param data Dataset containing x/y or iv/dv
-#' @param ...
 #'
 #' @return returns a \code{list} containing each analysis and their respective statistics
 #'   and decision
@@ -44,7 +43,7 @@
 neg.twoindmeans <- function(x = NULL, y = NULL, dv = NULL, iv = NULL,
                              eil, eiu, varequiv = FALSE, normality = FALSE,
                              tr = 0.2, nboot = 500, alpha = 0.05,
-                             plot = TRUE, saveplot = FALSE, data=NULL, ...) {
+                             plot = TRUE, saveplot = FALSE, data=NULL) {
   if (is.null(x) & is.null(y) & !is.null(data)) {
     dv<-deparse(substitute(dv))
     iv<-deparse(substitute(iv))
@@ -159,7 +158,7 @@ neg.twoindmeans <- function(x = NULL, y = NULL, dv = NULL, iv = NULL,
              (h2 - 1))
     dft <- (q1 + q2)^2/((q1^2/(h1 - 1)) + (q2^2/(h2 -
                                                    1)))
-    crit <- qt(1 - alpha/2, dft)
+    crit <- stats::qt(1 - alpha/2, dft)
     dif1 <- mean(x, tr) - mean(y, tr) - eiu
     dif2 <- mean(x, tr) - mean(y, tr) - eil
     t1 <- dif1/sqrt(q1 + q2)
@@ -232,6 +231,7 @@ neg.twoindmeans <- function(x = NULL, y = NULL, dv = NULL, iv = NULL,
 
 #' @rdname neg.twoindmeans
 #' @param x object of class \code{neg.twoindmeans}
+#' @param ... extra arguments
 #' @return
 #' @export
 #'
@@ -268,10 +268,10 @@ print.neg.twoindmeans <- function(x, ...) {
     ProportionalDistance(effect = x$effsizeraw,
                          PD = x$effsizepd,
                          EIsign=x$eisign,
-                         RCIl=x$cilpd,
-                         RCIu=x$ciupd,
-                         ECIl=x$cilraw,
-                         ECIu=x$ciuraw,
+                         PDcil=x$cilpd,
+                         PDciu=x$ciupd,
+                         cil=x$cilraw,
+                         ciu=x$ciuraw,
                          Elevel=100*(1-2*x$alpha),
                          Plevel=100*(1-x$alpha),
                          save = x$save)

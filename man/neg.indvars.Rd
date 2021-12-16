@@ -14,7 +14,7 @@ neg.indvars(dv, iv, eps = 0.5, alpha = 0.05, na.rm = TRUE, data = NULL, ...)
 
 \item{iv}{Independent Variable}
 
-\item{eps}{Used to Establish the Equivalence Interval (Conservative: .25; Liberal: .50, according to Wellek, 2010)}
+\item{eps}{Used to Establish the Equivalence Bound (Conservative: .25; Liberal: .50, according to Wellek, 2010)}
 
 \item{alpha}{Nominal Type I Error Rate}
 
@@ -29,10 +29,6 @@ neg.indvars(dv, iv, eps = 0.5, alpha = 0.05, na.rm = TRUE, data = NULL, ...)
 \value{
 returns a \code{list} containing each analysis and their respective statistics
   and decision
-
-\describe{
-  \item{vars} {Sample variances of the independent groups}
-  }
 
 
 }
