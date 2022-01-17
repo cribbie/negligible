@@ -14,7 +14,7 @@ install.packages('devtools')
  
 ```r
 library('devtools')
-install_github('cribbie/neligible')
+install_github('cribbie/negligible')
 ```
 
 3) Load the newly installed package by calling
