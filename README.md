@@ -1,5 +1,5 @@
-<p float="right"
-   <img src="neg.logo.png" width="100"/>
+<p float="right">
+<img src="neg.logo.png" width="100"/>
 </p>
 	
 # {negligible}
