@@ -1,8 +1,7 @@
-<p float="center">
+	
+# {negligible} <p float="center">
 <img src="neg.logo.png" width="100"/>
 </p>
-	
-# {negligible}
 
 R package for negligible effect/equivalence testing. 
 
