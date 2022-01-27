@@ -1,7 +1,17 @@
+img {
 <h4> 	
-<img src="neg.logo.png" width="100" title="hover text">
+
+ <img src="neg.logo.png" width="100" title="hover text">
 <div style="float:right;"</div>
 </h4>
+     vertical-align:middle;
+}
+span {
+     vertical-align:middle;
+}
+
+div {
+     text-align: left;
 
 # negligible
 
@@ -27,3 +37,4 @@ install_github('cribbie/negligible')
 ```r
 library(negligible)
 ```
+}
