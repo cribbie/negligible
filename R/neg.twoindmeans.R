@@ -45,9 +45,17 @@ neg.twoindmeans <- function(x = NULL, y = NULL, dv = NULL, iv = NULL,
                              eil, eiu, varequiv = FALSE, normality = FALSE,
                              tr = 0.2, nboot = 500, alpha = 0.05,
                              plot = TRUE, saveplot = FALSE, data=NULL) {
-  if (is.null(x) & is.null(y) & !is.null(data)) {
-    dv<-deparse(substitute(dv))
-    iv<-deparse(substitute(iv))
+  if (!is.null(data)) {
+    x <- deparse(substitute(x))
+    y <- deparse(substitute(y))
+    iv <- deparse(substitute(iv))
+    dv <- deparse(substitute(dv))
+    if(x=="NULL") {x<-NULL}
+    if(y=="NULL") {y<-NULL}
+    if(iv=="NULL") {iv<-NULL}
+    if(dv=="NULL") {dv<-NULL}
+  }
+    if (is.null(x) & is.null(y) & !is.null(data)) {
     dv<-as.numeric(data[[dv]])
     iv<-as.factor(data[[iv]])
     dat<- data.frame(dv,iv)
@@ -56,8 +64,6 @@ neg.twoindmeans <- function(x = NULL, y = NULL, dv = NULL, iv = NULL,
     y<-dat$dv[dat$iv==levels(dat$iv)[2]]
   }
   if (is.null(dv) & is.null(iv) & !is.null(data)) {
-    x<-deparse(substitute(x))
-    y<-deparse(substitute(y))
     x<-as.numeric(data[[x]])
     y<-as.numeric(data[[y]])
   }
