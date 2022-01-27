@@ -1,6 +1,6 @@
 <h4> 	
 <img src="neg.logo.png" width="100" title="hover text">
-<div style="float:right;">Right Text</div>
+<div style="float:right;"</div>
     <div style="clear: right;"/>
 </h4>
 # negligible
