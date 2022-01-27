@@ -1,9 +1,10 @@
+<p 
+   <img src="neg.logo.png" width="100" />
+   float="right">
 
-<p float="right">
-  <img src="neg.logo.png" width="100" />
 </p>
 	
-# negligible
+# {negligible}
 
 R package for negligible effect/equivalence testing. 
 
