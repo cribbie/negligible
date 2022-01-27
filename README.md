@@ -1,10 +1,8 @@
 
-<h4> 	
-<div style="float:right;"</div>
- <img src="neg.logo.png" width="100" title="hover text">
-
-</h4>
-
+<p float="right">
+  <img src="neg.logo.png" width="100" />
+</p>
+	
 # negligible
 
 R package for negligible effect/equivalence testing. 
@@ -29,4 +27,3 @@ install_github('cribbie/negligible')
 ```r
 library(negligible)
 ```
-}
