@@ -1,6 +1,7 @@
-<p align="right">
-  <img src="neg.logo.png" width="100" title="hover text">
-</p> 
+<h4> 	
+<img src="neg.logo.png" width="100" title="hover text">
+<div style="float:right;"/> </h4> 
+
 # negligible
 
 R package for negligible effect/equivalence testing. 
