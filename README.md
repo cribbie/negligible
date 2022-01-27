@@ -1,4 +1,4 @@
-<p float="right">
+<p float="center">
 <img src="neg.logo.png" width="100"/>
 </p>
 	
