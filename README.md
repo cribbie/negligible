@@ -1,17 +1,9 @@
-img {
+
 <h4> 	
-
- <img src="neg.logo.png" width="100" title="hover text">
 <div style="float:right;"</div>
-</h4>
-     vertical-align:middle;
-}
-span {
-     vertical-align:middle;
-}
+ <img src="neg.logo.png" width="100" title="hover text">
 
-div {
-     text-align: left;
+</h4>
 
 # negligible
 
