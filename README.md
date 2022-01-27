@@ -1,5 +1,5 @@
 <p 
-<img src="neg.logo.png" width="100">
+<img src="neg.logo.png" width="100"/>
 float="right"
 </p>
 	
