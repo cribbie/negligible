@@ -16,10 +16,10 @@ neg.cat(
   alpha = 0.05
 )
 
-\method{print}{neg.cat}(x, ...)
+\method{print}{neg.cat}(z, ...)
 }
 \arguments{
-\item{x}{Data frame from neg.cat}
+\item{x}{first categorical variable}
 
 \item{y}{second categorical variable}
 
@@ -34,6 +34,8 @@ neg.cat(
 \item{save}{should the plot be saved to 'jpg' or 'png'}
 
 \item{alpha}{nominal acceptable Type I error rate level}
+
+\item{z}{Data frame from neg.cat}
 
 \item{...}{extra arguments}
 }
