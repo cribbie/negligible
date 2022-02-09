@@ -116,38 +116,38 @@ neg.cat <- function (x = NULL, y = NULL,
 }
 
 #' @rdname neg.cat
-#' @param x Data frame from neg.cat
+#' @param z Data frame from neg.cat
 #' @param ... extra arguments
 #' @return
 #' @export
 #'
-print.neg.cat <- function (x, ...) {
+print.neg.cat <- function (z, ...) {
   cat("\n\n")
   cat("********************", "\n\n")
   cat("** Negligible Effect Test of the Relationship **", "\n")
   cat("** Between Two Categorical Variables **", "\n\n")
   cat("********************", "\n\n")
-  cat("Nominal Type I error rate (alpha):", x$alpha, "\n\n")
+  cat("Nominal Type I error rate (alpha):", z$alpha, "\n\n")
   cat("********************", "\n\n")
-  cat("Cramer's V: ", x$cramv, "\n\n")
-  cat(100*(1-2*x$alpha), "% CI for Cramer's V: ", "(",x$cil,", ",x$ciu,")", "\n\n", sep="")
+  cat("Cramer's V: ", z$cramv, "\n\n")
+  cat(100*(1-2*z$alpha), "% CI for Cramer's V: ", "(",z$cil,", ",z$ciu,")", "\n\n", sep="")
   cat("*******************", "\n\n")
-  cat("Proportion of Shared Variability: ", x$propvar, "\n\n")
+  cat("Proportion of Shared Variability: ", z$propvar, "\n\n")
   cat("*******************", "\n\n")
-  cat("Upper Bound of the Equivalence Interval (Correlation Metric): ", x$eiU, "\n\n")
-  cat("Upper Bound of the ", 100*(1-2*x$alpha), "% CI for Cramer's V: ", x$ciu, "\n\n", sep="")
+  cat("Upper Bound of the Equivalence Interval (Correlation Metric): ", z$eiU, "\n\n")
+  cat("Upper Bound of the ", 100*(1-2*z$alpha), "% CI for Cramer's V: ", z$ciu, "\n\n", sep="")
   cat("NHST Decision:", "\n")
-  cat(x$decis,"\n\n")
+  cat(z$decis,"\n\n")
   cat("*******************", "\n\n")
   cat("Proportional Distance","\n\n")
-  cat("Proportional Distance:", x$PD,"\n")
-  cat("Confidence Interval for the Proportional Distance: (",x$CI95L, ",",x$CI95U,")","\n\n",sep="")
+  cat("Proportional Distance:", z$PD,"\n")
+  cat("Confidence Interval for the Proportional Distance: (",z$CI95L, ",",z$CI95U,")","\n\n",sep="")
   cat("Note: Confidence Interval for the Proportional Distance may not be precise with small N","\n")
   cat("*******************", "\n\n")
 
 
-  if (x$pl == TRUE) {
-    neg.pd(effect=x$cramv, PD = x$PD, EIsign=x$eiU, PDcil=x$CI95L, PDciu=x$CI95U, cil=x$cil, ciu=x$ciu, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$save)
+  if (z$pl == TRUE) {
+    neg.pd(effect=z$cramv, PD = z$PD, EIsign=z$eiU, PDcil=z$CI95L, PDciu=z$CI95U, cil=z$cil, ciu=z$ciu, Elevel=100*(1-2*z$alpha), Plevel=100*(1-z$alpha), save = z$save)
   }
 
 }
