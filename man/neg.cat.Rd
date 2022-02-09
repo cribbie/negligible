@@ -6,8 +6,8 @@
 \title{Equivalence Testing for Categorical Variables}
 \usage{
 neg.cat(
-  x = NULL,
-  y = NULL,
+  v1 = NULL,
+  v2 = NULL,
   tab = NULL,
   eiU = 0.2,
   data = NULL,
@@ -16,12 +16,12 @@ neg.cat(
   alpha = 0.05
 )
 
-\method{print}{neg.cat}(z, ...)
+\method{print}{neg.cat}(x, ...)
 }
 \arguments{
-\item{x}{first categorical variable}
+\item{v1}{first categorical variable}
 
-\item{y}{second categorical variable}
+\item{v2}{second categorical variable}
 
 \item{tab}{contingency table for the two predictor variables}
 
@@ -35,7 +35,7 @@ neg.cat(
 
 \item{alpha}{nominal acceptable Type I error rate level}
 
-\item{z}{Data frame from neg.cat}
+\item{x}{Data frame from neg.cat}
 
 \item{...}{extra arguments}
 }
@@ -51,16 +51,16 @@ Testing for the presence of a negligible association between two categorical var
 \examples{
 \dontrun{
 #Example 1
-x<-rbinom(10,1,.5)
-y<-rbinom(10,1,.5)
-neg.cat(x,y)
+xcat<-rbinom(30,1,.5)
+ycat<-rbinom(30,1,.5)
+neg.cat(xcat,ycat)
 #Example 2
 sex<-rep(c("m","f"),c(12,22))
 haircol<-rep(c("bld","brn","bld","brn"),c(9,7,11,7))
 d <- data.frame(sex,haircol)
 tab<-table(sex,haircol)
 neg.cat(tab=tab, alpha=.05)
-neg.cat(x=sex,y=haircol)
-neg.cat(x=sex,y=haircol,data=d)
+neg.cat(v1=sex,v2=haircol)
+neg.cat(v1=sex,v2=haircol,data=d)
 }
 }

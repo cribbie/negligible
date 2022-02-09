@@ -3,8 +3,8 @@
 #' @title Equivalence Testing for Categorical Variables
 #' @description Testing for the presence of a negligible association between two categorical variables
 #'
-#' @param x first categorical variable
-#' @param y second categorical variable
+#' @param v1 first categorical variable
+#' @param v2 second categorical variable
 #' @param tab contingency table for the two predictor variables
 #' @param eiU upper limit of equivalence interval
 #' @param data data file containing the categorical variables
@@ -19,19 +19,19 @@
 #' @examples
 #' \dontrun{
 #' #Example 1
-#' x<-rbinom(10,1,.5)
-#' y<-rbinom(10,1,.5)
-#' neg.cat(x,y)
+#' xcat<-rbinom(30,1,.5)
+#' ycat<-rbinom(30,1,.5)
+#' neg.cat(xcat,ycat)
 #' #Example 2
 #' sex<-rep(c("m","f"),c(12,22))
 #' haircol<-rep(c("bld","brn","bld","brn"),c(9,7,11,7))
 #' d <- data.frame(sex,haircol)
 #' tab<-table(sex,haircol)
 #' neg.cat(tab=tab, alpha=.05)
-#' neg.cat(x=sex,y=haircol)
-#' neg.cat(x=sex,y=haircol,data=d)
+#' neg.cat(v1=sex,v2=haircol)
+#' neg.cat(v1=sex,v2=haircol,data=d)
 #' }
-neg.cat <- function (x = NULL, y = NULL,
+neg.cat <- function (v1 = NULL, v2 = NULL,
       tab = NULL, eiU = .2, data = NULL,
       plot = TRUE, save = FALSE, alpha = .05) {
 
@@ -43,25 +43,25 @@ neg.cat <- function (x = NULL, y = NULL,
       x[[countcol]] <- NULL
       x[idx, ]
     }
-    x<-countsToCases(as.data.frame(tab))[,1]
-    y<-countsToCases(as.data.frame(tab))[,2]
-    dat<-data.frame(x,y)
+    v1<-countsToCases(as.data.frame(tab))[,1]
+    v2<-countsToCases(as.data.frame(tab))[,2]
+    dat<-data.frame(v1,v2)
   }
   if (is.null(tab) & !is.null(data)) {
-    x<-deparse(substitute(x))
-    y<-deparse(substitute(y))
-    x<-factor(data[[x]])
-    y<-factor(data[[y]])
-    dat <- data.frame(x,y)
-    names(dat)<-c("x","y")
+    v1<-deparse(substitute(v1))
+    v2<-deparse(substitute(v2))
+    v1<-factor(data[[v1]])
+    v2<-factor(data[[v2]])
+    dat <- data.frame(v1,v2)
+    names(dat)<-c("v1","v2")
     dat <- stats::na.omit(dat)
-    x <- dat[, 1]
-    y <- dat[, 2]
-    tab <- table(x, y)
+    v1 <- dat[, 1]
+    v2 <- dat[, 2]
+    tab <- table(v1, v2)
   }
   if (is.null(tab) & is.null(data)) {
-    tab <- table(x,y)
-    dat <- data.frame(x,y)
+    tab <- table(v1,v2)
+    dat <- data.frame(v1,v2)
     dat <- stats::na.omit(dat)
   }
 
@@ -82,7 +82,7 @@ neg.cat <- function (x = NULL, y = NULL,
   propd<-numeric(1000)
   for (i in 1:1000) {
     xx<-dplyr::sample_n(dat,size=nrow(dat),replace=TRUE)
-    tabxx<-table(xx$x,xx$y)
+    tabxx<-table(xx$v1,xx$v2)
     cvpd<-DescTools::CramerV(tabxx)
     propd[i]<-cvpd/eiU
   }
@@ -116,38 +116,38 @@ neg.cat <- function (x = NULL, y = NULL,
 }
 
 #' @rdname neg.cat
-#' @param z Data frame from neg.cat
+#' @param x Data frame from neg.cat
 #' @param ... extra arguments
 #' @return
 #' @export
 #'
-print.neg.cat <- function (z, ...) {
+print.neg.cat <- function (x, ...) {
   cat("\n\n")
   cat("********************", "\n\n")
   cat("** Negligible Effect Test of the Relationship **", "\n")
   cat("** Between Two Categorical Variables **", "\n\n")
   cat("********************", "\n\n")
-  cat("Nominal Type I error rate (alpha):", z$alpha, "\n\n")
+  cat("Nominal Type I error rate (alpha):", x$alpha, "\n\n")
   cat("********************", "\n\n")
-  cat("Cramer's V: ", z$cramv, "\n\n")
-  cat(100*(1-2*z$alpha), "% CI for Cramer's V: ", "(",z$cil,", ",z$ciu,")", "\n\n", sep="")
+  cat("Cramer's V: ", x$cramv, "\n\n")
+  cat(100*(1-2*x$alpha), "% CI for Cramer's V: ", "(",x$cil,", ",x$ciu,")", "\n\n", sep="")
   cat("*******************", "\n\n")
-  cat("Proportion of Shared Variability: ", z$propvar, "\n\n")
+  cat("Proportion of Shared Variability: ", x$propvar, "\n\n")
   cat("*******************", "\n\n")
-  cat("Upper Bound of the Equivalence Interval (Correlation Metric): ", z$eiU, "\n\n")
-  cat("Upper Bound of the ", 100*(1-2*z$alpha), "% CI for Cramer's V: ", z$ciu, "\n\n", sep="")
+  cat("Upper Bound of the Equivalence Interval (Correlation Metric): ", x$eiU, "\n\n")
+  cat("Upper Bound of the ", 100*(1-2*x$alpha), "% CI for Cramer's V: ", x$ciu, "\n\n", sep="")
   cat("NHST Decision:", "\n")
-  cat(z$decis,"\n\n")
+  cat(x$decis,"\n\n")
   cat("*******************", "\n\n")
   cat("Proportional Distance","\n\n")
-  cat("Proportional Distance:", z$PD,"\n")
-  cat("Confidence Interval for the Proportional Distance: (",z$CI95L, ",",z$CI95U,")","\n\n",sep="")
+  cat("Proportional Distance:", x$PD,"\n")
+  cat("Confidence Interval for the Proportional Distance: (",x$CI95L, ",",x$CI95U,")","\n\n",sep="")
   cat("Note: Confidence Interval for the Proportional Distance may not be precise with small N","\n")
   cat("*******************", "\n\n")
 
 
-  if (z$pl == TRUE) {
-    neg.pd(effect=z$cramv, PD = z$PD, EIsign=z$eiU, PDcil=z$CI95L, PDciu=z$CI95U, cil=z$cil, ciu=z$ciu, Elevel=100*(1-2*z$alpha), Plevel=100*(1-z$alpha), save = z$save)
+  if (x$pl == TRUE) {
+    neg.pd(effect=x$cramv, PD = x$PD, EIsign=x$eiU, PDcil=x$CI95L, PDciu=x$CI95U, cil=x$cil, ciu=x$ciu, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$save)
   }
 
 }
