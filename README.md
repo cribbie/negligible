@@ -1,8 +1,12 @@
+<p>
+  <img align="right" src="neg.logo.png" width="150"/>
+</p>
+
 # negligible
 
 R package for negligible effect/equivalence testing. 
 
-## Install the Package
+### Install the Package
 
 1) Install the `devtools` package (if necessary). In R, paste the following into the console:
 
