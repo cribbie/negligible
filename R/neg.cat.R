@@ -3,8 +3,8 @@
 #' @title Equivalence Testing for Categorical Variables
 #' @description Testing for the presence of a negligible association between two categorical variables
 #'
-#' @param x the first categorical variable
-#' @param y the second categorical variable
+#' @param x first categorical variable
+#' @param y second categorical variable
 #' @param tab contingency table for the two predictor variables
 #' @param eiU upper limit of equivalence interval
 #' @param data data file containing the categorical variables
