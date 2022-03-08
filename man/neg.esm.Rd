@@ -6,9 +6,9 @@
 \title{Test for Evaluating Substantial Mediation}
 \usage{
 neg.esm(
-  x,
-  y,
-  m,
+  X,
+  Y,
+  M,
   alpha = 0.05,
   minc = 0.15,
   eil = -0.15,
@@ -23,15 +23,15 @@ neg.esm(
 \method{print}{neg.esm}(x, ...)
 }
 \arguments{
-\item{x}{object of class \code{neg.esm}}
+\item{X}{predictor variable}
 
-\item{y}{outcome variable}
+\item{Y}{outcome variable}
 
-\item{m}{mediator variable}
+\item{M}{mediator variable}
 
 \item{alpha}{alpha level (default = .05)}
 
-\item{minc}{minimum correlation between x and y (default is .15)}
+\item{minc}{minimum correlation between x and Y (default is .15)}
 
 \item{eil}{lower bound of equivalence interval in standardized units(default is -.15)}
 
@@ -47,6 +47,8 @@ neg.esm(
 
 \item{seed}{optional argument to set seed}
 
+\item{x}{object of class \code{neg.esm}}
+
 \item{...}{extra arguments}
 }
 \value{
@@ -60,10 +62,10 @@ Function computes the equivalence testing method (total effect) for evaluating s
 \dontrun{
 #equivalence test for substantial mediation
 with an equivalence interval of -.15 to .15
-x<-rnorm(200,sd=2)
-m<-.5*x + rnorm(100)
-y<-.5*m + rnorm(100)
-neg.esm(x,y,m, eil = -.15, eiu = .15)
+X<-rnorm(200,sd=2)
+M<-.5*x + rnorm(100)
+Y<-.5*M + rnorm(100)
+neg.esm(x,Y,M, eil = -.15, eiu = .15)
 }
 }
 \author{

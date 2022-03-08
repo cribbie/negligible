@@ -5,10 +5,10 @@
 #' negligible represents the smallest meaningful effect size (MMES, which
 #' in this case the effect is the mean difference)
 #'
-#' @param x Data for Group 1 (if dv and iv are omitted)
-#' @param y Data for Group 2 (if dv and iv are omitted)
-#' @param dv Dependent Variable (if x and y are omitted)
-#' @param iv Dichotomous Predictor/Independent Variable (if x and y are omitted)
+#' @param v1 Data for Group 1 (if dv and iv are omitted)
+#' @param v2 Data for Group 2 (if dv and iv are omitted)
+#' @param dv Dependent Variable (if v1 and v2 are omitted)
+#' @param iv Dichotomous Predictor/Independent Variable (if v1 and v2 are omitted)
 #' @param eil Lower Bound of the Equivalence Interval
 #' @param eiu Upper Bound of the Equivalence Interval
 #' @param varequiv Are the population variances assumed to be equal? Population variances are assumed to be unequal if normality=FALSE.
@@ -18,7 +18,7 @@
 #' @param alpha Nominal Type I Error rate
 #' @param plot Should a plot of the results be produced?
 #' @param saveplot Should the plot be saved?
-#' @param data Dataset containing x/y or iv/dv
+#' @param data Dataset containing v1/v2 or iv/dv
 #'
 #' @return returns a \code{list} containing each analysis and their respective statistics
 #'   and decision
@@ -32,76 +32,76 @@
 #' \dontrun{
 #' indvar<-rep(c("a","b"),c(10,12))
 #' depvar<-rnorm(22)
-#' d<-data.frame(indvar,depvar)
+#' d<-data.frameindvar,depvar)
 #' neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1,plot=TRUE,data=d)
 #' neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
-#' neg.twoindmeans(x=depvar[iv=="a"],y=depvar[iv=="b"],eil=-1,eiu=1)
+#' neg.twoindmeans(v1=depvar[iv=="a"],v2=depvar[iv=="b"],eil=-1,eiu=1)
 #' xx<-neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
 #' xx$decis
 #' }
 #'
 
-neg.twoindmeans <- function(x = NULL, y = NULL, dv = NULL, iv = NULL,
+neg.twoindmeans <- function(v1 = NULL, v2 = NULL, dv = NULL, iv = NULL,
                              eil, eiu, varequiv = FALSE, normality = FALSE,
                              tr = 0.2, nboot = 500, alpha = 0.05,
                              plot = TRUE, saveplot = FALSE, data=NULL) {
   if (!is.null(data)) {
-    x <- deparse(substitute(x))
-    y <- deparse(substitute(y))
+    v1 <- deparse(substitute(v1))
+    v2 <- deparse(substitute(v2))
     iv <- deparse(substitute(iv))
     dv <- deparse(substitute(dv))
-    if(x=="NULL") {x<-NULL}
-    if(y=="NULL") {y<-NULL}
+    if(v1=="NULL") {v1<-NULL}
+    if(v2=="NULL") {v2<-NULL}
     if(iv=="NULL") {iv<-NULL}
     if(dv=="NULL") {dv<-NULL}
   }
-    if (is.null(x) & is.null(y) & !is.null(data)) {
+    if (is.null(v1) & is.null(v2) & !is.null(data)) {
     dv<-as.numeric(data[[dv]])
     iv<-as.factor(data[[iv]])
     dat<- data.frame(dv,iv)
     dat<- dat[stats::complete.cases(dat),]
-    x<-dat$dv[dat$iv==levels(dat$iv)[1]]
-    y<-dat$dv[dat$iv==levels(dat$iv)[2]]
+    v1<-dat$dv[dat$iv==levels(dat$iv)[1]]
+    v2<-dat$dv[dat$iv==levels(dat$iv)[2]]
   }
   if (is.null(dv) & is.null(iv) & !is.null(data)) {
-    x<-as.numeric(data[[x]])
-    y<-as.numeric(data[[y]])
+    v1<-as.numeric(data[[v1]])
+    v2<-as.numeric(data[[v2]])
   }
   if (is.null(dv) & is.null(iv) & is.null(data)) {
-      x <- x[!is.na(x)]
-      y <- y[!is.na(y)]
+      v1 <- v1[!is.na(v1)]
+      v2 <- v2[!is.na(v2)]
   }
-  if (is.null(x) & is.null(y) & is.null(data)) {
+  if (is.null(v1) & is.null(v2) & is.null(data)) {
     d<-data.frame(iv,dv)
     d$iv<-factor(d$iv)
     d <- d[stats::complete.cases(d),]
-    x<-d$dv[d$iv==levels(d$iv)[1]]
-    y<-d$dv[d$iv==levels(d$iv)[2]]
+    v1<-d$dv[d$iv==levels(d$iv)[1]]
+    v2<-d$dv[d$iv==levels(d$iv)[2]]
   }
   if (normality==TRUE) {
     if (varequiv == FALSE) {
-      denom <- sqrt((stats::var(x)/length(x)) + (stats::var(y)/length(y)))
-      t1 <- (mean(x) - mean(y) - eiu)/denom
-      t2 <- (mean(x) - mean(y) - eil)/denom
-      dft <- (((stats::var(x)/length(x)) + (stats::var(y)/length(y)))^2)/
-        ((stats::var(x)^2/(length(x)^2 * (length(x) - 1))) +
-           (stats::var(y)^2/(length(y)^2 *(length(y) - 1))))
+      denom <- sqrt((stats::var(v1)/length(v1)) + (stats::var(v2)/length(v2)))
+      t1 <- (mean(v1) - mean(v2) - eiu)/denom
+      t2 <- (mean(v1) - mean(v2) - eil)/denom
+      dft <- (((stats::var(v1)/length(v1)) + (stats::var(v2)/length(v2)))^2)/
+        ((stats::var(v1)^2/(length(v1)^2 * (length(v1) - 1))) +
+           (stats::var(v2)^2/(length(v2)^2 *(length(v2) - 1))))
       probt1 <- stats::pt(t1, dft, lower.tail = T)
       probt2 <- stats::pt(t2, dft, lower.tail = F)
       ifelse(probt1 <= alpha & probt2 <= alpha,
              decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval can be rejected. Be sure to interpret the magnitude of the effect size.",
              decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval cannot be rejected. Be sure to interpret the magnitude of the effect size.")
-      effsize_raw<-mean(x)-mean(y)
-      effsize_d<-(mean(x)-mean(y))/sqrt((stats::var(x)+stats::var(y))/2)
-      ifelse(sign(mean(x)-mean(y))==sign(eil),
+      effsize_raw<-mean(v1)-mean(v2)
+      effsize_d<-(mean(v1)-mean(v2))/sqrt((stats::var(v1)+stats::var(v2))/2)
+      ifelse(sign(mean(v1)-mean(v2))==sign(eil),
              ein<-eil,ein<-eiu)
-      effsize_pd<-(mean(x)-mean(y))/abs(ein) #change here
+      effsize_pd<-(mean(v1)-mean(v2))/abs(ein) #change here
       bsraw<-numeric(nboot)
       bsd<-numeric(nboot)
       bspd<-numeric(nboot)
       for (i in 1:nboot) {
-        bsx<-sample(x,length(x),replace=TRUE)
-        bsy<-sample(y,length(y),replace=TRUE)
+        bsx<-sample(v1,length(v1),replace=TRUE)
+        bsy<-sample(v2,length(v2),replace=TRUE)
         bsraw[i]<-mean(bsx)-mean(bsy)
         bsd[i]<-(mean(bsx)-mean(bsy))/sqrt((stats::var(bsx)+stats::var(bsy))/2)
         ifelse(sign(mean(bsx)-mean(bsy))==sign(eil),
@@ -116,30 +116,30 @@ neg.twoindmeans <- function(x = NULL, y = NULL, dv = NULL, iv = NULL,
       title <- "Schuirmann-Welch Test of the Equivalence of Two Independent Groups"
     }
     if (varequiv == TRUE) {
-      denom <- sqrt(((((length(x) - 1) * stats::sd(x)^2) +
-                ((length(y) - 1) * stats::sd(y)^2))/(length(x) +
-                length(y) - 2)) * (1/length(x) + 1/length(y)))
-      t1 <- (mean(x) - mean(y) - eiu)/denom
-      t2 <- (mean(x) - mean(y) - eil)/denom
-      dft <- length(x) + length(y) - 2
+      denom <- sqrt(((((length(v1) - 1) * stats::sd(v1)^2) +
+                ((length(v2) - 1) * stats::sd(v2)^2))/(length(v1) +
+                length(v2) - 2)) * (1/length(v1) + 1/length(v2)))
+      t1 <- (mean(v1) - mean(v2) - eiu)/denom
+      t2 <- (mean(v1) - mean(v2) - eil)/denom
+      dft <- length(v1) + length(v2) - 2
       probt1 <- stats::pt(t1, dft, lower.tail = T)
       probt2 <- stats::pt(t2, dft, lower.tail = F)
       ifelse(probt1 <= alpha & probt2 <= alpha,
              decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval can be rejected. Be sure to interpret the magnitude of the effect size.",
              decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval cannot be rejected. Be sure to interpret the magnitude of the effect size.")
-      effsize_raw<-mean(x)-mean(y)
-      effsize_d<-(mean(x)-mean(y))/
-        sqrt((((length(x) - 1) * stats::sd(x)^2) + ((length(y) - 1) * stats::sd(y)^2))/
-                (length(x) + length(y) - 2))
-      ifelse(sign(mean(x)-mean(y))==sign(eil),
+      effsize_raw<-mean(v1)-mean(v2)
+      effsize_d<-(mean(v1)-mean(v2))/
+        sqrt((((length(v1) - 1) * stats::sd(v1)^2) + ((length(v2) - 1) * stats::sd(v2)^2))/
+                (length(v1) + length(v2) - 2))
+      ifelse(sign(mean(v1)-mean(v2))==sign(eil),
              ein<-eil,ein<-eiu)
-      effsize_pd<-(mean(x)-mean(y))/abs(ein)
+      effsize_pd<-(mean(v1)-mean(v2))/abs(ein)
       bsraw<-numeric(nboot)
       bsd<-numeric(nboot)
       bspd<-numeric(nboot)
       for (i in 1:nboot) {
-        bsx<-sample(x, length(x),replace=TRUE)
-        bsy<-sample(y, length(y),replace=TRUE)
+        bsx<-sample(v1, length(v1),replace=TRUE)
+        bsy<-sample(v2, length(v2),replace=TRUE)
         bsraw[i]<-mean(bsx)-mean(bsy)
         bsd[i]<-(mean(bsx)-mean(bsy))/
           sqrt((((length(bsx) - 1) * stats::sd(bsx)^2) + ((length(bsy) - 1) * stats::sd(bsy)^2))/
@@ -157,17 +157,17 @@ neg.twoindmeans <- function(x = NULL, y = NULL, dv = NULL, iv = NULL,
 
   }
   if (normality == FALSE) {
-    h1 <- length(x) - 2 * floor(tr * length(x))
-    h2 <- length(y) - 2 * floor(tr * length(y))
-    q1 <- (length(x) - 1) * WRS2::winvar(x, tr)/(h1 *
+    h1 <- length(v1) - 2 * floor(tr * length(v1))
+    h2 <- length(v2) - 2 * floor(tr * length(v2))
+    q1 <- (length(v1) - 1) * WRS2::winvar(v1, tr)/(h1 *
              (h1 - 1))
-    q2 <- (length(y) - 1) * WRS2::winvar(y, tr)/(h2 *
+    q2 <- (length(v2) - 1) * WRS2::winvar(v2, tr)/(h2 *
              (h2 - 1))
     dft <- (q1 + q2)^2/((q1^2/(h1 - 1)) + (q2^2/(h2 -
                                                    1)))
     crit <- stats::qt(1 - alpha/2, dft)
-    dif1 <- mean(x, tr) - mean(y, tr) - eiu
-    dif2 <- mean(x, tr) - mean(y, tr) - eil
+    dif1 <- mean(v1, tr) - mean(v2, tr) - eiu
+    dif2 <- mean(v1, tr) - mean(v2, tr) - eil
     t1 <- dif1/sqrt(q1 + q2)
     t2 <- dif2/sqrt(q1 + q2)
     probt1 <- stats::pt(t1, dft)
@@ -175,17 +175,17 @@ neg.twoindmeans <- function(x = NULL, y = NULL, dv = NULL, iv = NULL,
     ifelse(probt1 <= alpha & probt2 <= alpha,
            decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval can be rejected. Be sure to interpret the magnitude of the effect size.",
            decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval cannot be rejected. Be sure to interpret the magnitude of the effect size.")
-    effsize_raw<-mean(x,tr=tr)-mean(y,tr=tr)
-    effsize_d <- .642*(mean(x,tr=tr) - mean(y,tr=tr))/sqrt((WRS2::winvar(x,tr=.2)+WRS2::winvar(y,tr=.2))/2)
-    ifelse(sign(mean(x,tr=tr)-mean(y,tr=tr))==sign(eil),
+    effsize_raw<-mean(v1,tr=tr)-mean(v2,tr=tr)
+    effsize_d <- .642*(mean(v1,tr=tr) - mean(v2,tr=tr))/sqrt((WRS2::winvar(v1,tr=.2)+WRS2::winvar(v2,tr=.2))/2)
+    ifelse(sign(mean(v1,tr=tr)-mean(v2,tr=tr))==sign(eil),
            ein<-eil,ein<-eiu)
-    effsize_pd<-(mean(x,tr=tr)-mean(y,tr=tr))/abs(ein)
+    effsize_pd<-(mean(v1,tr=tr)-mean(v2,tr=tr))/abs(ein)
     bsraw<-numeric(nboot)
     bsd<-numeric(nboot)
     bspd<-numeric(nboot)
     for (i in 1:nboot) {
-      bsx<-sample(x, length(x),replace=TRUE)
-      bsy<-sample(y,length(y),replace=TRUE)
+      bsx<-sample(v1, length(v1),replace=TRUE)
+      bsy<-sample(v2,length(v2),replace=TRUE)
       bsraw[i]<-mean(bsx,tr=tr)-mean(bsy,tr=tr)
       bsd[i]<-.642*(mean(bsx,tr=tr)-mean(bsy,tr=tr))/
         sqrt((WRS2::winvar(bsx,tr=.2)+WRS2::winvar(bsy,tr=.2))/2)
@@ -199,14 +199,14 @@ neg.twoindmeans <- function(x = NULL, y = NULL, dv = NULL, iv = NULL,
     ci_pd<-stats::quantile(bspd,probs=c(alpha/2,1-alpha/2))
     title <- "Schuirmann-Yuen Test of the Equivalence of Two Independent Groups"
   }
-  ret <- data.frame(meanx = mean(x),
-                    meany = mean(y),
-                    trmeanx = mean(x, tr),
-                    trmeany = mean(y, tr),
-                    sdx = stats::sd(x),
-                    sdy = stats::sd(y),
-                    madx = stats::mad(x),
-                    mady = stats::mad(y),
+  ret <- data.frame(meanx = mean(v1),
+                    meany = mean(v2),
+                    trmeanx = mean(v1, tr),
+                    trmeany = mean(v2, tr),
+                    sdx = stats::sd(v1),
+                    sdy = stats::sd(v2),
+                    madx = stats::mad(v1),
+                    mady = stats::mad(v2),
                     eil = eil,
                     eiu = eiu,
                     eisign = ein,

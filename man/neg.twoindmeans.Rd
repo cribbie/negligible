@@ -6,8 +6,8 @@
 \title{Negligible Effect Test on the Difference between the Means of Independent Populations}
 \usage{
 neg.twoindmeans(
-  x = NULL,
-  y = NULL,
+  v1 = NULL,
+  v2 = NULL,
   dv = NULL,
   iv = NULL,
   eil,
@@ -25,13 +25,13 @@ neg.twoindmeans(
 \method{print}{neg.twoindmeans}(x, ...)
 }
 \arguments{
-\item{x}{object of class \code{neg.twoindmeans}}
+\item{v1}{Data for Group 1 (if dv and iv are omitted)}
 
-\item{y}{Data for Group 2 (if dv and iv are omitted)}
+\item{v2}{Data for Group 2 (if dv and iv are omitted)}
 
-\item{dv}{Dependent Variable (if x and y are omitted)}
+\item{dv}{Dependent Variable (if v1 and v2 are omitted)}
 
-\item{iv}{Dichotomous Predictor/Independent Variable (if x and y are omitted)}
+\item{iv}{Dichotomous Predictor/Independent Variable (if v1 and v2 are omitted)}
 
 \item{eil}{Lower Bound of the Equivalence Interval}
 
@@ -51,7 +51,9 @@ neg.twoindmeans(
 
 \item{saveplot}{Should the plot be saved?}
 
-\item{data}{Dataset containing x/y or iv/dv}
+\item{data}{Dataset containing v1/v2 or iv/dv}
+
+\item{x}{object of class \code{neg.twoindmeans}}
 
 \item{...}{extra arguments}
 }
@@ -71,10 +73,10 @@ in this case the effect is the mean difference)
 \dontrun{
 indvar<-rep(c("a","b"),c(10,12))
 depvar<-rnorm(22)
-d<-data.frame(indvar,depvar)
+d<-data.frameindvar,depvar)
 neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1,plot=TRUE,data=d)
 neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
-neg.twoindmeans(x=depvar[iv=="a"],y=depvar[iv=="b"],eil=-1,eiu=1)
+neg.twoindmeans(v1=depvar[iv=="a"],v2=depvar[iv=="b"],eil=-1,eiu=1)
 xx<-neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
 xx$decis
 }

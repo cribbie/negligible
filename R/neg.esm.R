@@ -3,11 +3,11 @@
 #' Function computes the equivalence testing method (total effect) for evaluating substantial mediation and Kenny method for full mediation.
 #'
 #' @aliases neg.esm
-#' @param x predictor variable
-#' @param y outcome variable
-#' @param m mediator variable
+#' @param X predictor variable
+#' @param Y outcome variable
+#' @param M mediator variable
 #' @param alpha alpha level (default = .05)
-#' @param minc minimum correlation between x and y (default is .15)
+#' @param minc minimum correlation between x and Y (default is .15)
 #' @param eil lower bound of equivalence interval in standardized units(default is -.15)
 #' @param eiu upper bound of equivalence interval in standardized units (default is .15)
 #' @param nboot number of bootstraps (default = 500L)
@@ -27,43 +27,43 @@
 #' \dontrun{
 #' #equivalence test for substantial mediation
 #' with an equivalence interval of -.15 to .15
-#' x<-rnorm(200,sd=2)
-#' m<-.5*x + rnorm(100)
-#' y<-.5*m + rnorm(100)
-#' neg.esm(x,y,m, eil = -.15, eiu = .15)
+#' X<-rnorm(200,sd=2)
+#' M<-.5*x + rnorm(100)
+#' Y<-.5*M + rnorm(100)
+#' neg.esm(x,Y,M, eil = -.15, eiu = .15)
 #'}
 
 
-neg.esm<-function(x,y,m,alpha=.05,minc=.15,
+neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
                  eil=-.15,eiu=.15,nboot=500L,
                  data=NULL, plot=TRUE, saveplot=FALSE,
                  seed = NA) {
   if (is.null(data)) {
-    if(!is.numeric(x)) stop('Variable x must be a numeric variable!')
-    if(!is.numeric(m)) stop('Variably m must be a numeric variable!')
-    if(!is.numeric(y)) stop('Variably y must be a numeric variable!')
-    x <- scale(x)
-    y <- scale(y)
-    m <- scale(m)
-    dat<-data.frame(x,y,m) # returns values with incomplete cases removed
+    if(!is.numeric(X)) stop('Variable X must be a numeric variable!')
+    if(!is.numeric(M)) stop('Variable M must be a numeric variable!')
+    if(!is.numeric(Y)) stop('Variable Y must be a numeric variable!')
+    X <- scale(X)
+    Y <- scale(Y)
+    M <- scale(M)
+    dat<-data.frame(X,Y,M) # returns values with incomplete cases removed
     dat <- stats::na.omit(dat)
 
   }
 
   if (!is.null(data)) {
-    x<-deparse(substitute(x))
-    y<-deparse(substitute(y))
-    m<-deparse(substitute(m))
+    X<-deparse(substitute(X))
+    Y<-deparse(substitute(Y))
+    M<-deparse(substitute(M))
 
-    x<-as.numeric(data[[x]])
-    y<-as.numeric(data[[y]])
-    m<-as.numeric(data[[m]])
+    X<-as.numeric(data[[X]])
+    Y<-as.numeric(data[[Y]])
+    M<-as.numeric(data[[M]])
 
-    x <- scale(x)
-    y <- scale(y)
-    m <- scale(m)
+    X <- scale(X)
+    Y <- scale(Y)
+    M <- scale(M)
 
-    dat <- data.frame(x,y,m)
+    dat <- data.frame(X,Y,M)
     dat <- stats::na.omit(dat)
 
   }
@@ -76,16 +76,16 @@ neg.esm<-function(x,y,m,alpha=.05,minc=.15,
   set.seed(seed)
 
   m <- '
-    y ~ c*x + b*m
+    Y ~ c*X + b*M
     # mediator
-    m ~ a*x
+    M ~ a*X
     # indirect effect (a*b)
     ab := a*b
     # total effect
     total := c + (a*b)
-    y ~~ y
-    m ~~ m
-    x ~~ x
+    Y ~~ Y
+    M ~~ M
+    X ~~ X
     '
   fit <- lavaan::lavaan(m, bootstrap=nboot,
                         se = "bootstrap", data = dat)
@@ -98,10 +98,10 @@ neg.esm<-function(x,y,m,alpha=.05,minc=.15,
   cil <-pel$ci.lower[pel$label=='c']
   ciu <- pel$ci.upper[pel$label=='c']
   abdivc_k <- ab_par/c_par
-  corxy <- stats::cor(dat$x,dat$y)
+  corxy <- stats::cor(dat$X,dat$Y)
   ifelse(pel$ci.lower[pel$label=='c']>eil &
            pel$ci.upper[pel$label=='c']<eiu &
-           abs(stats::cor(dat$y,dat$x))>=minc,esm_dec<-"Substantial Mediation CAN be concluded",
+           abs(stats::cor(dat$Y,dat$X))>=minc,esm_dec<-"Substantial Mediation CAN be concluded",
          esm_dec<-"Substantial Mediation CANNOT be concluded")
 
   #Kenny Method for Full Mediation
@@ -131,16 +131,16 @@ neg.esm<-function(x,y,m,alpha=.05,minc=.15,
 
     #Running the regression on these data
     m <- '
-    y ~ c*x + b*m
+    Y ~ c*X + b*M
     # mediator
-    m ~ a*x
+    M ~ a*X
     # indirect effect (a*b)
     ab := a*b
     # total effect
     total := c + (a*b)
-    y ~~ y
-    m ~~ m
-    x ~~ x
+    Y ~~ Y
+    M ~~ M
+    X ~~ X
     '
     fit <- lavaan::lavaan(m, data = sample_d)
     pel<-data.frame(lavaan::parameterEstimates(fit))
@@ -205,7 +205,7 @@ print.neg.esm <- function(x, ...) {
   cat("***",x$title1, "***\n\n")
   cat("Number of bootstrap iterations:", x$nboot, "(random seed =", x$seed, ")\n")
   cat("Indirect effect:", x$ab_par,"\n")
-  cat("Correlation between x and y (must be greater in magnitude than ",x$minc,")",": ", x$corxy, sep="","\n")
+  cat("Correlation between X and Y (must be greater in magnitude than ",x$minc,")",": ", x$corxy, sep="","\n")
   cat((1-2*x$alpha)*100, "% CI on Direct Effect: ", "(", x$cil,", ", x$ciu,")", sep="", "\n")
   cat("Equivalence Interval:","Lower =", x$eil, ",", "Upper =", x$eiu, "\n")
   cat("Decision from the ESM:", x$esm_dec,"\n\n")
@@ -213,7 +213,7 @@ print.neg.esm <- function(x, ...) {
   cat("**********************\n\n")
   cat("***",x$title2, "***\n\n")
   cat("ab/c (must be greater in magnitude than .80):", x$abdivc_k, "\n")
-  cat("Correlation between x and y (must be greater in magnitude than .2): ", x$corxy, sep="","\n")
+  cat("Correlation between X and y (must be greater in magnitude than .2): ", x$corxy, sep="","\n")
   cat("Decision from Kenny procedure:", x$kenny_dec, "\n\n")
 
   cat("**********************\n\n")
