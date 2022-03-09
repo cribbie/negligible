@@ -127,7 +127,7 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
     depname <- attr(model$terms, "variables")[[2]] # extract name of outcome variable
 
     # standardized forms (beta, variables, delta, ci's)
-    std.data <- data.frame(QuantPsyc::Make.Z(data))
+    std.data <- data.frame(scale(data))
     std.model <- stats::lm(formula, std.data)
     std.model.results <- summary(std.model)
 
