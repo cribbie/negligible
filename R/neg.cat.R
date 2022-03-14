@@ -65,8 +65,8 @@ neg.cat <- function (v1 = NULL, v2 = NULL,
       cv <- DescTools::CramerV(tab,conf.level=(1-2*alpha))
   propvar = cv[1]^2
   ifelse (cv[3] <= eiU,
-        decis <- "The null hypothesis that the relationship between the categorical variables is substantial can be rejected. A negligible relationship among the variables is concluded.",
-        decis <- "The null hypothesis that the relationship between the categorical variables is substantial CANNOT be rejected. There is insufficient evidence to conclude a negligible effect.")
+        decis <- "The null hypothesis that the relationship between the categorical variables is substantial can be rejected. A negligible relationship among the variables is concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
+        decis <- "The null hypothesis that the relationship between the categorical variables is substantial CANNOT be rejected. There is insufficient evidence to conclude a negligible effect. Be sure to interpret the magnitude (and precision) of the effect size.")
 
   #### Plots ####
   # Calculate Proportional Distance

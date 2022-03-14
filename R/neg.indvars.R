@@ -58,8 +58,8 @@ neg.indvars<-function(dv, iv, eps = .5, alpha = .05,
                               df2=stats::oneway.test(resp.median~iv)$parameter[2],
                               ncp=(mean(n))*eps^2)
   ifelse (LWW_md <= crit_LWW_md,
-          decis_equiv<-"The null hypothesis that the differences between the population variances falls outside the equivalence interval can be rejected.",
-          decis_equiv<-"The null hypothesis that the differences between the population variances falls outside the equivalence interval cannot be rejected")
+          decis_equiv<-"The null hypothesis that the differences between the population variances falls outside the equivalence interval can be rejected. A negligible difference among the population variances can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
+          decis_equiv<-"The null hypothesis that the differences between the population variances falls outside the equivalence interval cannot be rejected. A negligible difference among the population variances cannot be concluded. Be sure to interpret the magnitude (and precision) of the effect size.")
   ret <- data.frame(vars = vars,
                     sds = tapply(dv,iv,stats::sd),
                     mads = tapply(dv,iv,stats::mad),

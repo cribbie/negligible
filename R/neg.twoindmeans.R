@@ -85,8 +85,8 @@ neg.twoindmeans <- function(v1 = NULL, v2 = NULL, dv = NULL, iv = NULL,
       probt1 <- stats::pt(t1, dft, lower.tail = T)
       probt2 <- stats::pt(t2, dft, lower.tail = F)
       ifelse(probt1 <= alpha & probt2 <= alpha,
-             decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval can be rejected. Be sure to interpret the magnitude of the effect size.",
-             decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval cannot be rejected. Be sure to interpret the magnitude of the effect size.")
+             decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval can be rejected. A negligible difference in the population means can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
+             decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval cannot be rejected. There is insufficient evidence to conclude a negligible difference in the population means. Be sure to interpret the magnitude (and precision) of the effect size.")
       effsize_raw<-mean(v1)-mean(v2)
       effsize_d<-(mean(v1)-mean(v2))/sqrt((stats::var(v1)+stats::var(v2))/2)
       ifelse(sign(mean(v1)-mean(v2))==sign(eil),
@@ -121,8 +121,8 @@ neg.twoindmeans <- function(v1 = NULL, v2 = NULL, dv = NULL, iv = NULL,
       probt1 <- stats::pt(t1, dft, lower.tail = T)
       probt2 <- stats::pt(t2, dft, lower.tail = F)
       ifelse(probt1 <= alpha & probt2 <= alpha,
-             decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval can be rejected. Be sure to interpret the magnitude of the effect size.",
-             decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval cannot be rejected. Be sure to interpret the magnitude of the effect size.")
+             decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval can be rejected. A negligible difference in the population means can be concluded. Be sure to interpret the magnitude of the effect size.",
+             decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval cannot be rejected. A negligible difference in the population means cannot be concluded. Be sure to interpret the magnitude of the effect size.")
       effsize_raw<-mean(v1)-mean(v2)
       effsize_d<-(mean(v1)-mean(v2))/
         sqrt((((length(v1) - 1) * stats::sd(v1)^2) + ((length(v2) - 1) * stats::sd(v2)^2))/
@@ -169,8 +169,8 @@ neg.twoindmeans <- function(v1 = NULL, v2 = NULL, dv = NULL, iv = NULL,
     probt1 <- stats::pt(t1, dft)
     probt2 <- 1 - stats::pt(t2, dft)
     ifelse(probt1 <= alpha & probt2 <= alpha,
-           decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval can be rejected. Be sure to interpret the magnitude of the effect size.",
-           decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval cannot be rejected. Be sure to interpret the magnitude of the effect size.")
+           decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval can be rejected. A negligible difference in population means can be concluded. Be sure to interpret the magnitude of the effect size.",
+           decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval cannot be rejected. A negligible difference in means cannot be concluded. Be sure to interpret the magnitude of the effect size.")
     effsize_raw<-mean(v1,tr=tr)-mean(v2,tr=tr)
     effsize_d <- .642*(mean(v1,tr=tr) - mean(v2,tr=tr))/sqrt((WRS2::winvar(v1,tr=.2)+WRS2::winvar(v2,tr=.2))/2)
     ifelse(sign(mean(v1,tr=tr)-mean(v2,tr=tr))==sign(eil),

@@ -95,8 +95,8 @@ neg.cor <- function(v1, v2, eiu, eil, alpha = 0.05, na.rm = TRUE,
   q2negei <- q2 + eil # second quantile plus lower ei
   q1posei <- q1 + eiu # first quantile plus upper ei
   q2posei <- q2 + eiu # second quantile plus upper ei
-  ifelse(q2negei < 0 & q1posei > 0, decis_rs <- "The null hypothesis that the correlation between v1 and v2 falls outside of the equivalence interval can be rejected. Lack of association CAN be concluded.",
-         decis_rs <- "The null hypothesis that the correlation between v1 and v2 falls outside of the equivalence interval cannot be rejected. Lack of association CANNOT be concluded.")
+  ifelse(q2negei < 0 & q1posei > 0, decis_rs <- "The null hypothesis that the correlation between v1 and v2 falls outside of the equivalence interval can be rejected. A negligible association CAN be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
+         decis_rs <- "The null hypothesis that the correlation between v1 and v2 falls outside of the equivalence interval cannot be rejected. A negligible association CANNOT be concluded. Be sure to interpret the magnitude (and precision) of the effect size.")
   #### Plots ####
   # Calculate Proportional Distance
   if (corxy > 0) {

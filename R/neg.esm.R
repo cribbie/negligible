@@ -97,8 +97,8 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
   corxy <- stats::cor(dat$X,dat$Y)
   ifelse(pel$ci.lower[pel$label=='c']>eil &
            pel$ci.upper[pel$label=='c']<eiu &
-           abs(stats::cor(dat$Y,dat$X))>=minc,esm_dec<-"Substantial Mediation CAN be concluded",
-         esm_dec<-"Substantial Mediation CANNOT be concluded")
+           abs(stats::cor(dat$Y,dat$X))>=minc,esm_dec<-"The null hypothesis that the direct effect (difference between the total and indirect effect) is non-negligible can be rejected. Substantial Mediation CAN be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
+         esm_dec<-"The null hypothesis that the direct effect (difference between the total and indirect effect) is non-negligible cannot be rejected. Substantial Mediation CANNOT be concluded. Be sure to interpret the magnitude (and precision) of the effect size.")
 
   #Kenny Method for Full Mediation
   #"One rule of thumb is that if one wants to claim complete

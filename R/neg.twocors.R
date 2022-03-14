@@ -312,13 +312,12 @@ neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, #
   z1 <- NA
   z2 <- NA
   }
-
 # DECISION AH
-  ifelse(p.value < alpha, decision <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the specified equivalence interval), can be rejected",
-         decision <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), was NOT rejected")
+  ifelse(p.value < alpha, decision <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the specified equivalence interval), can be rejected. A negligible difference between population correlation coefficients can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
+         decision <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), was NOT rejected. There is insufficient evidence to declare the difference in the population correlation coefficients negligible. Be sure to interpret the magnitude (and precision) of the effect size.")
   # DECISION KTOST
-  ifelse(p.value.1 < alpha & p.value.2 < alpha, decision.tost <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), can be rejected",
-         decision.tost <-"The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), was NOT rejected")
+  ifelse(p.value.1 < alpha & p.value.2 < alpha, decision.tost <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), can be rejected. A negligible difference between population correlation coefficients can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
+         decision.tost <-"The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), was NOT rejected. There is insufficient evidence to declare the difference in the population correlation coefficients negligible. Be sure to interpret the magnitude (and precision) of the effect size.")
 
   # is the p value smaller than the accepted Type I error rate? If yes, then the null
 
