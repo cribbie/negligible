@@ -252,8 +252,8 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
     H.A.del <- ((u.delta-l.delta)/2)/se #this is the delta as defined in Hauck and Anderson (1986)
     p.value <- stats::pt(abs(t.value)-H.A.del,df) - stats::pt(-abs(t.value)-H.A.del, df)
 
-    ifelse(p.value < alpha, decision <- 'A negligible effect is concluded',
-           decision <-'Insufficient evidence for concluding a negligible effect')
+    ifelse(p.value < alpha, decision <- 'The null hypothesis that the regression coefficient is non-negligible can be rejected. A negligible effect is concluded',
+           decision <-'The null hypothesis that the regression coefficient is non-negligible cannot be rejected. There is insufficient evidence to conclude a negligible effect')
   }
 
   # Two One-Sided Tests (TOST)
@@ -267,8 +267,8 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
     ifelse(abs(t.value.1) <= abs(t.value.2), t.value <- t.value.1, t.value <- t.value.2) # finding the smaller t to present
     ifelse(p.value.1 >= p.value.2, p.value <- p.value.1, p.value <- p.value.2) # finding the larger p to present
 
-    ifelse(p.value.1 < alpha & p.value.2 < alpha, decision <- 'A negligible effect is concluded',
-           decision <-'Insufficient evidence for concluding a negligible effect')
+    ifelse(p.value.1 < alpha & p.value.2 < alpha, decision <- 'The null hypothesis that the regression coefficient is non-negligible can be rejected. A negligible effect is concluded',
+           decision <-'The null hypothesis that the regression coefficient is non-negligible cannot be rejected. There is insufficient evidence to conclude a negligible effect')
   }
 
 
@@ -314,8 +314,8 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
 return(ret)
 } # end of entire function
 
-#' @rdname neg.twocors
-#' @param x object of class \code{neg.twocors}
+#' @rdname neg.reg
+#' @param x object of class \code{neg.reg}
 #' @export
 #'
 
