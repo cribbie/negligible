@@ -7,6 +7,7 @@
 \alias{data}
 \alias{is}
 \alias{available}
+\alias{print.neg.reg}
 \title{Test for Evaluating Negligible Effects Between a Predictor and Outcome in a Multiple Regression Model}
 \usage{
 neg.reg(
@@ -29,6 +30,8 @@ neg.reg(
   seed = NA,
   ...
 )
+
+\method{print}{neg.reg}(x, ...)
 }
 \arguments{
 \item{data}{a data.frame or matrix which includes the variables considered in the regression model}
@@ -68,6 +71,8 @@ Needed for both}
 \item{seed}{to reproduce previous analyses using bootstrapping, the user can set their seed of choice}
 
 \item{...}{additional arguments to be passed}
+
+\item{x}{object of class \code{neg.reg}}
 }
 \value{
 returns a \code{list} containing each analysis and their respective statistics and decision
