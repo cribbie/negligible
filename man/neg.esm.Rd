@@ -59,14 +59,12 @@ returns a \code{list} containing each analysis and their respective statistics
 Function computes the equivalence testing method (total effect) for evaluating substantial mediation and Kenny method for full mediation.
 }
 \examples{
-\dontrun{
 #equivalence test for substantial mediation
-with an equivalence interval of -.15 to .15
+#with an equivalence interval of -.15 to .15
 X<-rnorm(200,sd=2)
-M<-.5*x + rnorm(100)
+M<-.5*X + rnorm(100)
 Y<-.5*M + rnorm(100)
-neg.esm(x,Y,M, eil = -.15, eiu = .15)
-}
+neg.esm(X,Y,M, eil = -.15, eiu = .15,nboot=50)
 }
 \author{
 Rob Cribbie \email{cribbie@yorku.ca} and

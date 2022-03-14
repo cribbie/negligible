@@ -22,7 +22,6 @@
 #' @export neg.indvars
 #'
 #' @examples
-#' \dontrun{
 #' #Two Group Example
 #' indvar<-rep(c("a","b"),c(10,12))
 #' depvar<-rnorm(22)
@@ -37,7 +36,6 @@
 #' d<-data.frame(indvar,depvar)
 #' neg.indvars(dv=depvar,iv=indvar,eps=.25,data=d)
 #' neg.indvars(dv=depvar,iv=indvar)
-#' }
 
 neg.indvars<-function(dv, iv, eps = .5, alpha = .05,
             na.rm=TRUE, data = NULL, ...) {

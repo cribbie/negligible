@@ -13,6 +13,7 @@ neg.cat(
   data = NULL,
   plot = TRUE,
   save = FALSE,
+  nbootpd = 1000,
   alpha = 0.05
 )
 
@@ -33,6 +34,8 @@ neg.cat(
 
 \item{save}{should the plot be saved to 'jpg' or 'png'}
 
+\item{nbootpd}{number of bootstrap samples for calcuating the CI for the proportional distance}
+
 \item{alpha}{nominal acceptable Type I error rate level}
 
 \item{x}{Data frame from neg.cat}
@@ -49,18 +52,10 @@ returns a \code{list} containing each analysis and their respective statistics
 Testing for the presence of a negligible association between two categorical variables
 }
 \examples{
-\dontrun{
-#Example 1
-xcat<-rbinom(30,1,.5)
-ycat<-rbinom(30,1,.5)
-neg.cat(xcat,ycat)
-#Example 2
 sex<-rep(c("m","f"),c(12,22))
 haircol<-rep(c("bld","brn","bld","brn"),c(9,7,11,7))
 d <- data.frame(sex,haircol)
 tab<-table(sex,haircol)
-neg.cat(tab=tab, alpha=.05)
-neg.cat(v1=sex,v2=haircol)
-neg.cat(v1=sex,v2=haircol,data=d)
-}
+neg.cat(tab=tab, alpha=.05, nbootpd=50)
+neg.cat(v1=sex, v2=haircol, data=d, nbootpd=50)
 }

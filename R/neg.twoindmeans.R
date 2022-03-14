@@ -29,18 +29,14 @@
 #' @export neg.twoindmeans
 #'
 #' @examples
-#' \dontrun{
 #' indvar<-rep(c("a","b"),c(10,12))
 #' depvar<-rnorm(22)
-#' d<-data.frameindvar,depvar)
+#' d<-data.frame(indvar,depvar)
 #' neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1,plot=TRUE,data=d)
 #' neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
-#' neg.twoindmeans(v1=depvar[iv=="a"],v2=depvar[iv=="b"],eil=-1,eiu=1)
+#' neg.twoindmeans(v1=depvar[indvar=="a"],v2=depvar[indvar=="b"],eil=-1,eiu=1)
 #' xx<-neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
 #' xx$decis
-#' }
-#'
-
 neg.twoindmeans <- function(v1 = NULL, v2 = NULL, dv = NULL, iv = NULL,
                              eil, eiu, varequiv = FALSE, normality = FALSE,
                              tr = 0.2, nboot = 500, alpha = 0.05,

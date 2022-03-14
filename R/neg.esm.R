@@ -24,16 +24,12 @@
 #'   Nataly Beribisky \email{natalyb1@@yorku.ca}
 #' @export neg.esm
 #' @examples
-#' \dontrun{
 #' #equivalence test for substantial mediation
-#' with an equivalence interval of -.15 to .15
+#' #with an equivalence interval of -.15 to .15
 #' X<-rnorm(200,sd=2)
-#' M<-.5*x + rnorm(100)
+#' M<-.5*X + rnorm(100)
 #' Y<-.5*M + rnorm(100)
-#' neg.esm(x,Y,M, eil = -.15, eiu = .15)
-#'}
-
-
+#' neg.esm(X,Y,M, eil = -.15, eiu = .15,nboot=50)
 neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
                  eil=-.15,eiu=.15,nboot=500L,
                  data=NULL, plot=TRUE, saveplot=FALSE,

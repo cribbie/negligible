@@ -31,7 +31,6 @@
 #'   Alyssa Counsell \email{a.counsell@@ryerson.ca}
 #' @export neg.twocors
 #' @examples
-#' \dontrun{
 #' # Negligible difference between two correlation coefficients
 #' # Equivalence interval: -.15 to .15
 #' v1a<-stats::rnorm(10)
@@ -39,21 +38,9 @@
 #' v1b <- stats::rnorm(10)
 #' v2b <- stats::rnorm(10)
 #' dat<-data.frame(v1a, v2a, v1b, v2b)
-#' (r1 <- stats::cor(v1a, v2a))
-#' (r2 <- stats::cor(v1b, v2b))
-#' (r1-r2)
 #' # dataset available (independent correlation coefficients):
-#' neg.twocors(r1v1=v1a,r1v2=v2a,r2v1=v1b,r2v2=v2b,data=dat,eiu=.15,eil=-0.15)
-#' # dataset available (dependent correlation coefficients):
-#' neg.twocors(r1v1=v1a,r1v2=v1b,r2v1=v1a,r2v2=v2b,data=dat,eiu=.15,eil=-0.15,dep=TRUE)
-#' # using the TOST procedure
-#'  neg.twocors(r1v1=v1a,r1v2=v2a,r2v1=v1b,r2v2=v2b,data=dat,eiu=.15,eil=-0.15,test="TOST")
-#' # without full data:
-#'  neg.twocors(r1=.01,n1=300,r2=.015,n2=300,eil=-.1,eiu=.1)
+#' neg.twocors(r1v1=v1a,r1v2=v2a,r2v1=v1b,r2v2=v2b,data=dat,eiu=.15,eil=-0.15,nboot=50)
 #' # end
-#'}
-
-
 neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, # specific arguments when data is available
                    r1=NULL, n1=NULL, r2=NULL, n2=NULL, # specific arguments when data is NOT available
                    dep=FALSE, r3=NA, # arguments related to dependent correlations
@@ -109,12 +96,11 @@ neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, #
               stop(r2v2, " was not found in your data")
             }
 
-           # if(!is.numeric(r1v1)& !is.numeric(r1v2)& !is.numeric(r2v1) & !is.numeric(r2v2)){
               dr1v1 <- eval(substitute(data$r1v1), data)
               dr1v2 <- eval(substitute(data$r1v2), data)
               dr2v1 <- eval(substitute(data$r2v1), data)
               dr2v2 <- eval(substitute(data$r2v2), data)
-            #}
+
               dat1 <- data.frame(dr1v1, dr1v2)
               names(dat1)[1] <- r1v1
               names(dat1)[2] <- r1v2
@@ -206,7 +192,6 @@ neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, #
 # Proportional Distance and confidence intervals for PD
             ifelse(sign(rawdiff)==sign(eiu), EIc<-eiu, EIc<-eil)
             pd <- rawdiff/abs(EIc) # simple PD, without bootstrapping
-            #pdbs <- mean(propdis.rdif) # PD from bootstrapping
             pd.se <- stats::sd(propdis.rdif)
             pd.u.ci <- stats::quantile(propdis.rdif,1-alpha/2)
             pd.l.ci <- stats::quantile(propdis.rdif,alpha/2)
@@ -214,17 +199,11 @@ neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, #
             pd.l.ci.2a <- stats::quantile(propdis.rdif,alpha)
 
             if (bootstrap==TRUE){
-              #rawdiff.boot <- mean(rs.diffs) # the bootstrapping-generated rs difference
-              ### se <- stats::sd(rs.diffs) ####### NEED TO CONFIRM
               u.ci.a <- stats::quantile(rs.diffs,1-alpha/2)
               l.ci.a <- stats::quantile(rs.diffs,alpha/2)
               u.ci.2a <- stats::quantile(rs.diffs,1-alpha)
               l.ci.2a <- stats::quantile(rs.diffs,alpha)
-              #ifelse(sign(rawdiff.boot)==sign(eiu), EIc<-eiu, EIc<-eil)
-              #pd <- rawdiff.boot/abs(EIc)
-              #rawdiff <- rawdiff.boot
                 }
-              #}
             } # END OF FULL DATA SECTION
 
 # NO DATA SECTION
@@ -281,10 +260,6 @@ neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, #
   # PD
   ifelse(sign(rawdiff)==sign(eiu), EIc<-eiu, EIc<-eil)
   pd <- rawdiff/abs(EIc)
-  #pd.u.ci <- u.ci.a/abs(eiu) # because u.ci will be positive and l.ci will be negative
-  #pd.l.ci <- l.ci.a/abs(eil)
-  #pd.u.ci.2a <-  u.ci.2a/abs(eiu)
-  #pd.l.ci.2a <- l.ci.2a/abs(eil)
 
   pd.u.ci <- u.ci.a/abs(EIc)
   pd.l.ci <- l.ci.a/abs(EIc)

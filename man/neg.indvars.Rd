@@ -39,7 +39,6 @@ negligible represents the smallest meaningful effect size (MMES, where
 in this case the effect is the difference in population variances)
 }
 \examples{
-\dontrun{
 #Two Group Example
 indvar<-rep(c("a","b"),c(10,12))
 depvar<-rnorm(22)
@@ -54,7 +53,6 @@ depvar<-rnorm(50)
 d<-data.frame(indvar,depvar)
 neg.indvars(dv=depvar,iv=indvar,eps=.25,data=d)
 neg.indvars(dv=depvar,iv=indvar)
-}
 }
 \author{
 Rob Cribbie \email{cribbie@yorku.ca} and

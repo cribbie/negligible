@@ -31,23 +31,14 @@
 #'   Alyssa Counsell \email{a.counsell@@ryerson.ca}
 #' @export neg.reg
 #' @examples
-#' \dontrun{
 #' # Negligible Regression Coefficient (equivalence interval: -.1 to .1)
-#' pr1 <- stats::rnorm(100)
-#' pr2 <- stats::rnorm(100)
-#' dp <- stats::rnorm(100)
+#' pr1 <- stats::rnorm(20)
+#' pr2 <- stats::rnorm(20)
+#' dp <- stats::rnorm(20)
 #' dat <- data.frame(pr1,pr2,dp)
-#' (md <- stats::lm(dp~pr1+pr2, data = dat))
 #' # dataset available (unstandardized coefficients, AH procedure):
-#' neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1)
-#' # dataset available (standardized coefficients, TOST procedure):
-#' neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1,std=TRUE,test="TOST")
-#' # without full data:
-#' neg.reg(b=-0.13,se=0.104,nop=2,n=100,eil=-.1,eiu=.1)
+#' neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1,nboot=50)
 #' # end
-#'}
-
-
 neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dataset
                     b = NULL, se=NULL, nop=NULL, n=NULL,     #input for no dataset
                     eil, eiu, alpha=.05, test="AH", std=FALSE,
@@ -170,7 +161,6 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
       ifelse(sign(b)==sign(eiu), EIc<-eiu, EIc<-eil)
       # unstandardized
       pd <- b/abs(EIc)
-      #pdbs <- mean(propdis.b) # NEED TO CONFIRM IF TO HAVE THIS OR TO LEAVE PD VALUE W/O BOOTSTRAP
       pd.se <- stats::sd(propdis.b)
       pd.u.ci <- stats::quantile(propdis.b,1-alpha/2)
       pd.l.ci <- stats::quantile(propdis.b,alpha/2)
@@ -178,7 +168,6 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
       pd.l.ci.2a <- stats::quantile(propdis.b,alpha)
       # standardized
       PD <- beta/abs(EIc)
-      #PDbs <- mean(propdis.beta)
       PD.se <- stats::sd(propdis.beta)
       PD.u.ci <- stats::quantile(propdis.beta,1-alpha/2)
       PD.l.ci <- stats::quantile(propdis.beta,alpha/2)
@@ -186,28 +175,16 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
       PD.l.ci.2a <- stats::quantile(propdis.beta,alpha)
 
       if (bootstrap==TRUE){
-      #b <- mean(b.coef) # the bootstrapping-generated coefficient
-      #se <- stats::sd(b.coef) # the bootstrapping-generated se
       u.ci <- stats::quantile(b.coef,1-alpha/2)
       l.ci <- stats::quantile(b.coef,alpha/2)
       u.ci.2a <- stats::quantile(b.coef,1-alpha)
       l.ci.2a <- stats::quantile(b.coef,alpha)
 
 
-      #beta <- mean(beta.coef) # the bootstrapping-generated coefficient
-      #beta.se <- stats::sd(beta.coef) # the bootstrapping-generated se
       u.std.ci <- stats::quantile(beta.coef,1-alpha/2)
       l.std.ci <- stats::quantile(beta.coef,alpha/2)
       u.std.ci.2a <- stats::quantile(beta.coef,1-alpha)
       l.std.ci.2a <- stats::quantile(beta.coef,alpha)
-
-      # PD if bootstrap == TRUE
-      #ifelse(sign(b)==sign(eiu), EIc<-eiu, EIc<-eil)
-      #pd <- b/abs(EIc) # this b is the BS-generated coefficient
-      #PD <- beta/abs(EIc) # this beta is the BS-generated coefficient
-
-      #pd <- pdbs
-      #PD <- PDbs
 
     } # end of bootstrapping section
 
@@ -250,17 +227,12 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
     predictor <- "predictor of interest"
 
     # PD
-    # NEED TO CONFIRM THESE bc there's no data, so no bootstrap either: we can use a simulation with knowing n,se, and PD?
     ifelse(sign(b)==sign(eiu), EIc<-eiu, EIc<-eil)
     pd <- b/abs(EIc)
     pd.u.ci <- u.ci/abs(eiu) # because u.ci will be positive and l.ci will be negative
     pd.l.ci <- l.ci/abs(eil)
     pd.u.ci.2a <-  u.ci.2a/abs(eiu)
     pd.l.ci.2a <- l.ci.2a/abs(eil)
-    #pd.u.ci <- u.ci/abs(EIc)
-    #pd.l.ci <- l.ci/abs(EIc)
-    #pd.u.ci.2a <-  u.ci.2a/abs(EIc)
-    #pd.l.ci.2a <- l.ci.2a/abs(EIc)
 
   }
 

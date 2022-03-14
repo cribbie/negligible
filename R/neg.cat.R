@@ -11,29 +11,23 @@
 #' @param alpha nominal acceptable Type I error rate level
 #' @param plot should a plot be printed out with the effect and the proportional distance
 #' @param save should the plot be saved to 'jpg' or 'png'
+#' @param nbootpd number of bootstrap samples for calcuating the CI for the proportional distance
 #'
 #' @return returns a \code{list} containing each analysis and their respective statistics
 #'   and decision
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' #Example 1
-#' xcat<-rbinom(30,1,.5)
-#' ycat<-rbinom(30,1,.5)
-#' neg.cat(xcat,ycat)
-#' #Example 2
 #' sex<-rep(c("m","f"),c(12,22))
 #' haircol<-rep(c("bld","brn","bld","brn"),c(9,7,11,7))
 #' d <- data.frame(sex,haircol)
 #' tab<-table(sex,haircol)
-#' neg.cat(tab=tab, alpha=.05)
-#' neg.cat(v1=sex,v2=haircol)
-#' neg.cat(v1=sex,v2=haircol,data=d)
-#' }
+#' neg.cat(tab=tab, alpha=.05, nbootpd=50)
+#' neg.cat(v1=sex, v2=haircol, data=d, nbootpd=50)
 neg.cat <- function (v1 = NULL, v2 = NULL,
       tab = NULL, eiU = .2, data = NULL,
-      plot = TRUE, save = FALSE, alpha = .05) {
+      plot = TRUE, save = FALSE, nbootpd = 1000,
+      alpha = .05) {
 
   if (!is.null(tab) & is.null(data)) {
     #tab <- deparse(substitute(tab))
@@ -79,8 +73,8 @@ neg.cat <- function (v1 = NULL, v2 = NULL,
   PD <- cv[1]/eiU
 
   # confidence interval for Proportional distance
-  propd<-numeric(1000)
-  for (i in 1:1000) {
+  propd<-numeric(nbootpd)
+  for (i in 1:nbootpd) {
     xx<-dplyr::sample_n(dat,size=nrow(dat),replace=TRUE)
     tabxx<-table(xx$v1,xx$v2)
     cvpd<-DescTools::CramerV(tabxx)
@@ -88,17 +82,6 @@ neg.cat <- function (v1 = NULL, v2 = NULL,
   }
   CI95L<-stats::quantile(propd,.025,na.rm=TRUE)
   CI95U<-stats::quantile(propd,.975,na.rm=TRUE)
-  #  statfun <- function(x, data) {
-  #    tabl <- table(x,y)
-  #    propdis <- DescTools::CramerV(tabl)[1]/eiU
-  #    return(propdis)
-  #  }
-  #  npbs <- np.boot(x = 1:length(x), statistic = statfun, data = data.frame(x,y), level = c(0.95), method = c("perc"))
-
-  #  CI95 <- npbs$perc
-  #  CI95L<-npbs$perc[1]
-  #  CI95U<-npbs$perc[2]
-
   ret <- data.frame(cramv = cv[1],
                   propvar = propvar,
                   cil = cv[2],

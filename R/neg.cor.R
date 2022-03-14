@@ -26,15 +26,13 @@
 #'   Nataly Beribisky \email{natalyb1@@yorku.ca}
 #' @export neg.cor
 #' @examples
-#' \dontrun{
 #' #Negligible correlation test between v1 and v2
-#' with an interval of ei=(-.2.2)
+#' #with an interval of ei=(-.2.2)
 #' v1 <- rnorm(50)
 #' v2 <- rnorm(50)
 #' plot(v1, v2)
 #' cor(v1, v2)
 #' neg.cor(v1 = v1, v2 = v2, eiu = .2, eil = -.2)
-#' }
 neg.cor <- function(v1, v2, eiu, eil, alpha = 0.05, na.rm = TRUE,
                     plot = TRUE, data=NULL, saveplot=FALSE, seed = NA,...) {
   if (is.null(data)) {

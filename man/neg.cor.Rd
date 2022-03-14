@@ -57,15 +57,13 @@ Function performs an equivalence based test of lack of association with resampli
 From Goertzen, J. R., & Cribbie, R. A. (2010). Detecting a lack of association. British Journal of Mathematical and Statistical Psychology, 63(3), 527–537
 }
 \examples{
-\dontrun{
 #Negligible correlation test between v1 and v2
-with an interval of ei=(-.2.2)
+#with an interval of ei=(-.2.2)
 v1 <- rnorm(50)
 v2 <- rnorm(50)
 plot(v1, v2)
 cor(v1, v2)
 neg.cor(v1 = v1, v2 = v2, eiu = .2, eil = -.2)
-}
 }
 \author{
 Rob Cribbie \email{cribbie@yorku.ca}

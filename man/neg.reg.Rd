@@ -76,21 +76,14 @@ returns a \code{list} containing each analysis and their respective statistics a
 This function tests whether a certain predictor variable cand be considered statistically and practically negligble according to a predefined interval (i.e., SESOI/MMES/delta) based on the Anderson-Hauck (1983) test of equivalence or Schuirmann's (1987) Two One-Sided Test (TOST)
 }
 \examples{
-\dontrun{
 # Negligible Regression Coefficient (equivalence interval: -.1 to .1)
-pr1 <- stats::rnorm(100)
-pr2 <- stats::rnorm(100)
-dp <- stats::rnorm(100)
+pr1 <- stats::rnorm(20)
+pr2 <- stats::rnorm(20)
+dp <- stats::rnorm(20)
 dat <- data.frame(pr1,pr2,dp)
-(md <- stats::lm(dp~pr1+pr2, data = dat))
 # dataset available (unstandardized coefficients, AH procedure):
-neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1)
-# dataset available (standardized coefficients, TOST procedure):
-neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1,std=TRUE,test="TOST")
-# without full data:
-neg.reg(b=-0.13,se=0.104,nop=2,n=100,eil=-.1,eiu=.1)
+neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1,nboot=50)
 # end
-}
 }
 \author{
 Udi Alter \email{udialter@yorku.ca} and
