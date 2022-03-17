@@ -2,11 +2,6 @@
 % Please edit documentation in R/neg.reg.R
 \name{neg.reg}
 \alias{neg.reg}
-\alias{equiv.reg}
-\alias{When}
-\alias{data}
-\alias{is}
-\alias{available}
 \alias{print.neg.reg}
 \title{Test for Evaluating Negligible Effects Between a Predictor and Outcome in a Multiple Regression Model}
 \usage{
@@ -38,8 +33,7 @@ neg.reg(
 
 \item{formula}{an argument of the form y~x1+x2...xn which defines the regression model}
 
-\item{predictor}{name of the variable/predictor upon which the test will be applied
-Data not required}
+\item{predictor}{name of the variable/predictor upon which the test will be applied}
 
 \item{b}{effect size of the regression coefficient of interest, can be in standardized or unstandardized units}
 
@@ -47,8 +41,7 @@ Data not required}
 
 \item{nop}{number of predictors (excluding intercept) in the regression model}
 
-\item{n}{the sample size used in the regression analysis
-Needed for both}
+\item{n}{the sample size used in the regression analysis}
 
 \item{eil}{lower bound of the equivalence interval measured in the same units as the regression coefficients (can be either standardized or unstandardized)}
 
@@ -75,10 +68,14 @@ Needed for both}
 \item{x}{object of class \code{neg.reg}}
 }
 \value{
-returns a \code{list} containing each analysis and their respective statistics and decision
+returns a \code{list} containing each analysis and 
+their respective statistics and decision
+
+
 }
 \description{
-This function tests whether a certain predictor variable cand be considered statistically and practically negligble according to a predefined interval (i.e., SESOI/MMES/delta) based on the Anderson-Hauck (1983) test of equivalence or Schuirmann's (1987) Two One-Sided Test (TOST)
+This function tests whether a certain predictor variable in a multiple regression model can be considered statistically and practically negligible according to a predefined interval. i.e., minimally meaningful effect size,MMES/smallest effect size of interest, SESOI (where
+in this case, the effect is the relationship between the predictor of interest and the outcome variable, holding the other predictors constant). Developed from the Anderson-Hauck (1983) and Schuirmann's (1987) Two One-Sided Test (TOST) equivalence testing procedures.
 }
 \examples{
 # Negligible Regression Coefficient (equivalence interval: -.1 to .1)
@@ -88,7 +85,7 @@ dp <- stats::rnorm(20)
 dat <- data.frame(pr1,pr2,dp)
 # dataset available (unstandardized coefficients, AH procedure):
 neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1,nboot=50)
-# end
+
 }
 \author{
 Udi Alter \email{udialter@yorku.ca} and
