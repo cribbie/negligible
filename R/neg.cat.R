@@ -5,9 +5,9 @@
 #' @param v2 second categorical variable
 #' @param tab contingency table for the two predictor variables
 #' @param eiU upper limit of equivalence interval
-#' @param data data file containing the categorical variables
+#' @param data optional data file containing the categorical variables
 #' @param alpha nominal acceptable Type I error rate level
-#' @param plot should a plot be printed out with the effect and the proportional distance
+#' @param plot logical; should a plot be printed out with the effect and the proportional distance
 #' @param save should the plot be saved to 'jpg' or 'png'
 #' @param nbootpd number of bootstrap samples for calcuating the CI for the proportional distance
 #'
@@ -37,7 +37,7 @@
 #'
 #' The proportional distance (V/eiU) estimates the proportional distance of the effect from 0 to eiU, and acts as an alternative effect size measure.
 #'
-#' The confidence interval for the proportional distance is computed via bootstrapping.
+#' The confidence interval for the proportional distance is computed via bootstrapping (percentile bootstrap).
 #'
 #' @examples
 #' sex<-rep(c("m","f"),c(12,22))

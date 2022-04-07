@@ -8,8 +8,8 @@
 neg.cor(
   v1,
   v2,
-  eiu,
-  eil,
+  eiU,
+  eiL,
   alpha = 0.05,
   na.rm = TRUE,
   plot = TRUE,
@@ -26,9 +26,9 @@ neg.cor(
 
 \item{v2}{the second variable of interest}
 
-\item{eiu}{the upper bound of the equivalence interval, in terms of the magnitude of a correlation}
+\item{eiU}{the upper bound of the equivalence interval, in terms of the magnitude of a correlation}
 
-\item{eil}{the lower bound of the equivalence interval, in terms of the magnitude of a correlation}
+\item{eiL}{the lower bound of the equivalence interval, in terms of the magnitude of a correlation}
 
 \item{alpha}{desired alpha level}
 
@@ -47,14 +47,33 @@ neg.cor(
 \item{x}{object of class \code{neg.cor}}
 }
 \value{
-returns a \code{list} containing each analysis and their respective statistics
-  and decision
+A \code{list} including the following:
+\itemize{
+  \item \code{corxy} Sample correlation value
+  \item \code{eiL} Lower bound of the negligible effect (equivalence) interval
+  \item \code{eiU} Upper bound of the negligible effect (equivalence) interval
+  \item \code{nresamples} Number of resamples for the bootstrapping procedure
+  \item \code{q1} Lower bound of the confidence interval for the correlation
+  \item \code{q2} Upper bound of the confidence interval for the correlation
+  \item \code{PD} Proportional distance
+  \item \code{CIPDL} Lower bound of the 1-alpha CI for the PD
+  \item \code{CIPDU} Upper bound of the 1-alpha CI for the PD
+  \item \code{alpha} Nominal Type I error rate
+}
 }
 \description{
 Function performs an equivalence based test of lack of association with resampling.
 }
 \details{
 From Goertzen, J. R., & Cribbie, R. A. (2010). Detecting a lack of association. British Journal of Mathematical and Statistical Psychology, 63(3), 527–537
+
+This function evaluates whether a negligible relationship exists among two continuous variables.
+
+The statistical test is based on a bootstrap-generated 1-2*alpha CI for the correlation; in other words, does the 1-2*alpha CI for the falls completely within the negligible effect (equivalence) interval.
+
+The user needs to specify the lower and upper bounds of the negligible effect (equivalence) interval (eiL,eiU). Since we working in a correlation magnitude, setting these bounds requires estimating the minimally meaningful effect size (MMES); in this case, the minimally meaningful correlation (e.g., eiL = - .3, eiU = .3).
+
+The 'plot' argument, if TRUE, will generate a plot of the observed effect (correlation) with the associated 1-2*alpha CI, along with a plot of the PD and the associated 1-alpha CI.
 }
 \examples{
 #Negligible correlation test between v1 and v2
@@ -63,7 +82,7 @@ v1 <- rnorm(50)
 v2 <- rnorm(50)
 plot(v1, v2)
 cor(v1, v2)
-neg.cor(v1 = v1, v2 = v2, eiu = .2, eil = -.2)
+neg.cor(v1 = v1, v2 = v2, eiU = .2, eiL = -.2)
 }
 \author{
 Rob Cribbie \email{cribbie@yorku.ca}

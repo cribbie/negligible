@@ -28,9 +28,9 @@ neg.cat(
 
 \item{eiU}{upper limit of equivalence interval}
 
-\item{data}{data file containing the categorical variables}
+\item{data}{optional data file containing the categorical variables}
 
-\item{plot}{should a plot be printed out with the effect and the proportional distance}
+\item{plot}{logical; should a plot be printed out with the effect and the proportional distance}
 
 \item{save}{should the plot be saved to 'jpg' or 'png'}
 
@@ -75,7 +75,7 @@ Users can input either the names of the categorical variables (v1, v2) or a freq
 
 The proportional distance (V/eiU) estimates the proportional distance of the effect from 0 to eiU, and acts as an alternative effect size measure.
 
-The confidence interval for the proportional distance is computed via bootstrapping.
+The confidence interval for the proportional distance is computed via bootstrapping (percentile bootstrap).
 }
 \examples{
 sex<-rep(c("m","f"),c(12,22))

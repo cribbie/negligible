@@ -8,8 +8,8 @@
 #' @aliases neg.cor
 #' @param v1 the first variable of interest
 #' @param v2 the second variable of interest
-#' @param eil the lower bound of the equivalence interval, in terms of the magnitude of a correlation
-#' @param eiu the upper bound of the equivalence interval, in terms of the magnitude of a correlation
+#' @param eiL the lower bound of the equivalence interval, in terms of the magnitude of a correlation
+#' @param eiU the upper bound of the equivalence interval, in terms of the magnitude of a correlation
 #' @param data data frame where two variables (v1 and y) are contained - optional
 #' @param alpha desired alpha level
 #' @param na.rm logical; remove missing values?
@@ -18,9 +18,28 @@
 #' @param saveplot saving plots (default = FALSE)
 #' @param ... additional arguments to be passed
 #'
-#' @return returns a \code{list} containing each analysis and their respective statistics
-#'   and decision
+#' @return A \code{list} including the following:
+#' \itemize{
+#'   \item \code{corxy} Sample correlation value
+#'   \item \code{eiL} Lower bound of the negligible effect (equivalence) interval
+#'   \item \code{eiU} Upper bound of the negligible effect (equivalence) interval
+#'   \item \code{nresamples} Number of resamples for the bootstrapping procedure
+#'   \item \code{q1} Lower bound of the confidence interval for the correlation
+#'   \item \code{q2} Upper bound of the confidence interval for the correlation
+#'   \item \code{PD} Proportional distance
+#'   \item \code{CIPDL} Lower bound of the 1-alpha CI for the PD
+#'   \item \code{CIPDU} Upper bound of the 1-alpha CI for the PD
+#'   \item \code{alpha} Nominal Type I error rate
+#' }
+#' @export
+#' @details This function evaluates whether a negligible relationship exists among two continuous variables.
 #'
+#' The statistical test is based on a bootstrap-generated 1-2*alpha CI for the correlation; in other words, does the 1-2*alpha CI for the falls completely within the negligible effect (equivalence) interval.
+#' 
+#' The user needs to specify the lower and upper bounds of the negligible effect (equivalence) interval (eiL,eiU). Since we working in a correlation magnitude, setting these bounds requires estimating the minimally meaningful effect size (MMES); in this case, the minimally meaningful correlation (e.g., eiL = - .3, eiU = .3).
+#' 
+#' The 'plot' argument, if TRUE, will generate a plot of the observed effect (correlation) with the associated 1-2*alpha CI, along with a plot of the PD and the associated 1-alpha CI.
+#' 
 #' @author Rob Cribbie \email{cribbie@@yorku.ca}
 #'   Phil Chalmers \email{rphilip.chalmers@@gmail.com} and
 #'   Nataly Beribisky \email{natalyb1@@yorku.ca}
@@ -32,8 +51,8 @@
 #' v2 <- rnorm(50)
 #' plot(v1, v2)
 #' cor(v1, v2)
-#' neg.cor(v1 = v1, v2 = v2, eiu = .2, eil = -.2)
-neg.cor <- function(v1, v2, eiu, eil, alpha = 0.05, na.rm = TRUE,
+#' neg.cor(v1 = v1, v2 = v2, eiU = .2, eiL = -.2)
+neg.cor <- function(v1, v2, eiU, eiL, alpha = 0.05, na.rm = TRUE,
                     plot = TRUE, data=NULL, saveplot=FALSE, seed = NA,...) {
   if (is.null(data)) {
     if(!is.numeric(v1)) stop('Variable v1 must be a numeric variable!')
@@ -91,19 +110,19 @@ neg.cor <- function(v1, v2, eiu, eil, alpha = 0.05, na.rm = TRUE,
                     mat = mat)
   q1 <- stats::quantile(results$ThetaStar, alpha)
   q2 <- stats::quantile(results$ThetaStar, 1-alpha)
-  q1negei <- q1 + eil # first quantile plus lower ei
-  q2negei <- q2 + eil # second quantile plus lower ei
-  q1posei <- q1 + eiu # first quantile plus upper ei
-  q2posei <- q2 + eiu # second quantile plus upper ei
+  q1negei <- q1 + eiL # first quantile plus lower ei
+  q2negei <- q2 + eiL # second quantile plus lower ei
+  q1posei <- q1 + eiU # first quantile plus upper ei
+  q2posei <- q2 + eiU # second quantile plus upper ei
   ifelse(q2negei < 0 & q1posei > 0, decis_rs <- "The null hypothesis that the correlation between v1 and v2 falls outside of the equivalence interval can be rejected. A negligible association CAN be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
          decis_rs <- "The null hypothesis that the correlation between v1 and v2 falls outside of the equivalence interval cannot be rejected. A negligible association CANNOT be concluded. Be sure to interpret the magnitude (and precision) of the effect size.")
   #### Plots ####
   # Calculate Proportional Distance
   if (corxy > 0) {
-    EIc <- eiu
+    EIc <- eiU
   }
   else {
-    EIc <- eil
+    EIc <- eiL
   }
 
   PD <- corxy/abs(EIc)
@@ -128,7 +147,7 @@ neg.cor <- function(v1, v2, eiu, eil, alpha = 0.05, na.rm = TRUE,
 
   title <- "Equivalence Based Test of Lack of Association with Resampling"
 
-  stats_rs <- c(corxy, eil, eiu, nresamples, q1, q2) # resample stats
+  stats_rs <- c(corxy, eiL, eiU, nresamples, q1, q2) # resample stats
   names(stats_rs) <- c("Pearson r", "Equivalence Interval Lower Bound",
                        "Equivalence Interval Upper Bound",
                        "# of Resamples", "5th Percentile", "95th Percentile")
@@ -141,11 +160,11 @@ neg.cor <- function(v1, v2, eiu, eil, alpha = 0.05, na.rm = TRUE,
                     pl = plot,
                     title = title,
                     corxy = corxy,
-                    eil = eil,
-                    eiu = eiu,
+                    eiL = eiL,
+                    eiU = eiU,
                     nresamples = nresamples,
                     q1 = q1,
-                    q2, q2,
+                    q2 = q2,
                     decis_rs = decis_rs,
                     PD = PD,
                     CIPDL = CIPDL,
@@ -167,7 +186,7 @@ print.neg.cor <- function(x, ...) {
   cat("Random Seed =", x$seed, "\n")
   cat("Pearson's r:", x$corxy, "\n\n")
 
-  cat("Equivalence Interval:","Lower =", x$eil, ",", "Upper =", x$eiu, "\n\n")
+  cat("Equivalence Interval:","Lower =", x$eiL, ",", "Upper =", x$eiU, "\n\n")
 
   cat("# of Resamples:", x$nresamples,"\n")
   cat("Bootstrapped ", (1-2*x$alpha)*100, "% ", "Confidence Interval (",x$alpha*100,"th Percentile, ", (1-x$alpha)*100,"th Percentile", "):", "(", x$q1, ",", x$q2, ")", "\n\n", sep="")
