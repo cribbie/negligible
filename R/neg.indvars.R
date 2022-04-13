@@ -14,8 +14,25 @@
 #' @param data Dataset containing dv and iv
 #' @param ... Extra arguments
 #'
-#' @return returns a \code{list} containing each analysis and their respective statistics
-#'   and decision
+#' @return A \code{list} including the following:
+#' \itemize{
+#'   \item \code{vars} Sample variances
+#'   \item \code{sds} Sample standard deviations
+#'   \item \code{mads} Sample median absolute deviations
+#'   \item \code{ratio} Ratio of the largest to smallest variance
+#'   \item \code{eps} Epsilon (e) can be described as the maximum difference in the variances that one would consider to be unimportant (see Details).
+#'   \item \code{LWW_md} Levene-Wellek-Welch statistic based on the median.
+#'   \item \code{crit_LWW_md} Critical value for the Levene-Wellek-Welch statistic based on the median.
+#'   \item \code{alpha} Nominal Type I error rate
+#' }
+#' @export
+#' @details This function evaluates whether the difference in the population variances of J independent groups can be considered negligible (i.e., the population variances can be considered equivalent).
+#'
+#' The user provides the name of the outcome/dependent variable (should be continuous) and the name of Independent Variable (predictor, should be a factor), as well as the epsilon value (eps) which determines the smallest difference in variances that can be considered non-negligible.
+#'
+#' Wellek (2010) suggests liberal and conservative values of eps = .50 and eps = .25, respectively. See Wellek, 2010, pp. 16, 17, 22, for details.
+#'
+#' See Mara & Cribbie (2018): https://doi.org/10.1080/00220973.2017.1301356
 #'
 #' @author Rob Cribbie \email{cribbie@@yorku.ca} and
 #'   Constance Mara \email{Constance.Mara@@cchmc.org}

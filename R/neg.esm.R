@@ -17,8 +17,32 @@
 #' @param saveplot saving plots (default = FALSE)
 #' @param ... extra arguments
 #'
-#' @return returns a \code{list} containing each analysis and their respective statistics
-#'   and decision
+#' @return A \code{list} including the following:
+#' \itemize{
+#'   \item \code{minc} Minimum correlation between X and Y for a valid negligible effect (equivalence) test
+#'   \item \code{corxy} Sample correlation between the IV (X) and DV (Y)
+#'   \item \code{dir_eff} Sample standardized direct effect between the IV (X) and DV (Y) after controlling for the mediator (M)
+#'   \item \code{eiL} Lower bound of the negligible effect (equivalence) interval
+#'   \item \code{eiU} Upper bound of the negligible effect (equivalence) interval
+#'   \item \code{cil} Lower bound of the 1-2*alpha CI for the standardized direct effect of X on Y
+#'   \item \code{ciu} Upper bound of the 1-2*alpha CI for the standardized direct effect of X on Y
+#'   \item \code{PD} Proportional distance (PD)
+#'   \item \code{cilpd} Lower bound of the 1-alpha CI for the PD
+#'   \item \code{ciupd} Upper bound of the 1-alpha CI for the PD
+#'   \item \code{ab_par} Standardized indirect effect
+#'   \item \code{abdivc_k} Proportion mediated: Standardized indirect effect divided by the standardized total effect
+#'   \item \code{alpha} Nominal Type I error rate
+#' }
+#' @export
+#' @details This function evaluates whether a negligible direct effect of X on Y exists after controlling for the mediator. Another way to word this is that the indirect effect accounts for a substantial proportion of the variability in X-Y relationship. See Beribisky, Mara, and Cribbie (https://doi.org/10.20982/tqmp.16.4.p424)
+#'
+#' The user specifies the IV (X), DV (Y) and mediator (M). The user can also specify the alpha level, the lower/upper bound of the negligible effect interval (eiL, eiU), the number of bootstrap samples (nboot), as well as the minimum correlation between X and Y that is permitted for a valid test of substantial mediation.
+#'
+#' The variables X, Y and M can be specified as stand-alone, or a data argument can be used if the data reside in an R dataset.
+#'
+#' For the Kenny method see: https://davidakenny.net/cm/mediate.htm
+#'
+#' The proportional distance quantifies the proportional distance from 0 to the nearest negligible effect (equivalence) interval (eiL, eiU). As values get farther from 0 the relationship becomes more substantial, with values greater than 1 indicating that the effect falls outside of the negligible effect (equivalence) interval.
 #'
 #' @author Rob Cribbie \email{cribbie@@yorku.ca} and
 #'   Nataly Beribisky \email{natalyb1@@yorku.ca}
@@ -31,7 +55,7 @@
 #' Y<-.5*M + rnorm(100)
 #' neg.esm(X,Y,M, eil = -.15, eiu = .15,nboot=50)
 neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
-                 eil=-.15,eiu=.15,nboot=500L,
+                 eil=-.15,eiu=.15,nboot=1000L,
                  data=NULL, plot=TRUE, saveplot=FALSE,
                  seed = NA) {
   if (is.null(data)) {
