@@ -9,7 +9,7 @@
 #' @param alpha nominal acceptable Type I error rate level
 #' @param plot logical; should a plot be printed out with the effect and the proportional distance
 #' @param save should the plot be saved to 'jpg' or 'png'
-#' @param nbootpd number of bootstrap samples for calcuating the CI for the proportional distance
+#' @param nbootpd number of bootstrap samples for calculating the CI for the proportional distance
 #'
 #' @return A \code{list} containing the following:
 #' \itemize{
@@ -25,7 +25,7 @@
 #'   \item \code{alpha} Nominal Type I error rate
 #' }
 #' @export
-#' @details This function evaluates whether a negligigle relationship exists among two categorical variables.
+#' @details This function evaluates whether a negligible relationship exists among two categorical variables.
 #'
 #' The statistical test is based on the Cramer's V statistic; namely addressing the question of whether the upper limit of the confidence interval for Cramer's V falls below the upper bound of the negligible effect (equivalence) interval (eiU).
 #'
