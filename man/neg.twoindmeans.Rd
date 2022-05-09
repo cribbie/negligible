@@ -10,8 +10,8 @@ neg.twoindmeans(
   v2 = NULL,
   dv = NULL,
   iv = NULL,
-  eil,
-  eiu,
+  eiL,
+  eiU,
   varequiv = FALSE,
   normality = FALSE,
   tr = 0.2,
@@ -33,9 +33,9 @@ neg.twoindmeans(
 
 \item{iv}{Dichotomous Predictor/Independent Variable (if v1 and v2 are omitted)}
 
-\item{eil}{Lower Bound of the Equivalence Interval}
+\item{eiL}{Lower Bound of the Equivalence Interval}
 
-\item{eiu}{Upper Bound of the Equivalence Interval}
+\item{eiU}{Upper Bound of the Equivalence Interval}
 
 \item{varequiv}{Are the population variances assumed to be equal? Population variances are assumed to be unequal if normality=FALSE.}
 
@@ -58,8 +58,37 @@ neg.twoindmeans(
 \item{...}{extra arguments}
 }
 \value{
-returns a \code{list} containing each analysis and their respective statistics
-  and decision
+A \code{list} including the following:
+\itemize{
+  \item \code{meanx} Sample mean of the first population/group.
+  \item \code{meany} Sample mean of the second population/group.
+  \item \code{trmeanx} Sample trimmed mean of the first population/group.
+  \item \code{trmeany} Sample trimmed mean of the second population/group.
+  \item \code{sdx} Sample standard deviation of the first population/group.
+  \item \code{sdy} Sample standard deviation of the second population/group.
+  \item \code{madx} Sample median absolute deviation of the first population/group.
+  \item \code{mady} Sample median absolute deviation of the second population/group.
+  \item \code{eiL} Lower bound of the negligible effect (equivalence) interval.
+  \item \code{eiU} Upper bound of the negligible effect (equivalence) interval.
+  \item \code{effsizeraw} Simple difference in the means (or trimmed means if normality = FALSE)
+  \item \code{cilraw2} Lower bound of the 1-alpha CI for the raw mean difference.
+  \item \code{ciuraw2} Upper bound of the 1-alpha CI for the raw mean difference.
+  \item \code{cilraw} Lower bound of the 1-2*alpha CI for the raw mean difference.
+  \item \code{ciuraw} Upper bound of the 1-2*alpha CI for the raw mean difference.
+  \item \code{effsized} Standardized mean (or trimmed mean if normality = FALSE) difference.
+  \item \code{cild} Lower bound of the 1-alpha CI for the standardized mean (or trimmed mean if normality = FALSE) difference.
+  \item \code{ciud} Upper bound of the 1-alpha CI for the standardized mean (or trimmed mean if normality = FALSE) difference.
+  \item \code{effsizepd} Proportional distance statistic.
+  \item \code{cilpd} Lower bound of the 1-alpha CI for the proportional distance statistic.
+  \item \code{ciupd} Upper bound of the 1-alpha CI for the proportional distance statistic.
+  \item \code{t1} First t-statistic from the TOST procedure.
+  \item \code{t1} Second t-statistic from the TOST procedure.
+  \item \code{df1} Degrees of freedom for the first t-statistic from the TOST procedure.
+  \item \code{df2} Degrees of freedom for the second t-statistic from the TOST procedure.
+  \item \code{p1} p value associated with the first t-statistic from the TOST procedure.
+  \item \code{p2} p value associated with the second t-statistic from the TOST procedure.
+  \item \code{alpha} Nominal Type I error rate
+}
 
 
 }
@@ -69,14 +98,23 @@ between the means of two independent populations is negligible, where
 negligible represents the smallest meaningful effect size (MMES, which
 in this case the effect is the mean difference)
 }
+\details{
+This function evaluates whether the difference in the means of 2 independent populations can be considered negligible (i.e., the population means can be considered equivalent).
+
+The user specifies either the data associated with the first and second groups/populations (iv1, iv2, both should be continuous) or specifies the Indepedent Variable/Predictor (iv, should be a factor) and the Dependent Variable (outcome, should be continuous). A 'data' statement can be used if the variables are stored in an R dataset.
+
+The user must also specify the lower and upper bounds of the negligible effect (equivalence) interval. These are specified in the original units of the outcome variable.
+
+The arguments 'varequiv' and 'normality' control what test statistic is adopted. If varequiv = TRUE and normality = TRUE the ordinary Student t statistic is adopted. If varequiv = FALSE and normality = TRUE the Welch t statistic is adopted. If normality = FALSE  the ordinary Student t statistic is adopted.  d
+}
 \examples{
 indvar<-rep(c("a","b"),c(10,12))
 depvar<-rnorm(22)
 d<-data.frame(indvar,depvar)
-neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1,plot=TRUE,data=d)
-neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
-neg.twoindmeans(v1=depvar[indvar=="a"],v2=depvar[indvar=="b"],eil=-1,eiu=1)
-xx<-neg.twoindmeans(dv=depvar,iv=indvar,eil=-1,eiu=1)
+neg.twoindmeans(dv=depvar,iv=indvar,eiL=-1,eiU=1,plot=TRUE,data=d)
+neg.twoindmeans(dv=depvar,iv=indvar,eiL=-1,eiU=1)
+neg.twoindmeans(v1=depvar[indvar=="a"],v2=depvar[indvar=="b"],eiL=-1,eiU=1)
+xx<-neg.twoindmeans(dv=depvar,iv=indvar,eiL=-1,eiU=1)
 xx$decis
 }
 \author{
