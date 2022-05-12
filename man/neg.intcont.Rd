@@ -75,5 +75,5 @@ The confidence interval for the proportional distance is computed via bootstrapp
 \examples{
 d<-perfectionism
 neg.intcont(outcome = mpshfpre.sop, pred1 = cesdpre.total, pred2 = atqpre.total, data = d,
-eiL = -.25, eiU = .25, nbootpd = 100)
+eiL = -.25, eiU = .25, standardized = TRUE, nbootpd = 100)
 }
