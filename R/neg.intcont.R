@@ -74,7 +74,7 @@ neg.intcont <- function (outcome = NULL, pred1 = NULL,
 
     # Calculate Proportional Distance
     ifelse(intcoef<0, eiPD<-eiL, eiPD<-eiU)
-    PD <- intcoef/eiPD
+    PD <- intcoef/abs(eiPD)
         # confidence interval for Proportional distance
     propd<-numeric(nbootpd)
     for (i in 1:nbootpd) {
@@ -82,7 +82,7 @@ neg.intcont <- function (outcome = NULL, pred1 = NULL,
       modpd <- stats::lm(outcome ~ pred1*pred2, data=xx)
       ic_pd <- stats::coef(modpd)["pred1:pred2"]
       ifelse(ic_pd<0, eipd<-eiL, eipd<-eiU)
-      propd[i]<-ic_pd/eipd
+      propd[i]<-ic_pd/abs(eipd)
     }
     CI95L<-stats::quantile(propd,.025,na.rm=TRUE)
     CI95U<-stats::quantile(propd,.975,na.rm=TRUE)
@@ -120,7 +120,7 @@ neg.intcont <- function (outcome = NULL, pred1 = NULL,
 
     # Calculate Proportional Distance
     ifelse(intcoef<0, eiPD<-eiL, eiPD<-eiU)
-    PD <- intcoef/eiPD
+    PD <- intcoef/abs(eiPD)
     # confidence interval for Proportional distance
     propd<-numeric(nbootpd)
     for (i in 1:nbootpd) {
@@ -128,7 +128,7 @@ neg.intcont <- function (outcome = NULL, pred1 = NULL,
       modpd <- stats::lm(outcome ~ pred1*pred2, data=xx)
       ic_pd <- stats::coef(modpd)["pred1:pred2"]
       ifelse(ic_pd<0, eipd<-eiL, eipd<-eiU)
-      propd[i]<-ic_pd/eipd
+      propd[i]<-ic_pd/abs(eipd)
     }
     CI95L<-stats::quantile(propd,alpha/2,na.rm=TRUE)
     CI95U<-stats::quantile(propd,1-alpha/2,na.rm=TRUE)
