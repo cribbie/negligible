@@ -94,14 +94,20 @@ neg.twoindmeans <- function(v1 = NULL, v2 = NULL, dv = NULL, iv = NULL,
     dat<- dat[stats::complete.cases(dat),]
     v1<-dat$dv[dat$iv==levels(dat$iv)[1]]
     v2<-dat$dv[dat$iv==levels(dat$iv)[2]]
+    lev1<-levels(dat$iv)[1]
+    lev2<-levels(dat$iv)[2]
   }
   if (is.null(dv) & is.null(iv) & !is.null(data)) {
     v1<-as.numeric(data[[v1]])
     v2<-as.numeric(data[[v2]])
+    lev1<-"v1"
+    lev2<-"v2"
   }
   if (is.null(dv) & is.null(iv) & is.null(data)) {
       v1 <- v1[!is.na(v1)]
       v2 <- v2[!is.na(v2)]
+      lev1<-"v1"
+      lev2<-"v2"
   }
   if (is.null(v1) & is.null(v2) & is.null(data)) {
     d<-data.frame(iv,dv)
@@ -109,6 +115,8 @@ neg.twoindmeans <- function(v1 = NULL, v2 = NULL, dv = NULL, iv = NULL,
     d <- d[stats::complete.cases(d),]
     v1<-d$dv[d$iv==levels(d$iv)[1]]
     v2<-d$dv[d$iv==levels(d$iv)[2]]
+    lev1<-levels(d$iv)[1]
+    lev2<-levels(d$iv)[2]
   }
   if (normality==TRUE) {
     if (varequiv == FALSE) {
@@ -231,7 +239,9 @@ neg.twoindmeans <- function(v1 = NULL, v2 = NULL, dv = NULL, iv = NULL,
     ci_pd<-stats::quantile(bspd,probs=c(alpha/2,1-alpha/2))
     title <- "Schuirmann-Yuen Test of the Equivalence of Two Independent Groups"
   }
-  ret <- data.frame(meanx = mean(v1),
+  ret <- data.frame(lev1 = lev1,
+                    lev2 = lev2,
+                    meanx = mean(v1),
                     meany = mean(v2),
                     trmeanx = mean(v1, tr),
                     trmeany = mean(v2, tr),
@@ -279,26 +289,27 @@ print.neg.twoindmeans <- function(x, ...) {
   cat("---- Equivalence of Two Independent Groups----\n\n")
   cat("Test Statistic:", "\n", x$title1, "\n\n")
   cat("**********************\n\n")
+  cat("Levels of the IV: ", x$lev1, ", ", x$lev2, "\n", sep="")
   cat("Group Means: ", x$meanx, ", ", x$meany, "\n", sep="")
   cat("Group Trimmed Means: ", x$trmeanx, ", ", x$trmeany, "\n", sep="")
   cat("Group SDs: ", x$sdx, ", ", x$sdy, "\n", sep="")
   cat("Group MADs: ", x$madx, ", ", x$mady, "\n\n", sep="")
   cat("**********************\n\n")
   cat("Standardized Mean Difference (SMD):", x$effsized, "\n")
-  cat(100*(1-2*x$alpha), "% CI for SMD:", "(", x$cild, ", ", x$ciud, ")", "\n\n", sep="")
+  cat(100*(1-2*x$alpha), "% CI for SMD: ", "(", x$cild, ", ", x$ciud, ")", "\n\n", sep="")
   cat("**********************\n\n")
   cat("Equivalence Interval:","Lower =", x$eiL, ",", "Upper =", x$eiU, "\n\n")
   cat("**********************\n\n")
-  cat("Raw Mean Difference (MD):", x$effsizeraw, "\n")
-  cat(100*(1-2*x$alpha), "% CI for MD:", "(", x$cilraw, ", ", x$ciuraw, ")", "\n", sep="")
-  cat(100*(1-x$alpha), "% CI for MD:", "(", x$cilraw2, ", ", x$ciuraw2, ")", "\n\n", sep="")
+  cat("Mean Difference (MD):", x$effsizeraw, "\n")
+  cat(100*(1-2*x$alpha), "% CI for MD: ", "(", x$cilraw, ", ", x$ciuraw, ")", "\n", sep="")
+  cat(100*(1-x$alpha), "% CI for MD: ", "(", x$cilraw2, ", ", x$ciuraw2, ")", "\n\n", sep="")
   cat("**********************\n\n")
   cat("Proportional Distance (PD):", x$effsizepd, "\n")
-  cat(100*(1-x$alpha), "% CI for PD:", "(", x$cilpd, ", ", x$ciupd, ")", "\n\n", sep="")
+  cat(100*(1-x$alpha), "% CI for PD: ", "(", x$cilpd, ", ", x$ciupd, ")", "\n\n", sep="")
   cat("**********************\n\n")
-  cat("TOST Test Statistics:", "\n\n", "Ho: mu1-mu2>=eiU:", "\n", "t =", x$t1,
-      " (df = ", x$df1, ")", ", p = ", x$pval1, "\n\n", "Ho: mu1-mu2<=eiL:", "\n", "t =", x$t2,
-      " (df =", x$df1, ")", ", p = ", x$pval2, "\n\n", sep="")
+  cat("TOST Test Statistics:", "\n\n", "Ho: mu1-mu2>=eiU:", "\n", "t = ", x$t1,
+      " (df = ", x$df1, ")", ", p = ", x$pval1, "\n\n", "Ho: mu1-mu2<=eiL:", "\n", "t = ", x$t2,
+      " (df = ", x$df1, ")", ", p = ", x$pval2, "\n\n", sep="")
   cat("**********************\n\n")
   cat("NHST Decision:", "\n", x$decis, "\n\n", sep="")
   cat("**********************\n\n")
