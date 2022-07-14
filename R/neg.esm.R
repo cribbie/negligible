@@ -50,14 +50,14 @@
 #' @examples
 #' #equivalence test for substantial mediation
 #' #with an equivalence interval of -.15 to .15
-#' X<-rnorm(200,sd=2)
+#' X<-rnorm(100,sd=2)
 #' M<-.5*X + rnorm(100)
 #' Y<-.5*M + rnorm(100)
 #' neg.esm(X,Y,M, eil = -.15, eiu = .15,nboot=50)
 neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
-                 eil=-.15,eiu=.15,nboot=1000L,
-                 data=NULL, plot=TRUE, saveplot=FALSE,
-                 seed = NA) {
+                  eil=-.15,eiu=.15,nboot=1000L,
+                  data=NULL, plot=TRUE, saveplot=FALSE,
+                  seed = NA) {
   if (is.null(data)) {
     if(!is.numeric(X)) stop('Variable X must be a numeric variable!')
     if(!is.numeric(M)) stop('Variable M must be a numeric variable!')
@@ -67,34 +67,34 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
     M <- scale(M)
     dat<-data.frame(X,Y,M) # returns values with incomplete cases removed
     dat <- stats::na.omit(dat)
-
+    
   }
-
+  
   if (!is.null(data)) {
     X<-deparse(substitute(X))
     Y<-deparse(substitute(Y))
     M<-deparse(substitute(M))
-
+    
     X<-as.numeric(data[[X]])
     Y<-as.numeric(data[[Y]])
     M<-as.numeric(data[[M]])
-
+    
     X <- scale(X)
     Y <- scale(Y)
     M <- scale(M)
-
+    
     dat <- data.frame(X,Y,M)
     dat <- stats::na.omit(dat)
-
+    
   }
-
+  
   if(is.na(seed)){
     seed <- sample(.Random.seed[1], size = 1)
   } else {
     seed <- seed
   }
   set.seed(seed)
-
+  
   m <- '
     Y ~ c*X + b*M
     # mediator
@@ -123,15 +123,15 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
            pel$ci.upper[pel$label=='c']<eiu &
            abs(stats::cor(dat$Y,dat$X))>=minc,esm_dec<-"The null hypothesis that the direct effect (difference between the total and indirect effect) is non-negligible can be rejected. Substantial Mediation CAN be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
          esm_dec<-"The null hypothesis that the direct effect (difference between the total and indirect effect) is non-negligible cannot be rejected. Substantial Mediation CANNOT be concluded. Be sure to interpret the magnitude (and precision) of the effect size.")
-
+  
   #Kenny Method for Full Mediation
   #"One rule of thumb is that if one wants to claim complete
   #mediation ab/c should be at least .80."
   ifelse(abs(ab_par/c_par) > .8 & abs(c_par)>.2,
          kenny_dec<-"Full Mediation CAN be concluded",
          kenny_dec<-"Full Mediation CANNOT be concluded")
-
-
+  
+  
   # Calculate Proportional Distance
   if (dir_eff > 0) {
     EIc <- eiu
@@ -139,16 +139,16 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
   else {
     EIc <- eil
   }
-
+  
   PD <- dir_eff/abs(EIc)
-
+  
   #Calculate the PD CI
   propdis<-numeric(nboot)
-
+  
   for (i in 1:nboot) {
     #Creating a resampled dataset
     sample_d = dat[sample(1:nrow(dat), nrow(dat), replace = TRUE), ]
-
+    
     #Running the regression on these data
     m <- '
     Y ~ c*X + b*M
@@ -164,29 +164,29 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
     '
     fit <- lavaan::lavaan(m, data = sample_d)
     pel<-data.frame(lavaan::parameterEstimates(fit))
-
-  if (pel[1,5] > 0) {
+    
+    if (pel[1,5] > 0) {
       EIc <- eiu
     }
     else {
       EIc <- eil
     }
-
+    
     propdis[i] <- pel[1,5]/abs(EIc)
   }
-
+  
   ci_pd<-stats::quantile(propdis,probs=c(alpha/2,1-alpha/2))
-
+  
   #### Summary #####
-
+  
   title1 <- "Equivalence Testing Method for Substantial Mediation (ESM)"
   title2 <- "Kenny Method for Full Mediation"
-
+  
   stats_esm <- c(minc, corxy, eil, eiu, nboot, cil, ciu) # resample stats
-
+  
   stats_kenny <- c(abdivc_k, kenny_dec)
   pd_stats <- c( EIc, PD) # proportional distance stats
-
+  
   ret <- data.frame(EIc = EIc,
                     minc = minc,
                     title1 = title1,
@@ -210,6 +210,7 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
                     kenny_dec = kenny_dec,
                     title1 = title1,
                     title2 = title2,
+                    oe="Direct Effect",
                     seed = seed
   )
   class(ret) <- "neg.esm"
@@ -221,7 +222,7 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
 #'
 
 print.neg.esm <- function(x, ...) {
-
+  
   cat("***",x$title1, "***\n\n")
   cat("Number of bootstrap iterations:", x$nboot, "(random seed =", x$seed, ")\n")
   cat("Indirect effect:", x$ab_par,"\n")
@@ -229,24 +230,23 @@ print.neg.esm <- function(x, ...) {
   cat((1-2*x$alpha)*100, "% CI on Direct Effect: ", "(", x$cil,", ", x$ciu,")", sep="", "\n")
   cat("Equivalence Interval:","Lower =", x$eil, ",", "Upper =", x$eiu, "\n")
   cat("Decision from the ESM:", x$esm_dec,"\n\n")
-
+  
   cat("**********************\n\n")
   cat("***",x$title2, "***\n\n")
   cat("ab/c (must be greater in magnitude than .80):", x$abdivc_k, "\n")
   cat("Correlation between X and y (must be greater in magnitude than .2): ", x$corxy, sep="","\n")
   cat("Decision from Kenny procedure:", x$kenny_dec, "\n\n")
-
+  
   cat("**********************\n\n")
   cat("***", "Proportional Distance: The proportional distance from the effect of interest to the equivalence interval of the same sign","***","\n\n")
   cat("Proportional Distance (PD):", x$PD, "\n")
   cat(100*(1-x$alpha), "% CI for PD: ", "(",x$cilpd,", ",x$ciupd,")", "\n", sep="")
   cat("**********************\n")
-
+  
   if (x$pl == TRUE) {
-    neg.pd(effect=x$dir_eff, PD = x$PD, EIsign=x$EIc, PDcil=x$cilpd, PDciu=x$ciupd, cil=x$cil, ciu=x$ciu, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$saveplot)
+    neg.pd(effect=x$dir_eff, PD = x$PD, eil=x$eil, eiu=x$eiu, PDcil=x$cilpd, PDciu=x$ciupd, cil=x$cil, ciu=x$ciu, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$saveplot, oe=x$oe)
   }
-
-
+  
+  
 }
-
 

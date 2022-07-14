@@ -23,9 +23,9 @@
 #' @param saveplots FALSE for no, "png" and "jpeg" for different formats
 #' @param seed to reproduce previous analyses using bootstrapping, the user can set their seed of choice
 #' @param ... additional arguments to be passed
-#'
-#'
-#'
+#' 
+#' 
+#' 
 #' @return A \code{list} containing the following:
 #' \itemize{
 #'   \item \code{r1v1} Name of the 1st variable included in the 1st correlation coefficient (r1, variable 1 ; if applicable)
@@ -51,33 +51,33 @@
 #'   \item \code{nboot} Number of bootstrapping iterations, if bootstrapping was used (if applicable)
 #'   \item \code{which.test} Test type, e.g., AH-rho-D, KTOST-rho etc. See Counsell & Cribbie (2015) for details
 #'   \item \code{degfree} Degrees of freedom associated with the test statistic
-#'   \item \code{pv} p value associated with the test statistic. If TOST was specified, only the larger of the p values will be presented
-#'   \item \code{NHSTdecision} NHST decision
-#'   \item \code{alpha} Nominal Type I error rate
+#'   \item \code{pv} p value associated with the test statistic. If TOST was specified, only the larger of the p values will be presented 
+#'   \item \code{NHSTdecision} NHST decision 
+#'   \item \code{alpha} Nominal Type I error rate 
 #' }
 #' @export
 #' @details This function evaluates whether the difference between two correlation coefficients can be considered statistically and practically negligible according to a predefined interval. i.e., minimally meaningful effect size (MMES)/smallest effect size of interest (SESOI). The effect size tested is the difference between two correlation coefficients (i.e., r1 - r2).
-#'
+#' 
 #' Unlike the most common null hypothesis significance tests looking to detect a difference or the existence of an effect statistically different than zero, in negligible effect testing, the hypotheses are flipped: In essence, H0 states that the effect is non-negligible, whereas H1 states that the effect is in fact statistically and practically negligible.
-#'
+#'  
 #' The statistical tests are based on Anderson-Hauck (1983) and Schuirmann's (1987) Two One-Sided Test (TOST) equivalence testing procedures; namely addressing the question of whether the estimated effect size (and its associated uncertainty) of a difference between two correlation coefficients (i.e., r1 and r2) is smaller than the what the user defines as negligible effect size. Defining what is considered negligible effect is done by specifying the negligible (equivalence) interval: its upper (eiu) and lower (eil) bounds.
-#'
-#' The negligible (equivalence) interval should be set based on the context of the research. Because the two correlations (and, therefore their difference) are in standardized units, setting eil and eiu is a matter of determining what is the smallest difference between the two correlations that can be considered of practical significance. For example, if the user determines that the smallest effect of interest is 0.1 – that is, any difference between the two correlation coefficient larger than 0.1 is meaningful in this context - then eil will be set to -0.1 and eiu to 0.1. Therefore, any observable difference that is larger than -0.1 AND smaller than 0.1, will be considered practically negligible.
-#'
+#' 
+#' The negligible (equivalence) interval should be set based on the context of the research. Because the two correlations (and, therefore their difference) are in standardized units, setting eil and eiu is a matter of determining what is the smallest difference between the two correlations that can be considered of practical significance. For example, if the user determines that the smallest effect of interest is 0.1 – that is, any difference between the two correlation coefficient larger than 0.1 is meaningful in this context - then eil will be set to -0.1 and eiu to 0.1. Therefore, any observable difference that is larger than -0.1 AND smaller than 0.1, will be considered practically negligible. 
+#' 
 #' There are two main approaches to using neg.twocors. The first (and more recommended) is by inserting a dataset ('data' argument) into the function. If the user/s have access to the dataset, they should use the following set of arguments: data, formula, r1v1, r1v2, r2v1, r2v2, dep (if applicable), bootstrap (optional), nboot (optional), and seed (optional). However, this function also accommodates cases where no dataset is available. In this case, users should use the following set of arguments instead: r1, n1, r2, n2, and r3 (if applicable). In either situation, users must specify the negligible interval bounds (eiu and eil). Other optional arguments and features include: alpha, test, plots, and saveplots.
-#'
+#' 
 #' This function accommodates both independent and dependent correlations. A user might want to compare two independent correlations. For example, the correlation between X and Y in one group (e.g., Control group; rXYc) with the correlation between X and Y in a different, independent group (e.g., Treatment group; rXYt). The ‘independent correlations’ setting (i.e., dep=FALSE) is the default in this function. However, in other cases, a user might want to compare two dependent correlation coefficients. That is, the two correlations share a common variable (i.e., same variable values). For example, the correlation between X and Y in one group (e.g., Treatment group; rXYt) with the correlation between X and B in the same group (e.g., Treatment group; rXBt). Because values in variable X are shared among the two correlations, the two correlations (e.g., rXYt and rXBt) are not independent from one another, but, in fact, dependent. To compare two dependent correlation coefficients, users need only to specify dep=TRUE. If no dataset is entered into the function, users should also use the argument r3, which will hold the correlation between the two non-shared variables. In the example above (i.e., rXYt and rXBt), the two non-shared variables are Y and B. In this case, r3 = rYBt.  If dep=TRUE is entered into the function, test statistics and p values will be calculated differently to account for the shared variable. The negligible testing methods for comparing dependent correlations in this function are based on Williams’s (1959) modification to Hotelling’s (1931) test for comparing overlapping dependent correlations. For more details see Counsell and Cribbie (2015).
-#'
+#' 
 #' The proportional distance (PD; effect size/eiu) estimates the proportional distance of the estimated effect to eiu, and acts as an alternative effect size measure.
-#'
+#' 
 #' The confidence interval for the PD is computed via bootstrapping (percentile bootstrap), unless the user does not insert a dataset. In which case, the PD confidence interval is calculated by dividing the upper and lower CI bounds for the effect size estimate by the absolute value of the negligible interval bounds.
-#'
-#'
+#' 
+#' 
 #' @author Rob Cribbie \email{cribbie@@yorku.ca} and
 #'   Alyssa Counsell \email{a.counsell@@ryerson.ca} and
 #'   Udi Alter \email{udialter@@gmail.com}
 #' @export neg.twocors
-#'
+#' 
 #' @examples
 #' # Negligible difference between two correlation coefficients
 #' # Equivalence interval: -.15 to .15
@@ -87,10 +87,10 @@
 #' v2b <- stats::rnorm(10)
 #' dat<-data.frame(v1a, v2a, v1b, v2b)
 #' # dataset available (independent correlation coefficients):
-#' neg.twocors(r1v1=v1a,r1v2=v2a,r2v1=v1b,r2v2=v2b,data=dat,eiu=.15,eil=-0.15,nboot=50)
-#' neg.twocors(r1=0.5,n1=300,r2=0.6,n2=500,eiu=.15,eil=-0.15, dep=TRUE, r3=0.51)
+#' neg.twocors(r1v1=v1a,r1v2=v2a,r2v1=v1b,r2v2=v2b,data=dat,eiu=.15,eil=-.15,nboot=50, dep=F)
+#' neg.twocors(r1=0.5,n1=300,r2=0.6,n2=500,eiu=.15,eil=-0.15, dep=T, r3=0.51)
 #' # end.
-#'
+#' 
 neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, # specific arguments when data is available
                    r1=NULL, n1=NULL, r2=NULL, n2=NULL, # specific arguments when data is NOT available
                    dep=FALSE, r3=NA, # arguments related to dependent correlations
@@ -363,11 +363,11 @@ neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, #
   z2 <- NA
   }
 # DECISION AH
-  ifelse(p.value < alpha, decision <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the specified equivalence interval), can be rejected. A negligible difference between population correlation coefficients can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
-         decision <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), was NOT rejected. There is insufficient evidence to declare the difference in the population correlation coefficients negligible. Be sure to interpret the magnitude (and precision) of the effect size.")
+  ifelse(p.value < alpha, decision <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the specified equivalence interval), can be rejected. A negligible difference between the two correlation coefficients in the population can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
+         decision <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), was NOT rejected: There is insufficient evidence that the difference between the two correlation coefficients is negligible in the population. Be sure to interpret the magnitude (and precision) of the effect size.")
 # DECISION KTOST
-  ifelse(p.value.1 < alpha & p.value.2 < alpha, decision.tost <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), can be rejected. A negligible difference between population correlation coefficients can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
-         decision.tost <-"The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), was NOT rejected. There is insufficient evidence to declare the difference in the population correlation coefficients negligible. Be sure to interpret the magnitude (and precision) of the effect size.")
+  ifelse(p.value.1 < alpha & p.value.2 < alpha, decision.tost <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), can be rejected. A negligible difference between the two correlation coefficients in the population can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
+         decision.tost <-"The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), was NOT rejected: There is insufficient evidence that the difference between the two correlation coefficients is negligible in the population. Be sure to interpret the magnitude (and precision) of the effect size.")
 
 # Organizing for output and Value
  ifelse(p.value.1 <= p.value.2, pv <- p.value.2, pv <- p.value.1)
@@ -376,7 +376,7 @@ neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, #
  if(test == "AH"){
     pv <- p.value
  }
-
+ 
 # SUMMARY OF RESULTS
   res <- data.frame(title = title,
                     subtitle = subtitle,
@@ -412,7 +412,7 @@ neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, #
                     EIc = EIc,
                     pv = pv,
                     p.value = p.value,
-                    p.value.1= p.value.1,
+                    p.value.1 = p.value.1,
                     p.value.2 = p.value.2,
                     z1 = z1,
                     z2 = z2,
@@ -429,6 +429,7 @@ neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, #
                     bootstrap = bootstrap,
                     nboot = nboot,
                     plots = plots,
+                    oe="Correlation Coefficients' Difference",
                     saveplots = saveplots)
   class(res) <- "neg.twocors"
   return(res)
@@ -480,7 +481,7 @@ print.neg.twocors<- function(x,...) {
 
   # NHST results
   if (x$test == "AH"){
-  ifelse(round(x$p.value,3) == 0, p.val <- "< 0.001", p.val <- paste("= ", round(x$p.value,3), sep = ""))
+  ifelse(x$p.value < 0.001, p.val <- "< 0.001", p.val <- paste("= ", round(x$p.value,3), sep = ""))
   cat(x$testID)
   cat("\nEquivalence Interval: ","Lower = ", x$eil, ", ", "Upper = ", x$eiu, "\n", sep = "")
   cat("p value ",p.val,"\n", sep = "")
@@ -503,16 +504,16 @@ print.neg.twocors<- function(x,...) {
       cat("t2 value = ",round(x$t2,3),"\n", sep = "")
       cat("with ",x$degfree," degrees of freedom\n", sep = "")
     }
-    ifelse(round(x$p.value.1,3) == 0, p1.val <- "< 0.001", p1.val <- paste("= ", round(x$p.value.1,3), sep = ""))
-    ifelse(round(x$p.value.2,3) == 0, p2.val <- "< 0.001", p2.val <- paste("= ", round(x$p.value.2,3), sep = ""))
+    ifelse(x$p.value.1 < 0.001, p1.val <- "< 0.001", p1.val <- paste("= ", round(x$p.value.1,3), sep = ""))
+    ifelse(x$p.value.2 < 0.001, p2.val <- "< 0.001", p2.val <- paste("= ", round(x$p.value.2,3), sep = ""))
     cat("p1 value ",p1.val,"\n", sep = "")
     cat("p2 value ",p2.val,"\n", sep = "", "\n")
     cat("NHST Decision: ", x$decision.tost,"\n", sep = "")
     cat("\n*Note that when using the KTOST-\u03C1 or TOST-\u03C1-D procedures, the null hypothesis of a non-negligible difference between the two population correlation coefficients is only rejected if BOTH p values are less than \u03B1.\n")
     }
     if(x$plots == TRUE) {
-    neg.pd(effect=x$rawdiff, PD = x$pd, EIsign=x$EIc, PDcil=x$pd.l.ci, PDciu=x$pd.u.ci, cil=x$l.ci.2a,
-           ciu=x$u.ci.2a, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$saveplots)
+      neg.pd(effect=x$rawdiff, PD = x$pd, eil=x$eil, eiu=x$eiu, PDcil=x$pd.l.ci, PDciu=x$pd.u.ci, cil=x$l.ci.2a,
+             ciu=x$u.ci.2a, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$saveplots, oe=x$oe)
       if (x$test=="AH"){
       cat("\n*Note that NHST decisions using the AH-\u03C1 and AH-\u03C1-D procedures may not match KTOST-\u03C1 and TOST-\u03C1-D results or the Symmetric CI Approach at 100*(1-2\u03B1)% illustrated in the plot. \n")
         }

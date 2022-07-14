@@ -44,9 +44,9 @@
 #' neg.intcont(outcome = mpshfpre.sop, pred1 = cesdpre.total, pred2 = atqpre.total, data = d,
 #' eiL = -.25, eiU = .25, standardized = TRUE, nbootpd = 100)
 neg.intcont <- function (outcome = NULL, pred1 = NULL,
-         pred2 = NULL, eiL, eiU, standardized = TRUE,
-         nbootpd = 1000, data, alpha = .05,
-         plot = TRUE, save = FALSE) {
+                         pred2 = NULL, eiL, eiU, standardized = TRUE,
+                         nbootpd = 1000, data=NULL, alpha = .05,
+                         plot = TRUE, save = FALSE) {
   if (!is.null(data)) {
     outcome <- deparse(substitute(outcome))
     pred1 <- deparse(substitute(pred1))
@@ -71,11 +71,11 @@ neg.intcont <- function (outcome = NULL, pred1 = NULL,
            decis <- "The null hypothesis that the interaction is not negligible can be rejected",
            decis <- "The null hypothesis that the interaction is not negligible CANNOT be rejected")
     test<-"Standard TOST method is used since standardized = FALSE"
-
+    
     # Calculate Proportional Distance
     ifelse(intcoef<0, eiPD<-eiL, eiPD<-eiU)
     PD <- intcoef/abs(eiPD)
-        # confidence interval for Proportional distance
+    # confidence interval for Proportional distance
     propd<-numeric(nbootpd)
     for (i in 1:nbootpd) {
       xx<-dplyr::sample_n(dat,size=nrow(dat),replace=TRUE)
@@ -97,11 +97,11 @@ neg.intcont <- function (outcome = NULL, pred1 = NULL,
     m <- stats::lm(outcome ~ pred1*pred2, data=dat)
     invisible(utils::capture.output(sprs <- rockchalk::getDeltaRsquare(m)))
     invisible(utils::capture.output(SEs<-fungible::seBeta(X = dat[,2:4], y = dat[,1],
-           cov.x = stats::cov(dat[,2:4]),
-           cov.xy = stats::cov(dat[,1:4])[1,2:4],
-           var.y = stats::var(dat[,1]),
-           Nobs = nrow(dat),
-           alpha = alpha*2)))
+                                                          cov.x = stats::cov(dat[,2:4]),
+                                                          cov.xy = stats::cov(dat[,1:4])[1,2:4],
+                                                          var.y = stats::var(dat[,1]),
+                                                          Nobs = nrow(dat),
+                                                          alpha = alpha*2)))
     intcil<-SEs$CIs[3,1]
     intciu<-SEs$CIs[3,3]
     intcoef<-SEs$CIs[3,2]
@@ -109,15 +109,15 @@ neg.intcont <- function (outcome = NULL, pred1 = NULL,
            decis <- "The null hypothesis that the interaction is not negligible can be rejected",
            decis <- "The null hypothesis that the interaction is not negligible CANNOT be rejected")
     invisible(utils::capture.output(SEsr<-fungible::seBeta(X = dat[,2:4], y = dat[,1],
-        cov.x = stats::cov(dat[,2:4]),
-        cov.xy = stats::cov(dat[,1:4])[1,2:4],
-        var.y = stats::var(dat[,1]),
-        Nobs = nrow(dat),
-        alpha = alpha)))
+                                                           cov.x = stats::cov(dat[,2:4]),
+                                                           cov.xy = stats::cov(dat[,1:4])[1,2:4],
+                                                           var.y = stats::var(dat[,1]),
+                                                           Nobs = nrow(dat),
+                                                           alpha = alpha)))
     intcilr<-SEsr$CIs[3,1]
     intciur<-SEsr$CIs[3,3]
-        test<-"-- The Delta Method is used for Calculating the SEs with Standardized Variables --"
-
+    test<-"-- The Delta Method is used for Calculating the SEs with Standardized Variables --"
+    
     # Calculate Proportional Distance
     ifelse(intcoef<0, eiPD<-eiL, eiPD<-eiU)
     PD <- intcoef/abs(eiPD)
@@ -149,6 +149,7 @@ neg.intcont <- function (outcome = NULL, pred1 = NULL,
                     CI95U = CI95U,
                     pl = plot,
                     alpha = alpha,
+                    oe="Interaction Coefficient",
                     save = save)
   class(ret) <- "neg.intcont"
   return(ret)
@@ -173,10 +174,11 @@ print.neg.intcont <- function(x, ...) {
   cat("Upper Bound of the Negligible Effect (Equivalence) Interval: ", "\n", x$eiU, "\n\n")
   cat("NHST Decision: ", "\n", x$decis, "\n\n")
   cat("**********************\n\n")
-
+  
   if (x$pl == TRUE) {
-    neg.pd(effect=x$intcoef, PD = x$PD, EIsign=x$eiPD, PDcil=x$CI95L, PDciu=x$CI95U, cil=x$intcil, ciu=x$intciu, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$save)
+    neg.pd(effect=x$intcoef, PD = x$PD, eil = x$eiL, eiu = x$eiU, PDcil=x$CI95L, PDciu=x$CI95U, cil=x$intcil, ciu=x$intciu, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$save, oe=x$oe)
   }
 }
+
 
 

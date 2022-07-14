@@ -167,6 +167,7 @@ neg.cor <- function(v1, v2, eiU, eiL, alpha = 0.05, na.rm = TRUE,
                     q2 = q2,
                     decis_rs = decis_rs,
                     PD = PD,
+                    oe="Correlation (r)",
                     CIPDL = CIPDL,
                     CIPDU = CIPDU)
 
@@ -198,8 +199,7 @@ print.neg.cor <- function(x, ...) {
 
 
   if (x$pl == TRUE) {
-    neg.pd(effect=x$corxy, PD = x$PD, EIsign=x$EIc, PDcil=x$CIPDL, PDciu=x$CIPDU, cil=x$q1, ciu=x$q2, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$save)
+    neg.pd(effect=x$corxy, PD = x$PD, eil=x$eiL, eiu=x$eiU, PDcil=x$CIPDL, PDciu=x$CIPDU, cil=x$q1, ciu=x$q2, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$save, oe=x$oe)
   }
 
 }
-
