@@ -483,12 +483,12 @@ print.neg.twocors<- function(x,...) {
   if (x$test == "AH"){
   ifelse(x$p.value < 0.001, p.val <- "< 0.001", p.val <- paste("= ", round(x$p.value,3), sep = ""))
   cat(x$testID)
-  cat("\nEquivalence Interval: ","Lower = ", x$eil, ", ", "Upper = ", x$eiu, "\n", sep = "")
+  cat("\nEquivalence Interval: ","Lower = ", round(x$eil,3), ", ", "Upper = ", round(x$eiu,3), "\n", sep = "")
   cat("p value ",p.val,"\n", sep = "")
   cat("NHST Decision: ", x$decision,"\n", sep = "")
   } else { # if KTOST
     cat(x$testID.tost)
-    cat("\nEquivalence Interval: ","Lower = ", x$eil, ", ", "Upper = ", x$eiu, "\n", sep = "")
+    cat("\nEquivalence Interval: ","Lower = ", round(x$eil,3), ", ", "Upper = ", round(x$eiu,3), "\n", sep = "")
     if(x$test == "TOST" & x$bootstrap == TRUE){
       cat(x$perc.2a,"% bootstrap-generated CI for r1-r2: [",round(x$l.ci.2a,3),", ",round(x$u.ci.2a,3),"]\n", sep = "")
     }
