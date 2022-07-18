@@ -53,7 +53,7 @@
 #' X<-rnorm(100,sd=2)
 #' M<-.5*X + rnorm(100)
 #' Y<-.5*M + rnorm(100)
-#' neg.esm(X,Y,M, eil = -.15, eiu = .15,nboot=50)
+#' neg.esm(X,Y,M, eil = -.15, eiu = .15,nboot = 50)
 neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
                   eil=-.15,eiu=.15,nboot=1000L,
                   data=NULL, plot=TRUE, saveplot=FALSE,
@@ -131,6 +131,11 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
          kenny_dec<-"Full Mediation CAN be concluded",
          kenny_dec<-"Full Mediation CANNOT be concluded")
   
+  #Effect Size
+  prop_med<-mediation(x=dat$X,mediator=dat$M,dv=dat$Y)$Effect.Sizes[7,1]
+  csie<-upsilon(x=dat$X,mediator=dat$M,dv=dat$Y,B=nboot)[1,1]
+  csie_lb<-upsilon(x=dat$X,mediator=dat$M,dv=dat$Y,B=nboot)[1,2]
+  csie_ub<-upsilon(x=dat$X,mediator=dat$M,dv=dat$Y,B=nboot)[1,3]
   
   # Calculate Proportional Distance
   if (dir_eff > 0) {
@@ -144,6 +149,7 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
   
   #Calculate the PD CI
   propdis<-numeric(nboot)
+  propmed<-numeric(nboot)
   
   for (i in 1:nboot) {
     #Creating a resampled dataset
@@ -173,12 +179,14 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
     }
     
     propdis[i] <- pel[1,5]/abs(EIc)
+    propmed[i] <- mediation(x=sample_d$X,mediator=sample_d$M,dv=sample_d$Y)$Effect.Sizes[7,1]
   }
   
   ci_pd<-stats::quantile(propdis,probs=c(alpha/2,1-alpha/2))
-  
-  #### Summary #####
-  
+  ci_pm<-stats::quantile(propmed,probs=c(alpha/2,1-alpha/2))  
+
+    #### Summary #####
+  title0 <- "Effect Sizes for the Indirect Effect"
   title1 <- "Equivalence Testing Method for Substantial Mediation (ESM)"
   title2 <- "Kenny Method for Full Mediation"
   
@@ -208,6 +216,12 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
                     alpha = alpha,
                     abdivc_k = abdivc_k,
                     kenny_dec = kenny_dec,
+                    prop_med = prop_med,
+                    prop_medlb = ci_pm[1],
+                    prop_medub = ci_pm[2],
+                    csie = csie,
+                    csielb = csie_lb,
+                    csieub = csie_ub,
                     title1 = title1,
                     title2 = title2,
                     oe="Direct Effect",
@@ -223,22 +237,27 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
 
 print.neg.esm <- function(x, ...) {
   
+  cat("***",x$title0, "***\n\n")
+  cat("Proportion Mediated:", x$prop_med, "\n")
+  cat(100*(1-x$alpha), "% CI for Proportion Mediated: ", "(",x$prop_medlb,", ",x$prop_medub,")", "\n", sep="")
+  cat("Completely Standardized Indirect Effect (CSIE):", x$csie, "\n")
+  cat(100*(1-x$alpha), "% CI for CSIE: ", "(",x$csielb,", ",x$csieub,")", "\n\n", sep="")
   cat("***",x$title1, "***\n\n")
-  cat("Number of bootstrap iterations:", x$nboot, "(random seed =", x$seed, ")\n")
-  cat("Indirect effect:", x$ab_par,"\n")
+  cat("Number of Bootstrap Iterations: ", x$nboot, "(random seed = ", x$seed, ")\n", sep="")
+  cat("Indirect Effect:", x$ab_par,"\n")
   cat("Correlation between X and Y (must be greater in magnitude than ",x$minc,")",": ", x$corxy, sep="","\n")
   cat((1-2*x$alpha)*100, "% CI on Direct Effect: ", "(", x$cil,", ", x$ciu,")", sep="", "\n")
-  cat("Equivalence Interval:","Lower =", x$eil, ",", "Upper =", x$eiu, "\n")
+  cat("Equivalence Interval: ","Lower = ", x$eil, "; ", "Upper = ", x$eiu, "\n\n", sep="")
   cat("Decision from the ESM:", x$esm_dec,"\n\n")
   
   cat("**********************\n\n")
   cat("***",x$title2, "***\n\n")
   cat("ab/c (must be greater in magnitude than .80):", x$abdivc_k, "\n")
-  cat("Correlation between X and y (must be greater in magnitude than .2): ", x$corxy, sep="","\n")
-  cat("Decision from Kenny procedure:", x$kenny_dec, "\n\n")
+  cat("Correlation between X and Y (must be greater in magnitude than .2): ", x$corxy, sep="","\n\n")
+  cat("Decision from Kenny Procedure:", x$kenny_dec, "\n\n")
   
   cat("**********************\n\n")
-  cat("***", "Proportional Distance: The proportional distance from the effect of interest to the equivalence interval of the same sign","***","\n\n")
+  cat("***", "Proportional Distance (the proportional distance from the effect of interest to the equivalence interval of the same sign)","***","\n\n")
   cat("Proportional Distance (PD):", x$PD, "\n")
   cat(100*(1-x$alpha), "% CI for PD: ", "(",x$cilpd,", ",x$ciupd,")", "\n", sep="")
   cat("**********************\n")
