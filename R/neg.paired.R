@@ -16,6 +16,8 @@
 #' @param plot Should a plot of the results be produced?
 #' @param saveplot Should the plot be saved?
 #' @param data Dataset containing var1/var2 or outcome/group/ID
+#' @param seed Seed number
+#' @param ... Extra arguments
 #'
 #' @return A \code{list} including the following:
 #' \itemize{
@@ -47,6 +49,7 @@
 #'   \item \code{pval1} p value associated with the first t-statistic from the TOST procedure.
 #'   \item \code{pval2} p value associated with the second t-statistic from the TOST procedure.
 #'   \item \code{alpha} Nominal Type I error rate
+#'   \item \code{seed} Seed number
 #' }
 #' @export
 #' @details This function evaluates whether the difference in the means of 2 dependent populations can be considered negligible (i.e., the population means can be considered equivalent).
@@ -71,10 +74,10 @@
 #' neg.paired(var1=d$control,var2=d$intervention,eil=-1,eiu=1,plot=TRUE)
 #' neg.paired(var1=d$control,var2=d$intervention,eil=-1,eiu=1,normality=FALSE,
 #'            plot=TRUE)
-#' 
+#'
 #' #long format
-#' sample1<-sample(1:20, 20, replace=F)
-#' sample2<-sample(1:20, 20, replace=F)
+#' sample1<-sample(1:20, 20, replace=FALSE)
+#' sample2<-sample(1:20, 20, replace=FALSE)
 #' ID<-c(sample1, sample2)
 #' group<-rep(c("control","intervention"),c(20,20))
 #' outcome<-c(control,intervention)
@@ -82,18 +85,18 @@
 #' neg.paired(outcome=outcome,group=group,ID=ID,eil=-1,eiu=1,plot=TRUE,data=d)
 #' neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,eil=-1,eiu=1,plot=TRUE)
 #' neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,eil=-1,eiu=1,plot=TRUE, normality=FALSE)
-#' 
+#'
 #' #long format with multiple variables
-#' sample1<-sample(1:20, 20, replace=F)
-#' sample2<-sample(1:20, 20, replace=F)
+#' sample1<-sample(1:20, 20, replace=FALSE)
+#' sample2<-sample(1:20, 20, replace=FALSE)
 #' ID<-c(sample1, sample2)
-#' attendance<-sample(1:3, 20, replace=T)
+#' attendance<-sample(1:3, 20, replace=TRUE)
 #' group<-rep(c("control","intervention"),c(20,20))
 #' outcome<-c(control,intervention)
 #' d<-data.frame(ID,group,outcome,attendance)
 #' neg.paired(outcome=outcome,group=group,ID=ID,eil=-1,eiu=1,plot=TRUE,data=d)
 #' neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,eil=-1,eiu=1,plot=TRUE)
-#' 
+#'
 #' #open a dataset
 #' library(negligible)
 #' d<-perfectionism
@@ -101,19 +104,19 @@
 #' head(d)
 #' neg.paired(var1=atqpre.total,var2=atqpost.total,
 #'            eil=-10,eiu=10,data=d)
-#' 
-#' #Dataset with missing data 
+#'
+#' #Dataset with missing data
 #' x<-rnorm(10)
 #' x[c(3,6)]<-NA
 #' y<-rnorm(10)
 #' y[c(7)]<-NA
 #' neg.paired(x,y,eil=-1,eiu=1, normality=FALSE)
 
-neg.paired <- function(var1 = NULL, var2 = NULL, 
+neg.paired <- function(var1 = NULL, var2 = NULL,
                        outcome = NULL, group = NULL, ID = NULL,
                        eil, eiu, normality = TRUE,
                        nboot = 10000, alpha = 0.05,
-                       plot = TRUE, saveplot = FALSE, 
+                       plot = TRUE, saveplot = FALSE,
                        data=NULL, seed = NA,...) {
   if (!is.null(data)) {
     var1 <- deparse(substitute(var1))
@@ -127,7 +130,7 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     if(outcome=="NULL") {outcome<-NULL}
     if(ID=="NULL") {ID<-NULL}
   }
-  
+
   if (is.null(var1) & is.null(var2) & !is.null(data)) {
     d<-data.frame(data$ID,data$group,data$outcome)
     names(d)[1] <- "ID"
@@ -144,7 +147,7 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     var1 <- d$var1
     var2 <- d$var2
   }
-  
+
   if (is.null(outcome) & is.null(group) & is.null(ID) & !is.null(data)) {
     var1 <- as.numeric(data[[var1]])
     var2 <- as.numeric(data[[var2]])
@@ -153,7 +156,7 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     var1 <- d$var1
     var2 <- d$var2
   }
-  
+
   if (is.null(var1) & is.null(var2) & is.null(data)) {
     d<-data.frame(ID,group,outcome)
     d <- d[stats::complete.cases(d),]
@@ -161,14 +164,14 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     var1<-as.numeric(unlist(d_wide[2]))
     var2<-as.numeric(unlist(d_wide[3]))
   }
-  
+
   if(is.na(seed)){
     seed <- sample(.Random.seed[1], size = 1)
   } else {
     seed <- seed
   }
   set.seed(seed)
-  
+
   if (normality==TRUE) {
     #TOST-P:
     r12<-stats::cor(var1,var2)
@@ -257,8 +260,8 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     r2 <- rank(abs(s2))
     sr1 <- sum(r1[s1 < 0]) #sr1 is the absolute value of the sum of the negative ranks associated with s1.
     sr2 <- sum(r2[s2 > 0])  #sr2 is the absolute value of the sum of the positive ranks associated with s2.
-    z1 <- (sr1 - (dft * (dft + 1)/4)) / (sqrt(dft * (dft + 1) * (2 * dft + 1) / 24)) 
-    z2 <- (sr2 - (dft * (dft + 1)/4)) / (sqrt(dft * (dft + 1) * (2 * dft + 1) / 24)) 
+    z1 <- (sr1 - (dft * (dft + 1)/4)) / (sqrt(dft * (dft + 1) * (2 * dft + 1) / 24))
+    z2 <- (sr2 - (dft * (dft + 1)/4)) / (sqrt(dft * (dft + 1) * (2 * dft + 1) / 24))
     probt1<-stats::pnorm(z1, lower.tail=FALSE) #change to z later
     probt2<-stats::pnorm(z2, lower.tail=FALSE) #change to z later
     ifelse(probt1 <= alpha & probt2 <= alpha,
@@ -372,7 +375,7 @@ print.neg.paired <- function(x, ...) {
   cat("**********************\n\n")
   cat("NHST Decision:", "\n", x$decis, "\n\n", sep="")
   cat("**********************\n\n")
-  
+
   if (x$pl == TRUE) {
     neg.pd(effect = x$effsizeraw,
            PD = x$effsizepd,

@@ -106,8 +106,6 @@ A \code{list} containing the following:
   \item \code{NHSTdecision} NHST decision
   \item \code{alpha} Nominal Type I error rate
 }
-
-
 }
 \description{
 This function evaluates whether the difference between two correlation coefficients can be considered statistically and practically negligible
@@ -138,7 +136,7 @@ v1b <- stats::rnorm(10)
 v2b <- stats::rnorm(10)
 dat<-data.frame(v1a, v2a, v1b, v2b)
 # dataset available (independent correlation coefficients):
-neg.twocors(r1v1=v1a,r1v2=v2a,r2v1=v1b,r2v2=v2b,data=dat,eiu=.15,eil=-0.15,nboot=50)
+neg.twocors(r1v1=v1a,r1v2=v2a,r2v1=v1b,r2v2=v2b,data=dat,eiu=.15,eil=-.15,nboot=50, dep=FALSE)
 neg.twocors(r1=0.5,n1=300,r2=0.6,n2=500,eiu=.15,eil=-0.15, dep=TRUE, r3=0.51)
 # end.
 

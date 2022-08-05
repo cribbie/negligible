@@ -56,8 +56,6 @@ A \code{list} containing the following:
   \item \code{CI95U} Upper bound of the 1-alpha CI for the PD
   \item \code{alpha} Nominal Type I error rate
 }
-
-
 }
 \description{
 Testing for the presence of a negligible association between two categorical variables

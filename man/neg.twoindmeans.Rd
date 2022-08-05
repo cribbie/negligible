@@ -89,8 +89,6 @@ A \code{list} including the following:
   \item \code{p2} p value associated with the second t-statistic from the TOST procedure.
   \item \code{alpha} Nominal Type I error rate
 }
-
-
 }
 \description{
 This function allows researchers to test whether the difference

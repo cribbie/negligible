@@ -1,8 +1,8 @@
 #' @title Test for Evaluating Negligible Effect Between a Predictor and Outcome in a Multiple Regression Model
 #'
 #' @description This function evaluates whether a certain predictor variable in a multiple regression model can be considered statistically and practically negligible according to a predefined interval. i.e., minimally meaningful effect size (MMES)/smallest effect size of interest (SESOI). Where the effect tested is the relationship between the predictor of interest and the outcome variable, holding all other predictors constant.
-#' 
-#' 
+#'
+#'
 #' @param data a data.frame or matrix which includes the variables considered in the regression model
 #' @param formula an argument of the form y~x1+x2...xn which defines the regression model
 #' @param predictor name of the variable/predictor upon which the test will be applied
@@ -22,21 +22,21 @@
 #' @param saveplots FALSE for no, "png" and "jpeg" for different formats
 #' @param seed to reproduce previous analyses using bootstrapping, the user can set their seed of choice
 #' @param ... additional arguments to be passed
-#' 
-#' 
+#'
+#'
 #' @return A \code{list} containing the following:
 #' \itemize{
 #'   \item \code{formula} The regression model
 #'   \item \code{effect} Specifying if effect size is in standardized or unstandardized units
 #'   \item \code{test} Test type, i.e., Anderson-Hauck (AH) or Two One-Sided Tests (TOST)
-#'   \item \code{t.value} t test statistic. If TOST was specified, only the smaller of the t values will be presented 
+#'   \item \code{t.value} t test statistic. If TOST was specified, only the smaller of the t values will be presented
 #'   \item \code{df} Degrees of freedom associated with the test statistic
 #'   \item \code{n} Sample size
-#'   \item \code{p.value} p value associated with the test statistic. If TOST was specified, only the larger of the p values will be presented 
+#'   \item \code{p.value} p value associated with the test statistic. If TOST was specified, only the larger of the p values will be presented
 #'   \item \code{eil} Lower bound of the negligible effect (equivalence) interval
 #'   \item \code{eiu} Upper bound of the negligible effect (equivalence) interval
-#'   \item \code{predictor} Variable name of the predictor in question 
-#'   \item \code{b} Effect size of the specified predictor 
+#'   \item \code{predictor} Variable name of the predictor in question
+#'   \item \code{b} Effect size of the specified predictor
 #'   \item \code{se} Standard error associated with the effect size point estimate (in the same units)
 #'   \item \code{l.ci} Lower bound of the 1-alpha CI for the effect size
 #'   \item \code{u.ci} Upper bound of the 1-alpha CI for the effect size
@@ -48,14 +48,14 @@
 #'   \item \code{alpha} Nominal Type I error rate
 #' }
 #' @export
-#' @details This function evaluates whether a certain predictor variable in a multiple regression model can be considered statistically and practically negligible according to a predefined interval. i.e., minimally meaningful effect size (MMES)/smallest effect size of interest (SESOI). Where the effect tested is the relationship between the predictor of interest and the outcome variable, holding all other predictors constant. 
-#' 
+#' @details This function evaluates whether a certain predictor variable in a multiple regression model can be considered statistically and practically negligible according to a predefined interval. i.e., minimally meaningful effect size (MMES)/smallest effect size of interest (SESOI). Where the effect tested is the relationship between the predictor of interest and the outcome variable, holding all other predictors constant.
+#'
 #' Unlike the most common null hypothesis significance tests looking to detect a difference or the existence of an effect statistically different than zero, in negligible effect testing, the hypotheses are flipped: In essence, H0 states that the effect is non-negligible, whereas H1 states that the effect is in fact statistically and practically negligible.
-#' 
+#'
 #' The statistical tests are based on Anderson-Hauck (1983) and Schuirmann's (1987) Two One-Sided Test (TOST) equivalence testing procedures; namely addressing the question of whether the estimated effect size (and its associated uncertainty) of a predictor variable in a multiple regression model is smaller than the what the user defines as negligible effect size. Defining what is considered negligible effect is done by specifying the negligible (equivalence) interval: its upper (eiu) and lower (eil) bounds.
 #'
 #' The negligible (equivalence) interval should be set based on the context of the research. Because the predictor's effect size can be in either standardized or unstandardized units, setting eil and eiu is a matter of determining what magnitude of the relationship between predictor and outcome in either standardized or unstandardized units is the minimally meaningful effect size (MMES) given the context of the research.
-#' 
+#'
 #' It is necessary to be consistent with the units of measurement. For example, unstandardized negligible interval bounds (i.e., eil and eiu) must only be used when std = FALSE (default). If the effect size (b), standard error (se), and sample size (n) are entered manually as arguments (i.e., without the dataset), these should also be in the same units of measurements. Whereas if the user prefers to specify eiu and eil in standardized unites, std = TRUE should be specified. In which case, any units entered into the function must also be in standardized form. Mixing unstandardized and standardized units would yield inaccurate results and likely lead to invalid conclusions. Thus, users must be cognizant of the measurement units of the negligible interval.
 #'
 #' There are two main approaches to using neg.reg. The first (and more recommended) is by inserting a dataset ('data' argument) into the function. If the user/s have access to the dataset, they should use the following set of arguments: data, formula, predictor, bootstrap (optional), nboot (optional), and seed (optional). However, this function also accommodates cases where no dataset is available. In this case, users should use the following set of arguments instead: b, se, n, and nop. In either situation, users must specify the negligible interval bounds (eiu and eil). Other optional arguments and features include: alpha, std, test, plots, and saveplots.
@@ -69,8 +69,8 @@
 #'   Alyssa Counsell \email{a.counsell@@ryerson.ca} and
 #'   Rob Cribbie \email{cribbie@@yorku.ca}
 #' @export neg.reg
-#' 
-#' 
+#'
+#'
 #' @examples
 #' # Negligible Regression Coefficient (equivalence interval: -.1 to .1)
 #' pr1 <- stats::rnorm(20)
@@ -81,11 +81,11 @@
 #' neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1,nboot=50)
 #' neg.reg(b=.03, se=.01, nop=3,n=500, eil=-.1,eiu=.1)
 #' # end.
-#' 
+#'
 neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dataset
                     b = NULL, se=NULL, nop=NULL, n=NULL,     #input for no dataset
                     eil, eiu, alpha=.05, test="AH", std=FALSE,
-                    bootstrap=TRUE, nboot=1000, 
+                    bootstrap=TRUE, nboot=1000,
                     plots = TRUE, saveplots = FALSE, seed=NA,...) # optional input for both
   {
 
@@ -180,9 +180,9 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
       beta.coef<-numeric(nboot)
       propdis.beta<-numeric(nboot)
 
-      
+
       if(is.na(seed)){
-        if (!exists(".Random.seed")) runif(1)
+        if (!exists(".Random.seed")) stats::runif(1)
         seed <- sample(.Random.seed[1], size = 1)
       } else {
         seed <- seed
@@ -364,14 +364,13 @@ return(ret)
 #' @rdname neg.reg
 #' @param x object of class \code{neg.reg}
 #' @param ... extra arguments
-#' @return
 #' @export
 #'
 print.neg.reg <- function(x,...) {
   ifelse(round(x$p.value,3) == 0, p.val <- " < 0.001", p.val <- paste(" = ", round(x$p.value,3), sep = ""))
   cat("\n\n")
   cat("***",x$title, "***\n\n")
-  
+
   if (x$bootstrap == TRUE & x$withdata == TRUE) {
     cat(x$effect, " regression coefficient for ", x$predictor," and confidence interval using ", x$nboot," bootstrap iterations (random seed = ",x$seed,"):","\n",
         x$symb, " = ", round(x$b,3), ", ",x$perc.a, "% CI [",round(x$l.ci,3),", ",round(x$u.ci,3),"]" ,"\n",
@@ -382,21 +381,21 @@ print.neg.reg <- function(x,...) {
       x$symb, " = ", round(x$b,3), ", ",x$perc.a, "% CI [",round(x$l.ci,3),", ",round(x$u.ci,3),"]" ,"\n",
       "std. error = ", round(x$se,3), sep = "")
   }
-  
+
   cat("\n\n**********************\n\n")
   cat(x$subtitle, "\n\n")
   cat("Equivalence interval: ","lower= ", x$eil, ", ", "upper= ", x$eiu, "\n", sep = "")
 
   if(x$test == "TOST"){
-    
+
   cat("t(",x$df,") = ",round(x$t.value,3)," (smallest magnitude t value out of t1/t2)","\n","p",p.val,"\n", sep = "")
   cat("NHST decision: ", x$decision,"\n", sep = "")
-  } 
+  }
   if (x$test=="AH") {
     cat("Anderson-Hauck T statistic = ",round(x$t.value,3),"\n","p",p.val,"\n", sep = "")
     cat("NHST decision: ", x$decision,"\n", sep = "")
   }
-  
+
   if (x$test == "AH" & x$plots == TRUE){
     cat("\n*Note that NHST decisions using the AH procedure may not match TOST NHST results or the Symmetric CI Approach at 100*(1-2\u03B1)% illustrated in the plots. \n")
   }
@@ -440,7 +439,7 @@ if (x$plots == TRUE) {
   }
 
   #grDevices::dev.off()
-  
+
   neg.pd(effect=x$b, PD = x$pd, eil=x$eil, eiu=x$eiu, PDcil=x$pd.l.ci, PDciu=x$pd.u.ci, cil=x$l.ci.2a,
          ciu=x$u.ci.2a, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$saveplots, oe=x$oe)
  }

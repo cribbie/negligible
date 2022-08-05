@@ -92,7 +92,6 @@ neg.indvars<-function(dv, iv, eps = .5, alpha = .05,
 
 #' @rdname neg.indvars
 #' @param x object of class \code{neg.indvars}
-#' @return
 #' @export
 #'
 print.neg.indvars <- function(x, ...) {

@@ -2,7 +2,8 @@
 #'
 #' @param effect observed effect
 #' @param PD proportional distance for effect
-#' @param EIsign equivalence interval value of the same sign as the effect
+#' @param eil lower bound of the equivalence interval
+#' @param eiu upper bound of the equivalence interval
 #' @param PDcil lower bound of the CI for the proportional distance
 #' @param PDciu upper bound of the CI for the proportional distance
 #' @param cil lower bound of the CI for the effect
@@ -10,6 +11,7 @@
 #' @param Elevel 1-2alpha CI for the effect
 #' @param Plevel 1-alpha CI for the PD
 #' @param save Whether to save the plot or not
+#' @param oe Name of the original units of the effect of interest
 #'
 #' @return nothing is returned
 #' @export
@@ -21,27 +23,27 @@
 
 neg.pd<-function(effect, PD, eil, eiu,
                  PDcil, PDciu,  cil, ciu, Elevel, Plevel, save, oe) {
-  
+
   EIu<-c(eiu,0) #actual value
   EIl<-c(eil,0) #actual value
   PDp<-c(effect,1) #not actual value
   effectp<-c(effect,0) #actual value
   start1<-c(0,1) #origin for PD scale
   start2<-c(0,0) #origin for effect scale
-  
+
   #calculate 1/4 of the total 100*(1-x$alpha) distance to create the length of the scales (note that this is an arbritrary number)
   onefourth<-(abs((cil/2)+ (PDcil*effect/PD)) + abs((ciu/2)+ (PDciu*effect/PD)))/4
   a<- -3*onefourth
-  if(a>eil) 
-    {a<-eil} 
+  if(a>eil)
+    {a<-eil}
   b<- 3*onefourth
-  if(b<eiu) 
-  {b<-eiu} 
+  if(b<eiu)
+  {b<-eiu}
   extraL<-c(a,0)
   extraU<-c(b,0)
   PDextraL<-c(a,1)
   PDextraU<-c(b,1)
-  
+
   #individual scale values after the (0,0) co-ordinate
   if (b==eiu & a==eil) {onefourth=eiu/3}
   first<-onefourth
@@ -56,7 +58,7 @@ neg.pd<-function(effect, PD, eil, eiu,
   PDfirst<-c(PDfirst,1)
   PDsecond<-c(PDsecond,1)
   PDthird<-c(PDthird,1)
-  
+
   #individual scale values before the (0,0) co-ordinate
   Bfirst<-onefourth
   Bsecond <- Bfirst + onefourth
@@ -64,16 +66,17 @@ neg.pd<-function(effect, PD, eil, eiu,
   Bfirst<-c(-Bfirst,0)
   Bsecond<-c(-Bsecond,0)
   Bthird<-c(-Bthird,0)
-  
+
   BPDfirst<-onefourth
   BPDsecond <-BPDfirst+onefourth
   BPDthird<-BPDsecond+onefourth
   BPDfirst<-c(-BPDfirst,1)
   BPDsecond<-c(-BPDsecond,1)
   BPDthird<-c(-BPDthird,1)
-  
+
   #create a dataframe containing all the co-ordinates of interest
-  
+  X1<-NULL
+  X2<-NULL
   dat<-rbind(BPDthird, BPDsecond, BPDfirst, start1, PDp, PDextraL, PDextraU, PDfirst, PDsecond, PDthird, Bthird, Bsecond, Bfirst, start2, effectp, EIl, EIu, extraL, extraU, first, second, third)
   dat<- data.frame(dat)
   print(
@@ -120,7 +123,7 @@ neg.pd<-function(effect, PD, eil, eiu,
       ggplot2::theme(panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(), axis.title = ggplot2::element_blank(),
                      panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_blank(), axis.ticks= ggplot2::element_blank(), axis.text = ggplot2::element_blank())
   )
-  
+
   if (!(save == FALSE)) {
     if (save == "png") {
       ggplot2::ggsave(filename = "Proportional_Distance_Plot.png" ,width = 9, height = 4, device='png', dpi=700)

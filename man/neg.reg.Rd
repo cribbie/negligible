@@ -3,7 +3,7 @@
 \name{neg.reg}
 \alias{neg.reg}
 \alias{print.neg.reg}
-\title{Test for Evaluating Negligible Effects Between a Predictor and Outcome in a Multiple Regression Model}
+\title{Test for Evaluating Negligible Effect Between a Predictor and Outcome in a Multiple Regression Model}
 \usage{
 neg.reg(
   data = NULL,
@@ -63,19 +63,54 @@ neg.reg(
 
 \item{seed}{to reproduce previous analyses using bootstrapping, the user can set their seed of choice}
 
-\item{...}{additional arguments to be passed}
+\item{...}{extra arguments}
 
 \item{x}{object of class \code{neg.reg}}
 }
 \value{
-returns a \code{list} containing each analysis and 
-their respective statistics and decision
-
-
+A \code{list} containing the following:
+\itemize{
+  \item \code{formula} The regression model
+  \item \code{effect} Specifying if effect size is in standardized or unstandardized units
+  \item \code{test} Test type, i.e., Anderson-Hauck (AH) or Two One-Sided Tests (TOST)
+  \item \code{t.value} t test statistic. If TOST was specified, only the smaller of the t values will be presented
+  \item \code{df} Degrees of freedom associated with the test statistic
+  \item \code{n} Sample size
+  \item \code{p.value} p value associated with the test statistic. If TOST was specified, only the larger of the p values will be presented
+  \item \code{eil} Lower bound of the negligible effect (equivalence) interval
+  \item \code{eiu} Upper bound of the negligible effect (equivalence) interval
+  \item \code{predictor} Variable name of the predictor in question
+  \item \code{b} Effect size of the specified predictor
+  \item \code{se} Standard error associated with the effect size point estimate (in the same units)
+  \item \code{l.ci} Lower bound of the 1-alpha CI for the effect size
+  \item \code{u.ci} Upper bound of the 1-alpha CI for the effect size
+  \item \code{pd} Proportional distance
+  \item \code{pd.l.ci} Lower bound of the 1-alpha CI for the PD
+  \item \code{pd.u.ci} Upper bound of the 1-alpha CI for the PD
+  \item \code{seed} Seed identity if bootstrapping is used
+  \item \code{decision} NHST decision
+  \item \code{alpha} Nominal Type I error rate
+}
 }
 \description{
-This function tests whether a certain predictor variable in a multiple regression model can be considered statistically and practically negligible according to a predefined interval. i.e., minimally meaningful effect size,MMES/smallest effect size of interest, SESOI (where
-in this case, the effect is the relationship between the predictor of interest and the outcome variable, holding the other predictors constant). Developed from the Anderson-Hauck (1983) and Schuirmann's (1987) Two One-Sided Test (TOST) equivalence testing procedures.
+This function evaluates whether a certain predictor variable in a multiple regression model can be considered statistically and practically negligible according to a predefined interval. i.e., minimally meaningful effect size (MMES)/smallest effect size of interest (SESOI). Where the effect tested is the relationship between the predictor of interest and the outcome variable, holding all other predictors constant.
+}
+\details{
+This function evaluates whether a certain predictor variable in a multiple regression model can be considered statistically and practically negligible according to a predefined interval. i.e., minimally meaningful effect size (MMES)/smallest effect size of interest (SESOI). Where the effect tested is the relationship between the predictor of interest and the outcome variable, holding all other predictors constant.
+
+Unlike the most common null hypothesis significance tests looking to detect a difference or the existence of an effect statistically different than zero, in negligible effect testing, the hypotheses are flipped: In essence, H0 states that the effect is non-negligible, whereas H1 states that the effect is in fact statistically and practically negligible.
+
+The statistical tests are based on Anderson-Hauck (1983) and Schuirmann's (1987) Two One-Sided Test (TOST) equivalence testing procedures; namely addressing the question of whether the estimated effect size (and its associated uncertainty) of a predictor variable in a multiple regression model is smaller than the what the user defines as negligible effect size. Defining what is considered negligible effect is done by specifying the negligible (equivalence) interval: its upper (eiu) and lower (eil) bounds.
+
+The negligible (equivalence) interval should be set based on the context of the research. Because the predictor's effect size can be in either standardized or unstandardized units, setting eil and eiu is a matter of determining what magnitude of the relationship between predictor and outcome in either standardized or unstandardized units is the minimally meaningful effect size (MMES) given the context of the research.
+
+It is necessary to be consistent with the units of measurement. For example, unstandardized negligible interval bounds (i.e., eil and eiu) must only be used when std = FALSE (default). If the effect size (b), standard error (se), and sample size (n) are entered manually as arguments (i.e., without the dataset), these should also be in the same units of measurements. Whereas if the user prefers to specify eiu and eil in standardized unites, std = TRUE should be specified. In which case, any units entered into the function must also be in standardized form. Mixing unstandardized and standardized units would yield inaccurate results and likely lead to invalid conclusions. Thus, users must be cognizant of the measurement units of the negligible interval.
+
+There are two main approaches to using neg.reg. The first (and more recommended) is by inserting a dataset ('data' argument) into the function. If the user/s have access to the dataset, they should use the following set of arguments: data, formula, predictor, bootstrap (optional), nboot (optional), and seed (optional). However, this function also accommodates cases where no dataset is available. In this case, users should use the following set of arguments instead: b, se, n, and nop. In either situation, users must specify the negligible interval bounds (eiu and eil). Other optional arguments and features include: alpha, std, test, plots, and saveplots.
+
+The proportional distance (PD; effect size/eiu) estimates the proportional distance of the estimated effect to eiu, and acts as an alternative effect size measure.
+
+The confidence interval for the PD is computed via bootstrapping (percentile bootstrap), unless the user does not insert a dataset. In which case, the PD confidence interval is calculated by dividing the upper and lower CI bounds for the effect size estimate by the absolute value of the negligible interval bounds.
 }
 \examples{
 # Negligible Regression Coefficient (equivalence interval: -.1 to .1)
@@ -85,9 +120,12 @@ dp <- stats::rnorm(20)
 dat <- data.frame(pr1,pr2,dp)
 # dataset available (unstandardized coefficients, AH procedure):
 neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1,nboot=50)
+neg.reg(b=.03, se=.01, nop=3,n=500, eil=-.1,eiu=.1)
+# end.
 
 }
 \author{
-Udi Alter \email{udialter@yorku.ca} and
-  Alyssa Counsell \email{a.counsell@ryerson.ca}
+Udi Alter \email{udialter@gmail.com} and
+  Alyssa Counsell \email{a.counsell@ryerson.ca} and
+  Rob Cribbie \email{cribbie@yorku.ca}
 }

@@ -4,14 +4,16 @@
 \alias{neg.pd}
 \title{Proportional Distance Function (post hoc function - not to be used independently)}
 \usage{
-neg.pd(effect, PD, EIsign, PDcil, PDciu, cil, ciu, Elevel, Plevel, save)
+neg.pd(effect, PD, eil, eiu, PDcil, PDciu, cil, ciu, Elevel, Plevel, save, oe)
 }
 \arguments{
 \item{effect}{observed effect}
 
 \item{PD}{proportional distance for effect}
 
-\item{EIsign}{equivalence interval value of the same sign as the effect}
+\item{eil}{lower bound of the equivalence interval}
+
+\item{eiu}{upper bound of the equivalence interval}
 
 \item{PDcil}{lower bound of the CI for the proportional distance}
 
@@ -26,6 +28,8 @@ neg.pd(effect, PD, EIsign, PDcil, PDciu, cil, ciu, Elevel, Plevel, save)
 \item{Plevel}{1-alpha CI for the PD}
 
 \item{save}{Whether to save the plot or not}
+
+\item{oe}{Name of the original units of the effect of interest}
 }
 \value{
 nothing is returned

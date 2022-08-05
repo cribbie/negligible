@@ -152,7 +152,7 @@ neg.twoindmeans <- function(v1 = NULL, v2 = NULL, dv = NULL, iv = NULL,
       ci_raw<-stats::quantile(bsraw,probs=c(alpha,1-alpha))
       ci_d<-stats::quantile(bsd,probs=c(alpha,1-alpha))
       ci_pd<-stats::quantile(bspd,probs=c(alpha/2,1-alpha/2))
-      
+
       title <- "Schuirmann-Welch Test of the Equivalence of Two Independent Groups"
     }
     if (varequiv == TRUE) {
@@ -194,7 +194,7 @@ neg.twoindmeans <- function(v1 = NULL, v2 = NULL, dv = NULL, iv = NULL,
       ci_pd<-stats::quantile(bspd,probs=c(alpha/2,1-alpha/2))
       title <- "Schuirmann's Test of the Equivalence of Two Independent Groups"
     }
-    
+
   }
   if (normality == FALSE) {
     h1 <- length(v1) - 2 * floor(tr * length(v1))
@@ -282,7 +282,6 @@ neg.twoindmeans <- function(v1 = NULL, v2 = NULL, dv = NULL, iv = NULL,
 #' @rdname neg.twoindmeans
 #' @param x object of class \code{neg.twoindmeans}
 #' @param ... extra arguments
-#' @return
 #' @export
 #'
 
@@ -314,7 +313,7 @@ print.neg.twoindmeans <- function(x, ...) {
   cat("**********************\n\n")
   cat("NHST Decision:", "\n", x$decis, "\n\n", sep="")
   cat("**********************\n\n")
-  
+
   if (x$pl == TRUE) {
     neg.pd(effect = x$effsizeraw,
            PD = x$effsizepd,

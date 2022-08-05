@@ -38,8 +38,6 @@ A \code{list} including the following:
   \item \code{crit_LWW_md} Critical value for the Levene-Wellek-Welch statistic based on the median.
   \item \code{alpha} Nominal Type I error rate
 }
-
-
 }
 \description{
 This function allows researchers to test whether the difference

@@ -12,7 +12,7 @@ neg.intcont(
   eiU,
   standardized = TRUE,
   nbootpd = 1000,
-  data,
+  data = NULL,
   alpha = 0.05,
   plot = TRUE,
   save = FALSE
