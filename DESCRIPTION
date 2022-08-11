@@ -1,7 +1,7 @@
 Package: negligible
 Type: Package
 Title: A Collection of Functions for Negligible Effect/Equivalence Testing
-Version: 0.1.1
+Version: 0.1.2
 Authors@R:
     c(person(given = "Robert",
              family = "Cribbie",
