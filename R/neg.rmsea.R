@@ -33,6 +33,8 @@
 #'
 #' The proportional distance quantifies the proportional distance from 0 to the nearest negligible effect (equivalence) interval (here, eiU). As values get farther from 0 the relationship becomes more substantial, with values greater than 1 indicating that the effect falls outside of the negligible effect (equivalence) interval.
 #'
+#' Note that the number of bootstrap samples (nbootpd) are low for the example since the example has a time limit of 5 seconds to pass CRAN testing; we recommend running a much higher number of bootstrap samples for analyses.
+#'
 #' @author Rob Cribbie \email{cribbie@@yorku.ca} and
 #'   Nataly Beribisky \email{natalyb1@@yorku.ca}
 #'
@@ -44,10 +46,10 @@
 #' speed =~ x7 + x8 + x9'
 #' fit1 <- lavaan::cfa(hs.mod, data = d)
 #' neg.rmsea(alpha = .05, mod = fit1, eq.bound = .05, ci.method = "not.close", modif.eq.bound = FALSE,
-#' round = 5, nboot = 25, nbootpd = 25)
+#' round = 5, nbootpd = 25)
 
 neg.rmsea <- function(mod, alpha = .05, eq.bound, modif.eq.bound = FALSE,
-                     ci.method = "not.close", nbootpd = 50L,
+                     ci.method = "not.close", nbootpd = 100L,
                      nboot = 250L, round = 3, plot = TRUE, saveplot = FALSE) {
 
   # title

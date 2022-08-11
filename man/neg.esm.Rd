@@ -82,14 +82,15 @@ The variables X, Y and M can be specified as stand-alone, or a data argument can
 For the Kenny method see: https://davidakenny.net/cm/mediate.htm
 
 The proportional distance quantifies the proportional distance from 0 to the nearest negligible effect (equivalence) interval (eiL, eiU). As values get farther from 0 the relationship becomes more substantial, with values greater than 1 indicating that the effect falls outside of the negligible effect (equivalence) interval.
+
+Note that the number of bootstrap samples (nboot) are low for the example since the example has a time limit of 5 seconds to pass CRAN testing; we recommend running a much higher number of bootstrap samples for analyses.
 }
 \examples{
 #equivalence test for substantial mediation
 #with an equivalence interval of -.15 to .15
-X<-rnorm(100,sd=2)
-M<-.5*X + rnorm(100)
-Y<-.5*M + rnorm(100)
-neg.esm(X,Y,M, eil = -.15, eiu = .15,nboot = 50)
+d <- negligible::perfectionism
+neg.esm(X = atqpre.total,Y = cesdpost.total,M = baipre.total,
+  eil = -.15, eiu = .15,nboot = 5, data = d)
 }
 \author{
 Rob Cribbie \email{cribbie@yorku.ca} and

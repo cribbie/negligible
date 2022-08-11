@@ -11,7 +11,7 @@ neg.rmsea(
   eq.bound,
   modif.eq.bound = FALSE,
   ci.method = "not.close",
-  nbootpd = 50L,
+  nbootpd = 100L,
   nboot = 250L,
   round = 3,
   plot = TRUE,
@@ -67,6 +67,8 @@ The user specifies the lavaan fitted model object, the desired equivalence bound
 For information on modified equivalence bounds see Yuan, K. H., Chan, W., Marcoulides, G. A., & Bentler, P. M. (2016). Assessing structural equation models by equivalence testing with adjusted fit indexes. Structural Equation Modeling: A Multidisciplinary Journal, 23(3), 319-330. doi: https://doi.org/10.1080/10705511.2015.1065414.
 
 The proportional distance quantifies the proportional distance from 0 to the nearest negligible effect (equivalence) interval (here, eiU). As values get farther from 0 the relationship becomes more substantial, with values greater than 1 indicating that the effect falls outside of the negligible effect (equivalence) interval.
+
+Note that the number of bootstrap samples (nbootpd) are low for the example since the example has a time limit of 5 seconds to pass CRAN testing; we recommend running a much higher number of bootstrap samples for analyses.
 }
 \examples{
 d <- lavaan::HolzingerSwineford1939
@@ -75,7 +77,7 @@ textual =~ x4 + x5 + x6
 speed =~ x7 + x8 + x9'
 fit1 <- lavaan::cfa(hs.mod, data = d)
 neg.rmsea(alpha = .05, mod = fit1, eq.bound = .05, ci.method = "not.close", modif.eq.bound = FALSE,
-round = 5, nboot = 25, nbootpd = 25)
+round = 5, nbootpd = 25)
 }
 \author{
 Rob Cribbie \email{cribbie@yorku.ca} and

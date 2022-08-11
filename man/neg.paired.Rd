@@ -112,6 +112,7 @@ neg.paired(var1=d$control,var2=d$intervention,eil=-1,eiu=1,plot=TRUE)
 neg.paired(var1=d$control,var2=d$intervention,eil=-1,eiu=1,normality=FALSE,
            plot=TRUE)
 
+\dontrun{
 #long format
 sample1<-sample(1:20, 20, replace=FALSE)
 sample2<-sample(1:20, 20, replace=FALSE)
@@ -148,6 +149,7 @@ x[c(3,6)]<-NA
 y<-rnorm(10)
 y[c(7)]<-NA
 neg.paired(x,y,eil=-1,eiu=1, normality=FALSE)
+}
 }
 \author{
 Rob Cribbie \email{cribbie@yorku.ca}

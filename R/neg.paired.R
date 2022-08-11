@@ -75,6 +75,7 @@
 #' neg.paired(var1=d$control,var2=d$intervention,eil=-1,eiu=1,normality=FALSE,
 #'            plot=TRUE)
 #'
+#' \dontrun{
 #' #long format
 #' sample1<-sample(1:20, 20, replace=FALSE)
 #' sample2<-sample(1:20, 20, replace=FALSE)
@@ -111,6 +112,7 @@
 #' y<-rnorm(10)
 #' y[c(7)]<-NA
 #' neg.paired(x,y,eil=-1,eiu=1, normality=FALSE)
+#' }
 
 neg.paired <- function(var1 = NULL, var2 = NULL,
                        outcome = NULL, group = NULL, ID = NULL,
