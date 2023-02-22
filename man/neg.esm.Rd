@@ -88,9 +88,10 @@ Note that the number of bootstrap samples (nboot) are low for the example since 
 \examples{
 #equivalence test for substantial mediation
 #with an equivalence interval of -.15 to .15
-d <- negligible::perfectionism
-neg.esm(X = atqpre.total,Y = cesdpost.total,M = baipre.total,
-  eil = -.15, eiu = .15,nboot = 5, data = d)
+X<-rnorm(200,sd=2)
+M<-.5*X + rnorm(100)
+Y<-.5*M + rnorm(100)
+neg.esm(X,Y,M, eil = -.15, eiu = .15, nboot = 5)
 }
 \author{
 Rob Cribbie \email{cribbie@yorku.ca} and

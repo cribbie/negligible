@@ -55,7 +55,7 @@
 #' neg.indvars(dv=depvar,iv=indvar)
 
 neg.indvars<-function(dv, iv, eps = .5, alpha = .05,
-            na.rm=TRUE, data = NULL, ...) {
+                      na.rm=TRUE, data = NULL, ...) {
   if (!is.null(data)) {
     dv<-deparse(substitute(dv))
     iv<-deparse(substitute(iv))
@@ -68,12 +68,12 @@ neg.indvars<-function(dv, iv, eps = .5, alpha = .05,
   ngroup<-length(unique(iv))
   vars<-(tapply(dv, iv, stats::var))
   ratio_lsvar<-max(vars)/min(vars)
-
+  
   ## Equivalence test for Equivalence of Variances ##
   LWW_md<-stats::oneway.test(resp.median~iv)$statistic*((ngroup-1)/(mean(n)))
   crit_LWW_md<-((ngroup-1)/(mean(n)))*stats::qf(p=alpha, df1=ngroup-1,
-                              df2=stats::oneway.test(resp.median~iv)$parameter[2],
-                              ncp=(mean(n))*eps^2)
+                                                df2=stats::oneway.test(resp.median~iv)$parameter[2],
+                                                ncp=(mean(n))*eps^2)
   ifelse (LWW_md <= crit_LWW_md,
           decis_equiv<-"The null hypothesis that the differences between the population variances falls outside the equivalence interval can be rejected. A negligible difference among the population variances can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
           decis_equiv<-"The null hypothesis that the differences between the population variances falls outside the equivalence interval cannot be rejected. A negligible difference among the population variances cannot be concluded. Be sure to interpret the magnitude (and precision) of the effect size.")
@@ -110,3 +110,10 @@ print.neg.indvars <- function(x, ...) {
   cat("**********************\n\n")
 }
 
+#Two Group Example
+indvar<-rep(c("a","b"),c(10,12))
+depvar<-rnorm(22)
+d<-data.frame(indvar,depvar)
+neg.indvars(depvar,indvar)
+neg.indvars(dv=depvar,iv=indvar,eps=.25,data=d)
+neg.indvars(dv=depvar,iv=indvar,eps=.5)

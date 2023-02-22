@@ -73,7 +73,10 @@ The proportional distance (interaction coefficient/negligible effect bound) esti
 The confidence interval for the proportional distance is computed via bootstrapping (percentile bootstrap).
 }
 \examples{
-d<-perfectionism
-neg.intcont(outcome = mpshfpre.sop, pred1 = cesdpre.total, pred2 = atqpre.total, data = d,
+y<-rnorm(25)
+x1<-rnorm(25)
+x2<-rnorm(25)
+d<-data.frame(y,x1,x2)
+neg.intcont(outcome = y, pred1 = x1, pred2 = x2, data = d,
 eiL = -.25, eiU = .25, standardized = TRUE, nbootpd = 100)
 }

@@ -73,14 +73,21 @@
 #'
 #' @examples
 #' # Negligible Regression Coefficient (equivalence interval: -.1 to .1)
-#' pr1 <- stats::rnorm(20)
-#' pr2 <- stats::rnorm(20)
-#' dp <- stats::rnorm(20)
+#' pr1 <- stats::rnorm(200, mean = 0, sd= 1)
+#' pr2 <- stats::rnorm(200, mean = 0, sd= 1)
+#' dp <- stats::rnorm(200, mean = 0, sd= 1)
 #' dat <- data.frame(pr1,pr2,dp)
-#' # dataset available (unstandardized coefficients, AH procedure):
-#' neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1,nboot=50)
-#' neg.reg(b=.03, se=.01, nop=3,n=500, eil=-.1,eiu=.1)
+#'
+#' # dataset available (unstandardized coefficients, AH procedure, using bootstrap-generated CIs):
+#' neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1,nboot=500)
+#' neg.reg(formula=dat$dp ~ dat$pr1 + dat$pr2, predictor= pr1, eil= -.25, eiu= .2, nboot=500)
+#'
+#' # dataset unavailable (standardized coefficients, TOST procedure):
+#' neg.reg(b= .017, se= .025, nop= 3, n= 500, eil=-.1,eiu=.1, std=TRUE, test="TOST")
 #' # end.
+#'
+#'
+#'
 #'
 neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dataset
                     b = NULL, se=NULL, nop=NULL, n=NULL,     #input for no dataset
@@ -117,11 +124,12 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
   ############################################ FULL DATA SECTION ####################
   if(!is.null(data) & is.null(formula)){
     stop("please enter the regression formula using the 'formula' argument")}
-  if(is.null(data) & !is.null(formula)){
-    stop("please enter the dataset using the 'data' argument")}
 
-  if(!is.null(data) & !is.null(formula)){ # when dataset is entered
+
+
+  if(!is.null(formula)){ # when dataset is entered
     withdata <- TRUE
+
 
     extract.formula.vars <- function(formula, data){
       var.dat <- match.call(expand.dots = FALSE)
@@ -136,41 +144,107 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
     }
 
     data <- extract.formula.vars(formula,data)
+
+    std.data <- lapply(data, function(x) if(is.numeric(x)){ # only scaling/standardizing numeric/continuous variables
+      scale(x, center=TRUE, scale=TRUE)
+    } else x)
+    std.data <- as.data.frame(std.data)
+
+
+   ####
+    binary2numericwarning <- function(x){
+      if(is.character(x)) {
+        x <- as.factor(x)
+      }
+        if(is.factor(x) & nlevels(x) > 2 ){
+          stop("If your predictor of interest is categorical with more than two levels, please dummy-code your variable before and specify the specific contrast of interest in the 'predictor' argument, e.g., predictor = D1, where D1 represents the comparison between Group A and Group B. For help, you can use the 'fastDummies' package.")
+        } else {
+          x <- as.numeric(x)
+        }
+
+    }
+
+
+    data <- lapply(data, function(x) binary2numericwarning(x))
+    data <- as.data.frame(data)
+
+    std.data <- lapply(std.data, function(x) binary2numericwarning(x))
+    std.data <- as.data.frame(std.data)
+
+
     n  <- nrow(data) # determining the sample size
+
     model <- stats::lm(formula, data)
     model.results <- summary(model)
 
     # reg. coefficient point estimate and ci's
     predictor <- deparse(substitute(predictor))
+    predictor <- gsub(".*\\$", "", predictor)
+    predictor <- predictor[1L]
     if (predictor=="NULL") {
       stop("please enter the name of the predictor you are interested in testing using the 'predictor' argument")
     }
-    if(!(predictor %in% colnames(data))){
-      stop(predictor, " variable was not found in your data")
-    }
+
+
     b.num <- grep(predictor, attr(model$terms , "term.labels"))+1 # this will indicate the place/number of the predictor in the model (e.g., 1st pred.) accounts for the intercept as well
+    #b <- model$coefficients[predictor][[1]]
+    #l.ci <- stats::confint(model, level = 1-alpha)[predictor,][[1]] # extract raw coefficient value, lower bound at 1-alpha
+    #u.ci <- stats::confint(model,level = 1-alpha)[predictor,][[2]] # extract raw coefficient value, upper bound at 1-alpha
+    #l.ci.2a <- stats::confint(model, level = 1-2*alpha)[predictor,][[1]] # extract raw coefficient value, lower bound 1 - 2*alpha for NHST decision
+    #u.ci.2a <- stats::confint(model, level = 1-2*alpha)[predictor,][[2]] # extract raw coefficient value, upper bound 1 - 2*alpha for NHST decision
+
     b <- model$coefficients[b.num][[1]] # extract raw coefficient value
-    l.ci <- stats::confint(model, level = 1-alpha)[predictor,][[1]] # extract raw coefficient value, lower bound at 1-alpha
-    u.ci <- stats::confint(model,level = 1-alpha)[predictor,][[2]] # extract raw coefficient value, upper bound at 1-alpha
-    l.ci.2a <- stats::confint(model, level = 1-2*alpha)[predictor,][[1]] # extract raw coefficient value, lower bound 1 - 2*alpha for NHST decision
-    u.ci.2a <- stats::confint(model, level = 1-2*alpha)[predictor,][[2]] # extract raw coefficient value, upper bound 1 - 2*alpha for NHST decision
+    l.ci <- stats::confint(model, level = 1-alpha)[b.num,][[1]] # extract raw coefficient value, lower bound at 1-alpha
+    u.ci <- stats::confint(model,level = 1-alpha)[b.num,][[2]] # extract raw coefficient value, upper bound at 1-alpha
+    l.ci.2a <- stats::confint(model, level = 1-2*alpha)[b.num,][[1]] # extract raw coefficient value, lower bound 1 - 2*alpha for NHST decision
+    u.ci.2a <- stats::confint(model, level = 1-2*alpha)[b.num,][[2]] # extract raw coefficient value, upper bound 1 - 2*alpha for NHST decision
 
     # std.error, degrees of freedom, and prerequisites
-    se <- model.results$coefficients[b.num,2] # extract standard error for predictor
+    se <- model.results$coefficients[b.num,2]
+    #se <- model.results$coefficients[predictor,2] # extract standard error for predictor
     df <- model$df.residual # extract degrees of freedom for model
     depname <- attr(model$terms, "variables")[[2]] # extract name of outcome variable
 
+
+    vars <- all.vars(formula)
+    if(length(vars)>length(names(data))) {
+     data.name <- vars[1]
+     vars <- vars[-1]
+      colnames(data) <- vars
+      colnames(std.data) <- vars
+    }
+
+    newform <- paste(vars[1],"~",vars[2])
+
+    if(length(vars)==2) {
+      formula <- newform
+    } else {
+      h <- paste(vars[3:length(vars)],collapse = "+", sep = "+")
+      formula <- paste(newform,h,sep = "+")
+      }
+    formula <- formula(formula)
+
+
+
     # standardized forms (beta, variables, delta, ci's)
-    std.data <- data.frame(scale(data))
+
     std.model <- stats::lm(formula, std.data)
     std.model.results <- summary(std.model)
 
     beta <- std.model$coefficients[b.num][[1]] # extract std. coefficient value
+
+
+
     beta.se <- std.model.results$coefficients[b.num,2] # extract standard error for predictor
-    l.std.ci <- stats::confint(std.model, level = 1-alpha)[predictor,][[1]] # extract std. coefficient value, lower bound at 1-alpha
-    u.std.ci <- stats::confint(std.model,level = 1-alpha)[predictor,][[2]] # extract std. coefficient value, upper bound at 1-alpha
-    l.std.ci.2a <- stats::confint(std.model, level = 1-2*alpha)[predictor,][[1]] # extract std. coefficient value, lower bound 1 - 2*alpha for NHST decision
-    u.std.ci.2a <- stats::confint(std.model, level = 1-2*alpha)[predictor,][[2]] # extract std. coefficient value, upper bound 1 - 2*alpha for NHST decision
+   # beta.se <- std.model.results$coefficients[b.num, 2]
+
+
+
+    l.std.ci <- stats::confint(std.model, level = 1-alpha)[b.num,][[1]] # extract std. coefficient value, lower bound at 1-alpha
+    u.std.ci <- stats::confint(std.model,level = 1-alpha)[b.num,][[2]] # extract std. coefficient value, upper bound at 1-alpha
+    l.std.ci.2a <- stats::confint(std.model, level = 1-2*alpha)[b.num,][[1]] # extract std. coefficient value, lower bound 1 - 2*alpha for NHST decision
+    u.std.ci.2a <- stats::confint(std.model, level = 1-2*alpha)[b.num,][[2]] # extract std. coefficient value, upper bound 1 - 2*alpha for NHST decision
+
 
     # BOOTSTRAPPING SECTION
     # creating an empty matrix to soon hold our results
@@ -180,7 +254,6 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
       beta.coef<-numeric(nboot)
       propdis.beta<-numeric(nboot)
 
-
       if(is.na(seed)){
         if (!exists(".Random.seed")) stats::runif(1)
         seed <- sample(.Random.seed[1], size = 1)
@@ -189,9 +262,11 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
         }
       set.seed(seed)
       for (i in 1:nboot) {
-        temp.data <- dplyr::sample_n(data,n , replace = TRUE)
-        temp.std.data <- dplyr::sample_n(std.data,n , replace = TRUE)
-        temp.model <- stats::lm(formula, data = temp.data)
+        temp.data <- dplyr::sample_n(data , n , replace = TRUE)
+        temp.model <- stats::lm(formula=formula, data=temp.data)
+
+        temp.std.data <- dplyr::sample_n(std.data , n , replace = TRUE)
+
         temp.std.model <- stats::lm(formula, data = temp.std.data)
         # regression coefficients
         b.coef[i]<-temp.model$coefficients[b.num][[1]]
@@ -201,6 +276,7 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
         propdis.b[i] <- b.coef[i]/abs(temp.EIc)
         propdis.beta[i] <- beta.coef[i]/abs(temp.EIc)
       } # end of bootstrapping For loop
+
 
       # Proportional Distance and confidence intervals for PD
       ifelse(sign(b)==sign(eiu), EIc<-eiu, EIc<-eil)
@@ -225,7 +301,6 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
       u.ci.2a <- stats::quantile(b.coef,1-alpha)
       l.ci.2a <- stats::quantile(b.coef,alpha)
 
-
       u.std.ci <- stats::quantile(beta.coef,1-alpha/2)
       l.std.ci <- stats::quantile(beta.coef,alpha/2)
       u.std.ci.2a <- stats::quantile(beta.coef,1-alpha)
@@ -233,7 +308,7 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
 
     } # end of bootstrapping section
 
-    if (std==TRUE) {
+    if (std == TRUE) {
       b   <- beta
       se <- beta.se
       u.ci <- u.std.ci
@@ -247,7 +322,11 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
       pd.l.ci.2a <- PD.l.ci.2a
     } # end of std = T selection
 
-      } # end of full data sections
+
+
+
+
+  } # end of full data sections
 
  ############################################ NO DATA SECTION ####################
 
@@ -397,7 +476,7 @@ print.neg.reg <- function(x,...) {
   }
 
   if (x$test == "AH" & x$plots == TRUE){
-    cat("\n*Note that NHST decisions using the AH procedure may not match TOST NHST results or the Symmetric CI Approach at 100*(1-2\u03B1)% illustrated in the plots. \n")
+    cat("\n*Note that in rare cases, where p is close to \u03B1, NHST decisions using the AH procedure may not match TOST NHST results or the Symmetric CI Approach at 100*(1-2\u03B1)% illustrated in the plots. \n")
   }
   cat("\n**********************\n\n")
   cat("Proportional Distance","\n\n")

@@ -92,292 +92,292 @@
 #' # end.
 #'
 neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, # specific arguments when data is available
-                   r1=NULL, n1=NULL, r2=NULL, n2=NULL, # specific arguments when data is NOT available
-                   dep=FALSE, r3=NA, # arguments related to dependent correlations
-                   test = "AH", eiu, eil, alpha=.05, bootstrap=TRUE, nboot=1000, seed=NA, # testing-related arguments
-                   plots=TRUE, saveplots=FALSE,...) # graphics-related arguments
-  {
-
+                        r1=NULL, n1=NULL, r2=NULL, n2=NULL, # specific arguments when data is NOT available
+                        dep=FALSE, r3=NA, # arguments related to dependent correlations
+                        test = "AH", eiu, eil, alpha=.05, bootstrap=TRUE, nboot=1000, seed=NA, # testing-related arguments
+                        plots=TRUE, saveplots=FALSE,...) # graphics-related arguments
+{
+  
   ################################  delta / SESOI / Equivalence Interval ##########################
   if (is.null(eiu)) {
     stop("please enter the upper bound of the equivalence interval using the eiu= argument")}
-
+  
   if (is.null(eil)) {
     stop("please enter the lower bound of the equivalence interval using the eil= argument")}
-
+  
   if (sign(eiu) == sign(eil)) {
     stop("The equivalence interval must include zero")
   }
   if (eiu < 0 & eil > 0) {
     temp.eiu <- eil
     temp.eil <- eiu
-
+    
     eiu <- temp.eiu
     eil <- temp.eil
   }
-
-
-# FULL DATA SECTION, WHEN DATA INSERTED
-
-          if(!is.null(data)) {
-            withdata <- TRUE
-
-            r1v1 <- deparse(substitute(r1v1))
-            r1v2 <- deparse(substitute(r1v2))
-            r2v1 <- deparse(substitute(r2v1))
-            r2v2 <- deparse(substitute(r2v2))
-            if(r1v1=="NULL") {r1v1<-NULL}
-            if(r1v2=="NULL") {r1v2<-NULL}
-            if(r2v1=="NULL") {r2v1<-NULL}
-            if(r2v2=="NULL") {r2v2<-NULL}
-
-              if(is.null(r1v1) | is.null(r1v2)){
-              stop("Please choose two variables from your data to include in r1 caluclation")}
-              if(is.null(r2v1) | is.null(r2v2)){
-               stop("Please choose two variables from your data to include in r2 caluclation")}
-
-            if(!(r1v1 %in% colnames(data))){
-              stop(r1v1, " was not found in your data")
-            } else if(!(r1v2 %in% colnames(data))){
-              stop(r1v2, " was not found in your data")
-            } else if(!(r2v1 %in% colnames(data))){
-              stop(r2v1, " was not found in your data")
-            } else if(!(r2v2 %in% colnames(data))){
-              stop(r2v2, " was not found in your data")
-            }
-
-              dr1v1 <- eval(substitute(data$r1v1), data)
-              dr1v2 <- eval(substitute(data$r1v2), data)
-              dr2v1 <- eval(substitute(data$r2v1), data)
-              dr2v2 <- eval(substitute(data$r2v2), data)
-
-              dat1 <- data.frame(dr1v1, dr1v2)
-              names(dat1)[1] <- r1v1
-              names(dat1)[2] <- r1v2
-              dat1<- stats::na.omit(dat1)
-
-              dat2 <- data.frame(dr2v1, dr2v2)
-              names(dat2)[1] <- r2v1
-              names(dat2)[2] <- r2v2
-              dat2<- stats::na.omit(dat2)
-
-              # r1 calculations
-              if(!is.numeric(dr1v1) | !is.numeric(dr1v2)) {
-               stop('Both variables for r1 must be numeric')}
-              r1 <- stats::cor(dat1[,1], dat1[,2])
-              n1 <- nrow(dat1)
-
-              # r2 calculations
-              if(!is.numeric(dr2v1) | !is.numeric(dr2v2)) {
-                stop('Both variables for r2 must be numeric')}
-              r2 <- stats::cor(dat2[,1], dat2[,2])
-              n2 <- nrow(dat2)
-
-              # r3 calculation
-              shared.vars <- FALSE
-              if (identical(dr1v1, dr2v1) | identical(r1v1,r2v1)) {
-                r3 <- stats::cor(dr1v2, dr2v2)
-                shared.vars <- TRUE}
-              if (identical(dr1v2, dr2v2) | identical(r1v2,r2v2)){
-                r3 <- stats::cor(dr1v1, dr2v1)
-                shared.vars <- TRUE}
-              if (identical(dr1v1, dr2v2)| identical(r1v1,r2v2)){
-                r3 <- stats::cor(dr1v2, dr2v1)
-                shared.vars <- TRUE}
-              if (identical(dr1v2, dr2v1)| identical(r1v2,r2v1)){
-                r3 <- stats::cor(dr1v1, dr2v2)
-                shared.vars <- TRUE}
-
-              if (dep==TRUE){
-                if (shared.vars ==FALSE & is.na(r3)) {
-                stop("The two correlation coefficients do not share a common variable and/or you did not specify r3")}
-                }
-                if(dep==FALSE & shared.vars==TRUE){
-                  stop("you specified dep=FALSE (independent correlation coefficients), but looks like you are using a shared variable to calculate both r1 and r2, please adjust the dep argument to TRUE")
-                }
-
-            # RAW EFFECT SIZE
-            rawdiff <-  r1 - r2
-            se <- sqrt((((1 - r1^2)^2)/(n1 - 2)) + (((1 - r2^2)^2)/(n2 - 2))) # standard error for correlation coefficients difference, according to Kraatz (2007)
-            temp.u <- rawdiff + stats::qnorm(alpha)*se # upper bound of confidence interval
-            temp.l <- rawdiff - stats::qnorm(alpha)*se # lower bound of confidence interval
-            temp.u.2a <- rawdiff + stats::qnorm(2*alpha)*se # upper bound of confidence interval
-            temp.l.2a <- rawdiff - stats::qnorm(2*alpha)*se # lower bound of confidence interval
-            if (temp.l < temp.u) {
-                                u.ci.a <- temp.u
-                                l.ci.a <- temp.l
-                                u.ci.2a <- temp.u.2a
-                                l.ci.2a <- temp.l.2a
-            } else {
-              u.ci.a <- temp.l
-              l.ci.a <- temp.u
-              u.ci.2a <- temp.l.2a
-              l.ci.2a <- temp.u.2a
-              } # if lower CI bound value is actually larger than upper value, switch definitions of lower and upper
-
-# BOOTSTRAPPING SECTION
-
-            # creating an empty matrix to soon hold our results
-            rs.diffs<-numeric(nboot)
-            propdis.rdif <-numeric(nboot)
-
-            if(is.na(seed)){
-              seed <- sample(.Random.seed[1], size = 1)
-            } else {
-              seed <- seed
-            }
-            set.seed(seed)
-            for (i in 1:nboot) {
-              temp.dat1 <- dplyr::sample_n(dat1,n1, replace = TRUE)
-              temp.dat2 <- dplyr::sample_n(dat2,n2, replace = TRUE)
-              temp.rl <- stats::cor(temp.dat1[,1], temp.dat1[,2])
-              temp.r2 <- stats::cor(temp.dat2[,1], temp.dat2[,2])
-              # raw diff
-              rs.diffs[i]<- temp.rl - temp.r2
-              # Proportional Distance
-              ifelse(sign(rs.diffs[i])==sign(eiu), temp.EIc<-eiu, temp.EIc<-eil)
-              propdis.rdif[i] <- rs.diffs[i]/abs(temp.EIc)
-            } # end of bootstrapping For loop
-
-# Proportional Distance and confidence intervals for PD
-            ifelse(sign(rawdiff)==sign(eiu), EIc<-eiu, EIc<-eil)
-            pd <- rawdiff/abs(EIc) # simple PD, without bootstrapping
-            pd.se <- stats::sd(propdis.rdif)
-            pd.u.ci <- stats::quantile(propdis.rdif,1-alpha/2)
-            pd.l.ci <- stats::quantile(propdis.rdif,alpha/2)
-            pd.u.ci.2a <- stats::quantile(propdis.rdif,1-alpha)
-            pd.l.ci.2a <- stats::quantile(propdis.rdif,alpha)
-
-            if (bootstrap==TRUE){
-              u.ci.a <- stats::quantile(rs.diffs,1-alpha/2)
-              l.ci.a <- stats::quantile(rs.diffs,alpha/2)
-              u.ci.2a <- stats::quantile(rs.diffs,1-alpha)
-              l.ci.2a <- stats::quantile(rs.diffs,alpha)
-                }
-            } # END OF FULL DATA SECTION
-
-# NO DATA SECTION
+  
+  
+  # FULL DATA SECTION, WHEN DATA INSERTED
+  
+  if(!is.null(data)) {
+    withdata <- TRUE
+    
+    r1v1 <- deparse(substitute(r1v1))
+    r1v2 <- deparse(substitute(r1v2))
+    r2v1 <- deparse(substitute(r2v1))
+    r2v2 <- deparse(substitute(r2v2))
+    if(r1v1=="NULL") {r1v1<-NULL}
+    if(r1v2=="NULL") {r1v2<-NULL}
+    if(r2v1=="NULL") {r2v1<-NULL}
+    if(r2v2=="NULL") {r2v2<-NULL}
+    
+    if(is.null(r1v1) | is.null(r1v2)){
+      stop("Please choose two variables from your data to include in r1 caluclation")}
+    if(is.null(r2v1) | is.null(r2v2)){
+      stop("Please choose two variables from your data to include in r2 caluclation")}
+    
+    if(!(r1v1 %in% colnames(data))){
+      stop(r1v1, " was not found in your data")
+    } else if(!(r1v2 %in% colnames(data))){
+      stop(r1v2, " was not found in your data")
+    } else if(!(r2v1 %in% colnames(data))){
+      stop(r2v1, " was not found in your data")
+    } else if(!(r2v2 %in% colnames(data))){
+      stop(r2v2, " was not found in your data")
+    }
+    
+    dr1v1 <- eval(substitute(data$r1v1), data)
+    dr1v2 <- eval(substitute(data$r1v2), data)
+    dr2v1 <- eval(substitute(data$r2v1), data)
+    dr2v2 <- eval(substitute(data$r2v2), data)
+    
+    dat1 <- data.frame(dr1v1, dr1v2)
+    names(dat1)[1] <- r1v1
+    names(dat1)[2] <- r1v2
+    dat1<- stats::na.omit(dat1)
+    
+    dat2 <- data.frame(dr2v1, dr2v2)
+    names(dat2)[1] <- r2v1
+    names(dat2)[2] <- r2v2
+    dat2<- stats::na.omit(dat2)
+    
+    # r1 calculations
+    if(!is.numeric(dr1v1) | !is.numeric(dr1v2)) {
+      stop('Both variables for r1 must be numeric')}
+    r1 <- stats::cor(dat1[,1], dat1[,2])
+    n1 <- nrow(dat1)
+    
+    # r2 calculations
+    if(!is.numeric(dr2v1) | !is.numeric(dr2v2)) {
+      stop('Both variables for r2 must be numeric')}
+    r2 <- stats::cor(dat2[,1], dat2[,2])
+    n2 <- nrow(dat2)
+    
+    # r3 calculation
+    shared.vars <- FALSE
+    if (identical(dr1v1, dr2v1) | identical(r1v1,r2v1)) {
+      r3 <- stats::cor(dr1v2, dr2v2)
+      shared.vars <- TRUE}
+    if (identical(dr1v2, dr2v2) | identical(r1v2,r2v2)){
+      r3 <- stats::cor(dr1v1, dr2v1)
+      shared.vars <- TRUE}
+    if (identical(dr1v1, dr2v2)| identical(r1v1,r2v2)){
+      r3 <- stats::cor(dr1v2, dr2v1)
+      shared.vars <- TRUE}
+    if (identical(dr1v2, dr2v1)| identical(r1v2,r2v1)){
+      r3 <- stats::cor(dr1v1, dr2v2)
+      shared.vars <- TRUE}
+    
+    if (dep==TRUE){
+      if (shared.vars ==FALSE & is.na(r3)) {
+        stop("The two correlation coefficients do not share a common variable and/or you did not specify r3")}
+    }
+    if(dep==FALSE & shared.vars==TRUE){
+      stop("you specified dep=FALSE (independent correlation coefficients), but looks like you are using a shared variable to calculate both r1 and r2, please adjust the dep argument to TRUE")
+    }
+    
+    # RAW EFFECT SIZE
+    rawdiff <-  r1 - r2
+    se <- sqrt((((1 - r1^2)^2)/(n1 - 2)) + (((1 - r2^2)^2)/(n2 - 2))) # standard error for correlation coefficients difference, according to Kraatz (2007)
+    temp.u <- rawdiff + stats::qnorm(alpha)*se # upper bound of confidence interval
+    temp.l <- rawdiff - stats::qnorm(alpha)*se # lower bound of confidence interval
+    temp.u.2a <- rawdiff + stats::qnorm(2*alpha)*se # upper bound of confidence interval
+    temp.l.2a <- rawdiff - stats::qnorm(2*alpha)*se # lower bound of confidence interval
+    if (temp.l < temp.u) {
+      u.ci.a <- temp.u
+      l.ci.a <- temp.l
+      u.ci.2a <- temp.u.2a
+      l.ci.2a <- temp.l.2a
+    } else {
+      u.ci.a <- temp.l
+      l.ci.a <- temp.u
+      u.ci.2a <- temp.l.2a
+      l.ci.2a <- temp.u.2a
+    } # if lower CI bound value is actually larger than upper value, switch definitions of lower and upper
+    
+    # BOOTSTRAPPING SECTION
+    
+    # creating an empty matrix to soon hold our results
+    rs.diffs<-numeric(nboot)
+    propdis.rdif <-numeric(nboot)
+    
+    if(is.na(seed)){
+      seed <- sample(.Random.seed[1], size = 1)
+    } else {
+      seed <- seed
+    }
+    set.seed(seed)
+    for (i in 1:nboot) {
+      temp.dat1 <- dplyr::sample_n(dat1,n1, replace = TRUE)
+      temp.dat2 <- dplyr::sample_n(dat2,n2, replace = TRUE)
+      temp.rl <- stats::cor(temp.dat1[,1], temp.dat1[,2])
+      temp.r2 <- stats::cor(temp.dat2[,1], temp.dat2[,2])
+      # raw diff
+      rs.diffs[i]<- temp.rl - temp.r2
+      # Proportional Distance
+      ifelse(sign(rs.diffs[i])==sign(eiu), temp.EIc<-eiu, temp.EIc<-eil)
+      propdis.rdif[i] <- rs.diffs[i]/abs(temp.EIc)
+    } # end of bootstrapping For loop
+    
+    # Proportional Distance and confidence intervals for PD
+    ifelse(sign(rawdiff)==sign(eiu), EIc<-eiu, EIc<-eil)
+    pd <- rawdiff/abs(EIc) # simple PD, without bootstrapping
+    pd.se <- stats::sd(propdis.rdif)
+    pd.u.ci <- stats::quantile(propdis.rdif,1-alpha/2)
+    pd.l.ci <- stats::quantile(propdis.rdif,alpha/2)
+    pd.u.ci.2a <- stats::quantile(propdis.rdif,1-alpha)
+    pd.l.ci.2a <- stats::quantile(propdis.rdif,alpha)
+    
+    if (bootstrap==TRUE){
+      u.ci.a <- stats::quantile(rs.diffs,1-alpha/2)
+      l.ci.a <- stats::quantile(rs.diffs,alpha/2)
+      u.ci.2a <- stats::quantile(rs.diffs,1-alpha)
+      l.ci.2a <- stats::quantile(rs.diffs,alpha)
+    }
+  } # END OF FULL DATA SECTION
+  
+  # NO DATA SECTION
   if(is.null(data) & !is.null(r1v1) & !is.null(r1v2) & !is.null(r2v1) & !is.null(r2v2)) {
     stop("if the data argument is not specified, please use the r1, n1, r2, and n2 arguments instead")
   }
-
-    if(is.null(data) & is.null(r1v1) & is.null(r1v2) & is.null(r2v1) & is.null(r2v2)) {
-     withdata <- FALSE
-     r1v1 <- NA
-     r1v2 <- NA
-     r2v1 <- NA
-     r2v2 <- NA
-
-           if (!is.null(r1) & !is.null(n1)) {
-                if (r1 >= 1 | r1 <= -1){ # making sure the correlation coefficient is valid, i.e., anywhere between -1 to 1
-                  stop("Invalid correlation input for r1")
-                  } else {
-                    r1 <- as.numeric(r1)
-                    n1 <- as.numeric(n1)}
-          } else {
-            stop("Please specify both n1 and r1")
-          }
-
-           if (!is.null(r2) & !is.null(n2)) {
+  
+  if(is.null(data) & is.null(r1v1) & is.null(r1v2) & is.null(r2v1) & is.null(r2v2)) {
+    withdata <- FALSE
+    r1v1 <- NA
+    r1v2 <- NA
+    r2v1 <- NA
+    r2v2 <- NA
+    
+    if (!is.null(r1) & !is.null(n1)) {
+      if (r1 >= 1 | r1 <= -1){ # making sure the correlation coefficient is valid, i.e., anywhere between -1 to 1
+        stop("Invalid correlation input for r1")
+      } else {
+        r1 <- as.numeric(r1)
+        n1 <- as.numeric(n1)}
+    } else {
+      stop("Please specify both n1 and r1")
+    }
+    
+    if (!is.null(r2) & !is.null(n2)) {
       if (r2 >= 1 | r2 <= -1){ # making sure the correlation coefficient is valid, i.e., anywhere between -1 to 1
         stop("Invalid correlation input for r2")
-        } else {
-          r2 <- as.numeric(r2)
-          n2 <- as.numeric(n2)}
+      } else {
+        r2 <- as.numeric(r2)
+        n2 <- as.numeric(n2)}
     } else {
       stop("Please specify both n2 and r2")
     }
-
-  # RAW EFFECT SIZE, NO DATA
-  rawdiff <-  r1 - r2
-  se <- sqrt((((1 - r1^2)^2)/(n1 - 2)) + (((1 - r2^2)^2)/(n2 - 2))) # standard error for correlation coefficients difference, according to Kraatz (2007)
-  temp.u <- rawdiff + stats::qnorm(alpha)*se # upper bound of confidence interval
-  temp.l <- rawdiff - stats::qnorm(alpha)*se # lower bound of confidence interval
-  temp.u.2a <- rawdiff + stats::qnorm(2*alpha)*se # upper bound of confidence interval
-  temp.l.2a <- rawdiff - stats::qnorm(2*alpha)*se # lower bound of confidence interval
-  if (temp.l < temp.u) {
-    u.ci.a <- temp.u
-    l.ci.a <- temp.l
-    u.ci.2a <- temp.u.2a
-    l.ci.2a <- temp.l.2a
-  } else {
-    u.ci.a <- temp.l
-    l.ci.a <- temp.u
-    u.ci.2a <- temp.l.2a
-    l.ci.2a <- temp.u.2a
-  } # if lower CI bound value is actually larger than upper value, switch definitions of lower and upper
-
-  # PD
-  ifelse(sign(rawdiff)==sign(eiu), EIc<-eiu, EIc<-eil)
-  pd <- rawdiff/abs(EIc)
-  # only if no data is available (can't use bootstrap CIs):
-  pd.u.ci <- u.ci.a/abs(eiu)
-  pd.l.ci <- l.ci.a/abs(eil)
-  pd.u.ci.2a <-  u.ci.2a/abs(eiu)
-  pd.l.ci.2a <- l.ci.2a/abs(eil)
-
-}
-
+    
+    # RAW EFFECT SIZE, NO DATA
+    rawdiff <-  r1 - r2
+    se <- sqrt((((1 - r1^2)^2)/(n1 - 2)) + (((1 - r2^2)^2)/(n2 - 2))) # standard error for correlation coefficients difference, according to Kraatz (2007)
+    temp.u <- rawdiff + stats::qnorm(alpha)*se # upper bound of confidence interval
+    temp.l <- rawdiff - stats::qnorm(alpha)*se # lower bound of confidence interval
+    temp.u.2a <- rawdiff + stats::qnorm(2*alpha)*se # upper bound of confidence interval
+    temp.l.2a <- rawdiff - stats::qnorm(2*alpha)*se # lower bound of confidence interval
+    if (temp.l < temp.u) {
+      u.ci.a <- temp.u
+      l.ci.a <- temp.l
+      u.ci.2a <- temp.u.2a
+      l.ci.2a <- temp.l.2a
+    } else {
+      u.ci.a <- temp.l
+      l.ci.a <- temp.u
+      u.ci.2a <- temp.l.2a
+      l.ci.2a <- temp.u.2a
+    } # if lower CI bound value is actually larger than upper value, switch definitions of lower and upper
+    
+    # PD
+    ifelse(sign(rawdiff)==sign(eiu), EIc<-eiu, EIc<-eil)
+    pd <- rawdiff/abs(EIc)
+    # only if no data is available (can't use bootstrap CIs):
+    pd.u.ci <- u.ci.a/abs(eiu)
+    pd.l.ci <- l.ci.a/abs(eil)
+    pd.u.ci.2a <-  u.ci.2a/abs(eiu)
+    pd.l.ci.2a <- l.ci.2a/abs(eil)
+    
+  }
+  
   # BOTH DATA AND NO DATA
   title <- "Test for Evaluating Negligible Difference Between Two Correlation Coefficients"
-
+  
   if (dep == FALSE) { # Independent correlations tests
-  subtitle <- "Comparison of Independent Correlation Coefficients"
-  # AH-rho (Counsell & Cribbie, 2015)
-  testID <- sprintf("AH-%s: Counsell-Cribbie Test for Comparing Two Independent Correlation Coefficients", "\u03C1")
-  p.value <- stats::pnorm((abs(rawdiff) - eiu)/se) -
-    stats::pnorm((-abs(rawdiff) - eiu)/se)
-  r3 <- NA
-  # KTOST-rho calculation as specified by to Counsell & Cribbie (2015)
-  z1 <- (r1-r2-eil)/se
-  z2 <- (r1-r2-eiu)/se
-  p.value.1 <-stats::pnorm(z1, lower.tail=FALSE)
-  p.value.2 <-stats::pnorm(z2, lower.tail=TRUE)
-  testID.tost <- sprintf("KTOST-%s: Counsell-Cribbie Test for Comparing Two Independent Correlation Coefficients", "\u03C1")
-  t1 <- NA
-  t2 <- NA
-  degfree <- NA
+    subtitle <- "Comparison of Independent Correlation Coefficients"
+    # AH-rho (Counsell & Cribbie, 2015)
+    testID <- sprintf("AH-%s: Counsell-Cribbie Test for Comparing Two Independent Correlation Coefficients", "\u03C1")
+    p.value <- stats::pnorm((abs(rawdiff) - eiu)/se) -
+      stats::pnorm((-abs(rawdiff) - eiu)/se)
+    r3 <- NA
+    # KTOST-rho calculation as specified by to Counsell & Cribbie (2015)
+    z1 <- (r1-r2-eil)/se
+    z2 <- (r1-r2-eiu)/se
+    p.value.1 <-stats::pnorm(z1, lower.tail=FALSE)
+    p.value.2 <-stats::pnorm(z2, lower.tail=TRUE)
+    testID.tost <- sprintf("KTOST-%s: Counsell-Cribbie Test for Comparing Two Independent Correlation Coefficients", "\u03C1")
+    t1 <- NA
+    t2 <- NA
+    degfree <- NA
   }
-
+  
   if (dep == TRUE) { # Dependent correlations tests
     if (withdata==FALSE & is.na(r3)){
-        stop("you specified dep=TRUE (dependent correlation coefficients), please specify a value for r3, or include a dataset")
+      stop("you specified dep=TRUE (dependent correlation coefficients), please specify a value for r3, or include a dataset")
     }
-  subtitle <- "Comparison of Dependent Correlation Coefficients"
-  # AH-rho-D calculation as specified by to Counsell & Cribbie (2015)
-  testID <- sprintf("AH-%s-D: Counsell-Cribbie Test for Comparing Two Dependent Correlation Coefficients", "\u03C1")
-  R <- (1-r1^2-r2^2-r3^2)+(2*r1*r2*r3)
-  N <- n1+n2
-  inside.sqrt <- ((N-1)*(1+r3))/(2*R*(N-1)/(N-3) + ((1-r3)^3 * (r1+r2)^2)/4)
-  pval.cmpnnt1 <- (abs(r1-r2)-eiu)*(sqrt(inside.sqrt))
-  pval.cmpnnt2 <-  (-abs(r1-r2)-eiu)*(sqrt(inside.sqrt))
-  p.value <- stats::pnorm(pval.cmpnnt1) - stats::pnorm(pval.cmpnnt2)
-  # KTOST-rho-D calculation as specified by to Counsell & Cribbie (2015)
-  t1 <- (r1-r2-eil)*(sqrt(inside.sqrt))
-  t2 <- (r1-r2-eiu)*(sqrt(inside.sqrt))
-  degfree <- N-3
-  p.value.1 <-stats::pt(t1, degfree, lower.tail=FALSE)
-  p.value.2 <-stats::pt(t2, degfree, lower.tail=TRUE)
-  testID.tost <- sprintf("TOST-%s-D: Counsell-Cribbie Test for Comparing Two Dependent Correlation Coefficients", "\u03C1")
-  z1 <- NA
-  z2 <- NA
+    subtitle <- "Comparison of Dependent Correlation Coefficients"
+    # AH-rho-D calculation as specified by to Counsell & Cribbie (2015)
+    testID <- sprintf("AH-%s-D: Counsell-Cribbie Test for Comparing Two Dependent Correlation Coefficients", "\u03C1")
+    R <- (1-r1^2-r2^2-r3^2)+(2*r1*r2*r3)
+    N <- n1+n2
+    inside.sqrt <- ((N-1)*(1+r3))/(2*R*(N-1)/(N-3) + ((1-r3)^3 * (r1+r2)^2)/4)
+    pval.cmpnnt1 <- (abs(r1-r2)-eiu)*(sqrt(inside.sqrt))
+    pval.cmpnnt2 <-  (-abs(r1-r2)-eiu)*(sqrt(inside.sqrt))
+    p.value <- stats::pnorm(pval.cmpnnt1) - stats::pnorm(pval.cmpnnt2)
+    # KTOST-rho-D calculation as specified by to Counsell & Cribbie (2015)
+    t1 <- (r1-r2-eil)*(sqrt(inside.sqrt))
+    t2 <- (r1-r2-eiu)*(sqrt(inside.sqrt))
+    degfree <- N-3
+    p.value.1 <-stats::pt(t1, degfree, lower.tail=FALSE)
+    p.value.2 <-stats::pt(t2, degfree, lower.tail=TRUE)
+    testID.tost <- sprintf("TOST-%s-D: Counsell-Cribbie Test for Comparing Two Dependent Correlation Coefficients", "\u03C1")
+    z1 <- NA
+    z2 <- NA
   }
-# DECISION AH
+  # DECISION AH
   ifelse(p.value < alpha, decision <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the specified equivalence interval), can be rejected. A negligible difference between the two correlation coefficients in the population can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
          decision <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), was NOT rejected: There is insufficient evidence that the difference between the two correlation coefficients is negligible in the population. Be sure to interpret the magnitude (and precision) of the effect size.")
-# DECISION KTOST
+  # DECISION KTOST
   ifelse(p.value.1 < alpha & p.value.2 < alpha, decision.tost <- "The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), can be rejected. A negligible difference between the two correlation coefficients in the population can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
          decision.tost <-"The null hypothesis that the difference between the two correlation coefficients is non-negligible (i.e., beyond the equivalence interval), was NOT rejected: There is insufficient evidence that the difference between the two correlation coefficients is negligible in the population. Be sure to interpret the magnitude (and precision) of the effect size.")
-
-# Organizing for output and Value
- ifelse(p.value.1 <= p.value.2, pv <- p.value.2, pv <- p.value.1)
- ifelse(test == "AH", NHSTdecision <- decision, NHSTdecision <- decision.tost)
- ifelse(test == "AH", which.test <- testID, which.test <- testID.tost)
- if(test == "AH"){
+  
+  # Organizing for output and Value
+  ifelse(p.value.1 <= p.value.2, pv <- p.value.2, pv <- p.value.1)
+  ifelse(test == "AH", NHSTdecision <- decision, NHSTdecision <- decision.tost)
+  ifelse(test == "AH", which.test <- testID, which.test <- testID.tost)
+  if(test == "AH"){
     pv <- p.value
- }
-
-# SUMMARY OF RESULTS
+  }
+  
+  # SUMMARY OF RESULTS
   res <- data.frame(title = title,
                     subtitle = subtitle,
                     test = test,
@@ -444,7 +444,7 @@ print.neg.twocors<- function(x,...) {
   cat("\n\n")
   cat(x$title, "\n\n")
   cat("***",x$subtitle, "***\n\n")
-
+  
   if (x$withdata==TRUE){
     cat("Correlation coefficients:", "\n",
         " Variables: ", x$r1v1," & ",x$r1v2,", r1 = ",round(x$r1,3), "\n",
@@ -452,7 +452,7 @@ print.neg.twocors<- function(x,...) {
     if(x$dep == TRUE){
       cat(" r3 = ",x$r3,"\n", sep = "")
     }
-
+    
     cat("**********************\n\n")
     if (x$bootstrap == TRUE) {
       cat("Correlation coefficients' difference and confidence interval using ", x$nboot," bootstrap iterations (seed=",x$seed,"):","\n",
@@ -469,22 +469,22 @@ print.neg.twocors<- function(x,...) {
         " r1 = ",round(x$r1,3), "\n",
         " r2 = ",round(x$r2,3), "\n", sep = "")
     if(x$dep == TRUE){
-       cat(" r3 = ",x$r3,"\n", sep = "")
-      }
+      cat(" r3 = ",x$r3,"\n", sep = "")
+    }
     cat("**********************\n\n")
     cat("Correlation coefficients' raw difference:","\n",
         " r1-r2 =", round(x$rawdiff,3), ", ",x$perc.a, "% CI [",round(x$l.ci.a,3),", ",round(x$u.ci.a,3),"]" ,"\n",
         " std. error = ", round(x$se,3), "\n", sep = "")
-    }
+  }
   cat("**********************\n\n")
-
+  
   # NHST results
   if (x$test == "AH"){
-  ifelse(x$p.value < 0.001, p.val <- "< 0.001", p.val <- paste("= ", round(x$p.value,3), sep = ""))
-  cat(x$testID)
-  cat("\nEquivalence Interval: ","Lower = ", round(x$eil,3), ", ", "Upper = ", round(x$eiu,3), "\n", sep = "")
-  cat("p value ",p.val,"\n", sep = "")
-  cat("NHST Decision: ", x$decision,"\n", sep = "")
+    ifelse(x$p.value < 0.001, p.val <- "< 0.001", p.val <- paste("= ", round(x$p.value,3), sep = ""))
+    cat(x$testID)
+    cat("\nEquivalence Interval: ","Lower = ", round(x$eil,3), ", ", "Upper = ", round(x$eiu,3), "\n", sep = "")
+    cat("p value ",p.val,"\n", sep = "")
+    cat("NHST Decision: ", x$decision,"\n", sep = "")
   } else { # if KTOST
     cat(x$testID.tost)
     cat("\nEquivalence Interval: ","Lower = ", round(x$eil,3), ", ", "Upper = ", round(x$eiu,3), "\n", sep = "")
@@ -497,7 +497,7 @@ print.neg.twocors<- function(x,...) {
     if (x$dep == FALSE) {
       cat("Z1 value = ",round(x$z1,3),"\n", sep = "")
       cat("Z2 value = ",round(x$z2,3),"\n", sep = "")
-      }
+    }
     if (x$dep == TRUE) {
       cat("t1 value = ",round(x$t1,3),"\n", sep = "")
       cat("t2 value = ",round(x$t2,3),"\n", sep = "")
@@ -509,13 +509,13 @@ print.neg.twocors<- function(x,...) {
     cat("p2 value ",p2.val,"\n", sep = "", "\n")
     cat("NHST Decision: ", x$decision.tost,"\n", sep = "")
     cat("\n*Note that when using the KTOST-\u03C1 or TOST-\u03C1-D procedures, the null hypothesis of a non-negligible difference between the two population correlation coefficients is only rejected if BOTH p values are less than \u03B1.\n")
-    }
-    if(x$plots == TRUE) {
-      neg.pd(effect=x$rawdiff, PD = x$pd, eil=x$eil, eiu=x$eiu, PDcil=x$pd.l.ci, PDciu=x$pd.u.ci, cil=x$l.ci.2a,
-             ciu=x$u.ci.2a, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$saveplots, oe=x$oe)
-      if (x$test=="AH"){
+  }
+  if(x$plots == TRUE) {
+    neg.pd(effect=x$rawdiff, PD = x$pd, eil=x$eil, eiu=x$eiu, PDcil=x$pd.l.ci, PDciu=x$pd.u.ci, cil=x$l.ci.2a,
+           ciu=x$u.ci.2a, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$saveplots, oe=x$oe)
+    if (x$test=="AH"){
       cat("\n*Note that NHST decisions using the AH-\u03C1 and AH-\u03C1-D procedures may not match KTOST-\u03C1 and TOST-\u03C1-D results or the Symmetric CI Approach at 100*(1-2\u03B1)% illustrated in the plot. \n")
-        }
+    }
   }
   cat("\n**********************\n\n")
   cat("Proportional Distance","\n\n")
@@ -524,3 +524,12 @@ print.neg.twocors<- function(x,...) {
   cat("*Note that the confidence interval for the proportional distance may not be precise with small sample sizes","\n")
   cat("*******************", "\n\n")
 }
+
+v1a<-stats::rnorm(10)
+v2a<-stats::rnorm(10)
+v1b <- stats::rnorm(10)
+v2b <- stats::rnorm(10)
+dat<-data.frame(v1a, v2a, v1b, v2b)
+neg.twocors(r1v1=v1a,r1v2=v2a,r2v1=v1b,r2v2=v2b,data=dat,eiu=.15,eil=-.15,nboot=50, dep=FALSE)
+
+

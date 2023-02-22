@@ -80,7 +80,6 @@ The 'plot' argument, if TRUE, will generate a plot of the observed effect (corre
 #with an interval of ei=(-.2.2)
 v1 <- rnorm(50)
 v2 <- rnorm(50)
-plot(v1, v2)
 cor(v1, v2)
 neg.cor(v1 = v1, v2 = v2, eiU = .2, eiL = -.2)
 }

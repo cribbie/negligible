@@ -52,9 +52,10 @@
 #' @examples
 #' #equivalence test for substantial mediation
 #' #with an equivalence interval of -.15 to .15
-#' d <- negligible::perfectionism
-#' neg.esm(X = atqpre.total,Y = cesdpost.total,M = baipre.total,
-#'   eil = -.15, eiu = .15,nboot = 5, data = d)
+#' X<-rnorm(200,sd=2)
+#' M<-.5*X + rnorm(100)
+#' Y<-.5*M + rnorm(100)
+#' neg.esm(X,Y,M, eil = -.15, eiu = .15, nboot = 5)
 neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
                   eil=-.15,eiu=.15,nboot=1000L,
                   data=NULL, plot=TRUE, saveplot=FALSE,
@@ -115,11 +116,16 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
   dir_eff <- pel[1,5]
   med_p<-pel$pvalue[pel$label=='ab']
   ab_par<-pel$est[pel$label=='ab']
+  ab_par<-round(ab_par, 3)
   c_par<-pel$est[pel$label=='total']
   cil <-pel$ci.lower[pel$label=='c']
+  cil <- round(cil, 3)
   ciu <- pel$ci.upper[pel$label=='c']
+  ciu <- round(ciu, 3)
   abdivc_k <- ab_par/c_par
+  abdivc_k <- round(abdivc_k, 3)
   corxy <- stats::cor(dat$X,dat$Y)
+  corxy <- round(corxy, 3)
   ifelse(pel$ci.lower[pel$label=='c']>eil &
            pel$ci.upper[pel$label=='c']<eiu &
            abs(stats::cor(dat$Y,dat$X))>=minc,esm_dec<-"The null hypothesis that the direct effect (difference between the total and indirect effect) is non-negligible can be rejected. Substantial Mediation CAN be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
@@ -134,10 +140,13 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
 
   #Effect Size
   prop_med<-MBESS::mediation(x=dat$X,mediator=dat$M,dv=dat$Y)$Effect.Sizes[7,1]
+  prop_med<-round(prop_med, 3)
   csie<-MBESS::upsilon(x=dat$X,mediator=dat$M,dv=dat$Y,B=nboot)[1,1]
+  csie<-round(csie,3)
   csie_lb<-MBESS::upsilon(x=dat$X,mediator=dat$M,dv=dat$Y,B=nboot)[1,2]
+  csie_lb<-round(csie_lb, 3)
   csie_ub<-MBESS::upsilon(x=dat$X,mediator=dat$M,dv=dat$Y,B=nboot)[1,3]
-
+  csie_ub<-round(csie_ub, 3)
   # Calculate Proportional Distance
   if (dir_eff > 0) {
     EIc <- eiu
@@ -147,6 +156,7 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
   }
 
   PD <- dir_eff/abs(EIc)
+  PD <- round(PD, 3)
 
   #Calculate the PD CI
   propdis<-numeric(nboot)
@@ -184,9 +194,10 @@ neg.esm<-function(X,Y,M,alpha=.05,minc=.15,
   }
 
   ci_pd<-stats::quantile(propdis,probs=c(alpha/2,1-alpha/2))
+  ci_pd <- round(ci_pd, 3)
   ci_pm<-stats::quantile(propmed,probs=c(alpha/2,1-alpha/2))
-
-    #### Summary #####
+  ci_pm<-round(ci_pm, 3)
+  #### Summary #####
   title0 <- "Effect Sizes for the Indirect Effect"
   title1 <- "Equivalence Testing Method for Substantial Mediation (ESM)"
   title2 <- "Kenny Method for Full Mediation"
@@ -269,4 +280,3 @@ print.neg.esm <- function(x, ...) {
 
 
 }
-

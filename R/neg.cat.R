@@ -50,7 +50,7 @@ neg.cat <- function (v1 = NULL, v2 = NULL,
                      tab = NULL, eiU = .2, data = NULL,
                      plot = TRUE, save = FALSE, nbootpd = 1000,
                      alpha = .05) {
-
+  
   if (!is.null(tab) & is.null(data)) {
     countsToCases <- function(x, countcol = "Freq") {
       idx <- rep.int(seq_len(nrow(x)), x[[countcol]])
@@ -78,21 +78,22 @@ neg.cat <- function (v1 = NULL, v2 = NULL,
     dat <- data.frame(v1,v2)
     dat <- stats::na.omit(dat)
   }
-
+  
   if (any(tab<=1)) {
     print("Do not trust results, frequencies in one or more categories are too low for the analysis. You might also receive an error related to the low frequencies.")
   }
   cv <- DescTools::CramerV(tab,conf.level=(1-2*alpha))
-  propvar = cv[1]^2
+  cv <- round(cv, 3)
+  propvar = round(cv[1]^2, 3)
   ifelse (cv[3] <= eiU,
           decis <- "The null hypothesis that the relationship between the categorical variables is substantial can be rejected. A negligible relationship among the variables is concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
           decis <- "The null hypothesis that the relationship between the categorical variables is substantial CANNOT be rejected. There is insufficient evidence to conclude a negligible effect. Be sure to interpret the magnitude (and precision) of the effect size.")
-
+  cv
   #### Plots ####
   # Calculate Proportional Distance
   PD <- cv[1]/eiU
-
-  # confidence interval for Proportional distance
+  
+  # Confidence Interval for Proportional Distance
   propd<-numeric(nbootpd)
   for (i in 1:nbootpd) {
     xx<-dplyr::sample_n(dat,size=nrow(dat),replace=TRUE)
@@ -100,8 +101,8 @@ neg.cat <- function (v1 = NULL, v2 = NULL,
     cvpd<-DescTools::CramerV(tabxx)
     propd[i]<-cvpd/eiU
   }
-  CI95L<-stats::quantile(propd,.025,na.rm=TRUE)
-  CI95U<-stats::quantile(propd,.975,na.rm=TRUE)
+  CI95L<-round(stats::quantile(propd,.025,na.rm=TRUE),3)
+  CI95U<-round(stats::quantile(propd,.975,na.rm=TRUE),3)
   ret <- data.frame(cramv = cv[1],
                     propvar = propvar,
                     cil = cv[2],
@@ -147,10 +148,20 @@ print.neg.cat <- function (x, ...) {
   cat("Confidence Interval for the Proportional Distance: (",x$CI95L, ",",x$CI95U,")","\n\n",sep="")
   cat("Note: Confidence Interval for the Proportional Distance may not be precise with small N","\n")
   cat("*******************", "\n\n")
-
-
+  
+  
   if (x$pl == TRUE) {
-    neg.pd(effect=x$cramv, PD = x$PD, eil=x$eiU, eiu=x$eiU, PDcil=x$CI95L, PDciu=x$CI95U, cil=x$cil, ciu=x$ciu, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$save, oe=x$oe)
+    neg.pd(effect=x$cramv, PD = x$PD, eil=x$eiU, eiu=x$eiU, 
+    PDcil=x$CI95L, PDciu=x$CI95U, cil=x$cil, ciu=x$ciu, 
+    Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), 
+    save = x$save, oe=x$oe)
   }
-
+  
 }
+
+sex<-rep(c("m","f"),c(12,22))
+haircol<-rep(c("bld","brn","bld","brn"),c(9,7,11,7))
+d <- data.frame(sex,haircol)
+tab<-table(sex,haircol)
+neg.cat(tab=tab, alpha=.05, nbootpd=50)
+neg.cat(v1=sex, v2=haircol, data=d, nbootpd=50)

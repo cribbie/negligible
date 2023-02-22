@@ -132,7 +132,7 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     if(outcome=="NULL") {outcome<-NULL}
     if(ID=="NULL") {ID<-NULL}
   }
-
+  
   if (is.null(var1) & is.null(var2) & !is.null(data)) {
     d<-data.frame(data$ID,data$group,data$outcome)
     names(d)[1] <- "ID"
@@ -149,7 +149,7 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     var1 <- d$var1
     var2 <- d$var2
   }
-
+  
   if (is.null(outcome) & is.null(group) & is.null(ID) & !is.null(data)) {
     var1 <- as.numeric(data[[var1]])
     var2 <- as.numeric(data[[var2]])
@@ -158,7 +158,7 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     var1 <- d$var1
     var2 <- d$var2
   }
-
+  
   if (is.null(var1) & is.null(var2) & is.null(data)) {
     d<-data.frame(ID,group,outcome)
     d <- d[stats::complete.cases(d),]
@@ -166,14 +166,14 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     var1<-as.numeric(unlist(d_wide[2]))
     var2<-as.numeric(unlist(d_wide[3]))
   }
-
+  
   if(is.na(seed)){
     seed <- sample(.Random.seed[1], size = 1)
   } else {
     seed <- seed
   }
   set.seed(seed)
-
+  
   if (normality==TRUE) {
     #TOST-P:
     r12<-stats::cor(var1,var2)
@@ -377,7 +377,7 @@ print.neg.paired <- function(x, ...) {
   cat("**********************\n\n")
   cat("NHST Decision:", "\n", x$decis, "\n\n", sep="")
   cat("**********************\n\n")
-
+  
   if (x$pl == TRUE) {
     neg.pd(effect = x$effsizeraw,
            PD = x$effsizepd,
@@ -394,5 +394,11 @@ print.neg.paired <- function(x, ...) {
   }
 }
 
-
+#wide format
+ID<-rep(1:20)
+control<-rnorm(20)
+intervention<-rnorm(20)
+d<-data.frame(ID, control, intervention)
+head(d)
+neg.paired(var1=control,var2=intervention,eil=-1,eiu=1,plot=TRUE,data=d)
 

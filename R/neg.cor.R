@@ -1,4 +1,3 @@
-
 #' Test for Lack of Association between Two Continuous Normally Distributed Variables: Equivalence-based correlation tests
 #'
 #' Function performs an equivalence based test of lack of association with resampling.
@@ -35,11 +34,11 @@
 #' @details This function evaluates whether a negligible relationship exists among two continuous variables.
 #'
 #' The statistical test is based on a bootstrap-generated 1-2*alpha CI for the correlation; in other words, does the 1-2*alpha CI for the falls completely within the negligible effect (equivalence) interval.
-#' 
+#'
 #' The user needs to specify the lower and upper bounds of the negligible effect (equivalence) interval (eiL,eiU). Since we working in a correlation magnitude, setting these bounds requires estimating the minimally meaningful effect size (MMES); in this case, the minimally meaningful correlation (e.g., eiL = - .3, eiU = .3).
-#' 
+#'
 #' The 'plot' argument, if TRUE, will generate a plot of the observed effect (correlation) with the associated 1-2*alpha CI, along with a plot of the PD and the associated 1-alpha CI.
-#' 
+#'
 #' @author Rob Cribbie \email{cribbie@@yorku.ca}
 #'   Phil Chalmers \email{rphilip.chalmers@@gmail.com} and
 #'   Nataly Beribisky \email{natalyb1@@yorku.ca}
@@ -49,7 +48,6 @@
 #' #with an interval of ei=(-.2.2)
 #' v1 <- rnorm(50)
 #' v2 <- rnorm(50)
-#' plot(v1, v2)
 #' cor(v1, v2)
 #' neg.cor(v1 = v1, v2 = v2, eiU = .2, eiL = -.2)
 neg.cor <- function(v1, v2, eiU, eiL, alpha = 0.05, na.rm = TRUE,
@@ -97,7 +95,7 @@ neg.cor <- function(v1, v2, eiU, eiL, alpha = 0.05, na.rm = TRUE,
     S <- stats::sd(thetastar) # sd
     alpha <- 1 - conf.level #alpha
     CI <- stats::quantile(thetastar, c(alpha/2, 1 -
-                                  alpha/2))
+                                         alpha/2))
     return(list(ThetaStar = thetastar, Mean.ThetaStar = M,
                 S.E.ThetaStar = S, Percentile.CI = CI)) # return list with thetastar, mean, sd, and CI
   }
@@ -203,3 +201,4 @@ print.neg.cor <- function(x, ...) {
   }
 
 }
+
