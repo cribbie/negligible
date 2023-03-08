@@ -52,7 +52,7 @@
 #' @examples
 #' #equivalence test for substantial mediation
 #' #with an equivalence interval of -.15 to .15
-#' X<-rnorm(200,sd=2)
+#' X<-rnorm(100,sd=2)
 #' M<-.5*X + rnorm(100)
 #' Y<-.5*M + rnorm(100)
 #' neg.esm(X,Y,M, eil = -.15, eiu = .15, nboot = 5)

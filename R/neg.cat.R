@@ -44,13 +44,13 @@
 #' haircol<-rep(c("bld","brn","bld","brn"),c(9,7,11,7))
 #' d <- data.frame(sex,haircol)
 #' tab<-table(sex,haircol)
-#' neg.cat(tab=tab, alpha=.05, nbootpd=50)
-#' neg.cat(v1=sex, v2=haircol, data=d, nbootpd=50)
+#' neg.cat(tab=tab, alpha=.05, nbootpd=5)
+#' neg.cat(v1=sex, v2=haircol, data=d, nbootpd=5)
 neg.cat <- function (v1 = NULL, v2 = NULL,
                      tab = NULL, eiU = .2, data = NULL,
                      plot = TRUE, save = FALSE, nbootpd = 1000,
                      alpha = .05) {
-  
+
   if (!is.null(tab) & is.null(data)) {
     countsToCases <- function(x, countcol = "Freq") {
       idx <- rep.int(seq_len(nrow(x)), x[[countcol]])
@@ -78,7 +78,7 @@ neg.cat <- function (v1 = NULL, v2 = NULL,
     dat <- data.frame(v1,v2)
     dat <- stats::na.omit(dat)
   }
-  
+
   if (any(tab<=1)) {
     print("Do not trust results, frequencies in one or more categories are too low for the analysis. You might also receive an error related to the low frequencies.")
   }
@@ -92,7 +92,7 @@ neg.cat <- function (v1 = NULL, v2 = NULL,
   #### Plots ####
   # Calculate Proportional Distance
   PD <- cv[1]/eiU
-  
+
   # Confidence Interval for Proportional Distance
   propd<-numeric(nbootpd)
   for (i in 1:nbootpd) {
@@ -148,20 +148,14 @@ print.neg.cat <- function (x, ...) {
   cat("Confidence Interval for the Proportional Distance: (",x$CI95L, ",",x$CI95U,")","\n\n",sep="")
   cat("Note: Confidence Interval for the Proportional Distance may not be precise with small N","\n")
   cat("*******************", "\n\n")
-  
-  
+
+
   if (x$pl == TRUE) {
-    neg.pd(effect=x$cramv, PD = x$PD, eil=x$eiU, eiu=x$eiU, 
-    PDcil=x$CI95L, PDciu=x$CI95U, cil=x$cil, ciu=x$ciu, 
-    Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), 
+    neg.pd(effect=x$cramv, PD = x$PD, eil=x$eiU, eiu=x$eiU,
+    PDcil=x$CI95L, PDciu=x$CI95U, cil=x$cil, ciu=x$ciu,
+    Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha),
     save = x$save, oe=x$oe)
   }
-  
+
 }
 
-sex<-rep(c("m","f"),c(12,22))
-haircol<-rep(c("bld","brn","bld","brn"),c(9,7,11,7))
-d <- data.frame(sex,haircol)
-tab<-table(sex,haircol)
-neg.cat(tab=tab, alpha=.05, nbootpd=50)
-neg.cat(v1=sex, v2=haircol, data=d, nbootpd=50)

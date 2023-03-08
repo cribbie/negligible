@@ -110,7 +110,7 @@ neg.paired(var1=control,var2=intervention,eil=-1,eiu=1,plot=TRUE,
            data=d)
 neg.paired(var1=d$control,var2=d$intervention,eil=-1,eiu=1,plot=TRUE)
 neg.paired(var1=d$control,var2=d$intervention,eil=-1,eiu=1,normality=FALSE,
-           plot=TRUE)
+           nboot=10,plot=TRUE)
 
 \dontrun{
 #long format

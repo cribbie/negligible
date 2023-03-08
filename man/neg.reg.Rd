@@ -114,14 +114,14 @@ The confidence interval for the PD is computed via bootstrapping (percentile boo
 }
 \examples{
 # Negligible Regression Coefficient (equivalence interval: -.1 to .1)
-pr1 <- stats::rnorm(200, mean = 0, sd= 1)
-pr2 <- stats::rnorm(200, mean = 0, sd= 1)
-dp <- stats::rnorm(200, mean = 0, sd= 1)
+pr1 <- stats::rnorm(20, mean = 0, sd= 1)
+pr2 <- stats::rnorm(20, mean = 0, sd= 1)
+dp <- stats::rnorm(20, mean = 0, sd= 1)
 dat <- data.frame(pr1,pr2,dp)
 
 # dataset available (unstandardized coefficients, AH procedure, using bootstrap-generated CIs):
-neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1,nboot=500)
-neg.reg(formula=dat$dp ~ dat$pr1 + dat$pr2, predictor= pr1, eil= -.25, eiu= .2, nboot=500)
+neg.reg(formula=dp~pr1+pr2,data=dat,predictor=pr1,eil=-.1,eiu=.1,nboot=5)
+neg.reg(formula=dat$dp ~ dat$pr1 + dat$pr2, predictor= pr1, eil= -.25, eiu= .25, nboot=5)
 
 # dataset unavailable (standardized coefficients, TOST procedure):
 neg.reg(b= .017, se= .025, nop= 3, n= 500, eil=-.1,eiu=.1, std=TRUE, test="TOST")
