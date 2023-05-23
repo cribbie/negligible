@@ -130,7 +130,7 @@ neg.rmsea <- function(mod, alpha = .05, eq.bound, modif.eq.bound = FALSE,
 
   # plots
   EIc <- eq.bound
-  PD <- (rmsea_index-1)/abs(EIc-1)
+  PD <- (rmsea_index-0)/abs(EIc-0)
 
   YHY.boot.for.pd <- lavaan::bootstrapLavaan(mod, R = nbootpd, type = "yuan", FUN = lavaan::fitMeasures,
                                       fit.measures = "rmsea")
@@ -187,14 +187,6 @@ print.neg.rmsea <- function(x, ...) {
     neg.pd(effect=x$rmsea_index, PD = x$PD, eil=x$eq.bound, eiu=x$eq.bound, PDcil=x$cilpd, PDciu=x$ciupd, cil=x$il, ciu=x$rmsea_eq, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$saveplot, oe=x$oe)
   }
 }
-library(lavaan)
-d <- lavaan::HolzingerSwineford1939
-hs.mod <- 'visual =~ x1 + x2 + x3
-textual =~ x4 + x5 + x6
-speed =~ x7 + x8 + x9'
-fit1 <- lavaan::cfa(hs.mod, data = d)
-neg.rmsea(alpha = .05, mod = fit1, eq.bound = .03, ci.method = "not.close", modif.eq.bound = FALSE,
-round = 5, nboot = 50)
 
 
 
