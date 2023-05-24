@@ -134,8 +134,8 @@ neg.rmsea <- function(mod, alpha = .05, eq.bound, modif.eq.bound = FALSE,
 
   YHY.boot.for.pd <- lavaan::bootstrapLavaan(mod, R = nbootpd, type = "yuan", FUN = lavaan::fitMeasures,
                                       fit.measures = "rmsea")
-  ci_upd <- stats::quantile((YHY.boot.for.pd-1)/abs(EIc-1),1-alpha/2)
-  ci_lpd <- stats::quantile((YHY.boot.for.pd-1)/abs(EIc-1),alpha/2)
+  ci_upd <- stats::quantile((YHY.boot.for.pd-0)/abs(EIc-0),1-alpha/2)
+  ci_lpd <- stats::quantile((YHY.boot.for.pd-0)/abs(EIc-0),alpha/2)
   ci_pd <- c(ci_lpd, ci_upd)
 
   ret <- data.frame(rmsea_eq = rmsea_eq,
