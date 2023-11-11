@@ -66,7 +66,7 @@
 #'
 #'
 #' @author Udi Alter \email{udialter@@gmail.com} and
-#'   Alyssa Counsell \email{a.counsell@@ryerson.ca} and
+#'   Alyssa Counsell \email{a.counsell@@torontomu.ca} and
 #'   Rob Cribbie \email{cribbie@@yorku.ca}
 #' @export neg.reg
 #'
@@ -88,14 +88,12 @@
 #'
 #'
 #'
-#'
 neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dataset
                     b = NULL, se=NULL, nop=NULL, n=NULL,     #input for no dataset
                     eil, eiu, alpha=.05, test="AH", std=FALSE,
                     bootstrap=TRUE, nboot=1000,
                     plots = TRUE, saveplots = FALSE, seed=NA,...) # optional input for both
   {
-
 
   ################################  delta / MMES / Equivalence Interval ##########################
   if (is.null(eiu)) {
@@ -124,7 +122,6 @@ neg.reg <- function(data=NULL, formula=NULL, predictor=NULL, #input for full dat
   ############################################ FULL DATA SECTION ####################
   if(!is.null(data) & is.null(formula)){
     stop("please enter the regression formula using the 'formula' argument")}
-
 
 
   if(!is.null(formula)){ # when dataset is entered
@@ -452,12 +449,12 @@ print.neg.reg <- function(x,...) {
 
   if (x$bootstrap == TRUE & x$withdata == TRUE) {
     cat(x$effect, " regression coefficient for ", x$predictor," and confidence interval using ", x$nboot," bootstrap iterations (random seed = ",x$seed,"):","\n",
-        x$symb, " = ", round(x$b,3), ", ",x$perc.a, "% CI [",round(x$l.ci,3),", ",round(x$u.ci,3),"]" ,"\n",
+        x$symb, " = ", round(x$b,3), ", ", ifelse(x$test == "AH", x$perc.a, x$perc.2a), "% CI [", ifelse(x$test == "AH", round(x$l.ci,3), round(x$l.ci.2a,3)), ", ",ifelse(x$test == "AH", round(x$u.ci,3), round(x$u.ci.2a,3)),"]" ,"\n",
         "std. error = ", round(x$se,3),  sep = "")
 
   } else {
   cat(x$effect, " regression coefficient for ", x$predictor,":", "\n",
-      x$symb, " = ", round(x$b,3), ", ",x$perc.a, "% CI [",round(x$l.ci,3),", ",round(x$u.ci,3),"]" ,"\n",
+      x$symb, " = ", round(x$b,3), ", ",ifelse(x$test == "AH", x$perc.a, x$perc.2a), "% CI [",ifelse(x$test == "AH", round(x$l.ci,3), round(x$l.ci.2a,3)),", ",ifelse(x$test == "AH", round(x$u.ci,3), round(x$u.ci.2a,3)),"]" ,"\n",
       "std. error = ", round(x$se,3), sep = "")
   }
 
@@ -487,6 +484,11 @@ print.neg.reg <- function(x,...) {
 
 
 if (x$plots == TRUE) {
+  
+  neg.pd(effect=x$b, PD = x$pd, eil=x$eil, eiu=x$eiu, PDcil=x$pd.l.ci, PDciu=x$pd.u.ci, cil=x$l.ci.2a,
+         ciu=x$u.ci.2a, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$saveplots, oe=x$oe)
+  
+  
   plot(NA, axes=F,
        xlim = c(min(x$l.ci,x$eil)-max(x$u.ci-x$l.ci, x$eiu-x$eil)/5, max(x$u.ci,x$eiu)+max(x$u.ci-x$l.ci, x$eiu-x$eil)/5),
        ylim = c(0,1),
@@ -505,7 +507,7 @@ if (x$plots == TRUE) {
   graphics::text(x$eiu+0.02,0,round(x$eiu,2),srt=0,pos=3, offset = .15, col = "red") # writing the eq. interval bound value (upper)
   graphics::text(x$eil-0.02,0,round(x$eil,2),srt=0,pos=3, offset = .15, col = "red") # writing the eq. interval bound value (lower)
   graphics::text(x$b,.37,round(x$b, digits = 2),srt=0) # writing the predictor point estimate value
-  graphics::text(x= x$b,y=.36, labels= x$symb, srt=1, pos = 2, offset = 2.3)# adding text to indicate above line
+  graphics::text(x= x$b,y=.36, labels= ifelse(x$std==TRUE, expression(paste(beta)), "b" ), srt=1, pos = 2, offset = 2.3)# adding text to indicate above line
   graphics::text(x= x$b,y=.36, labels="  =", srt=1, pos = 2, offset = 1.5) # adding text to indicate above line
   graphics::text(x$u.ci.2a,.27,round(x$u.ci.2a, digits = 2),pos =4, offset = .01, col = "black") # writing the 90% CI upper limit value for the predictor estimate
   graphics::text(x$l.ci.2a,.27,round(x$l.ci.2a, digits = 2), pos =2, offset = .01,col = "black") # writing the 90% CI lower limit value for the predictor estimate
@@ -517,9 +519,5 @@ if (x$plots == TRUE) {
       grDevices::dev.copy(grDevices::jpeg,paste("neg.reg_plot_seed_",x$seed,".jpeg")) }
   }
 
-  #grDevices::dev.off()
-
-  neg.pd(effect=x$b, PD = x$pd, eil=x$eil, eiu=x$eiu, PDcil=x$pd.l.ci, PDciu=x$pd.u.ci, cil=x$l.ci.2a,
-         ciu=x$u.ci.2a, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$saveplots, oe=x$oe)
  }
 }

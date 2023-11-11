@@ -129,10 +129,9 @@ neg.reg(b= .017, se= .025, nop= 3, n= 500, eil=-.1,eiu=.1, std=TRUE, test="TOST"
 
 
 
-
 }
 \author{
 Udi Alter \email{udialter@gmail.com} and
-  Alyssa Counsell \email{a.counsell@ryerson.ca} and
+  Alyssa Counsell \email{a.counsell@torontomu.ca} and
   Rob Cribbie \email{cribbie@yorku.ca}
 }

@@ -1,7 +1,7 @@
 Package: negligible
 Type: Package
 Title: A Collection of Functions for Negligible Effect/Equivalence Testing
-Version: 0.1.3
+Version: 0.1.4
 Authors@R:
     c(person(given = "Robert",
              family = "Cribbie",
@@ -33,8 +33,8 @@ Description: Researchers often want to evaluate whether there is a negligible
     relationship among variables. The 'negligible' package provides functions that 
     are useful for conducting negligible effect testing (also called
     equivalence testing). For example, there are functions for evaluating the 
-    equivalence of means or the presence of a negligible association (correlation/
-    regression). Beribisky, N., Mara, C., & Cribbie, R. A. (2020) <doi:10.20982/tqmp.16.4.p424>.
+    equivalence of means or the presence of a negligible association 
+    (correlation or  regression). Beribisky, N., Mara, C., & Cribbie, R. A. (2020) <doi:10.20982/tqmp.16.4.p424>.
     Beribisky, N., Davidson, H., Cribbie, R. A. (2019) <doi:10.7717/peerj.6853>.
     Shiskina, T., Farmus, L., & Cribbie, R. A. (2018) <doi:10.20982/tqmp.14.3.p167>.
     Mara, C. & Cribbie, R. A. (2017) <doi:10.1080/00220973.2017.1301356>.
@@ -45,7 +45,6 @@ Description: Researchers often want to evaluate whether there is a negligible
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: DescTools, lavaan, WRS2, ggplot2, nptest, dplyr, fungible, rockchalk, MBESS, tidyr, stats
+Imports: DescTools, lavaan, WRS2, ggplot2, nptest, dplyr, fungible, rockchalk, MBESS, tidyr, stats, e1071
 RoxygenNote: 7.2.3
-Depends: 
-    R (>= 2.10)
+Depends: R (>= 2.10)

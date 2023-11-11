@@ -112,7 +112,7 @@ neg.cfi <- function(mod,alpha = .05, eq.bound, modif.eq.bound = FALSE,
   if (modif.eq.bound == TRUE) {
     if(eq.bound != .99 & eq.bound != .95 & eq.bound != .92 &  eq.bound != .9) stop("The specified equivalence bound must either be .99, .95, .92, or .90 when using modified equivalence bounds.")
 
-    n <- lavaan::lavInspect(fit1, what = "nobs")-1
+    n <- lavaan::lavInspect(mod, what = "nobs")-1
 
     if (eq.bound == .99) {
       eq.bound <- 1-exp(4.67603-.50827*log(df)+.87087*(df^(1/5))-.59613*((df_i)^(1/5))-1.89602*log(n)

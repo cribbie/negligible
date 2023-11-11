@@ -2,6 +2,7 @@
 % Please edit documentation in R/neg.paired.R
 \name{neg.paired}
 \alias{neg.paired}
+\alias{print.neg.paired}
 \title{Negligible Effect Test on the Difference between the Means of Dependent Populations}
 \usage{
 neg.paired(
@@ -21,6 +22,8 @@ neg.paired(
   seed = NA,
   ...
 )
+
+\method{print}{neg.paired}(x, ...)
 }
 \arguments{
 \item{var1}{Data for Group 1 (if outcome, group and ID are omitted)}
@@ -52,6 +55,8 @@ neg.paired(
 \item{seed}{Seed number}
 
 \item{...}{Extra arguments}
+
+\item{x}{object of class \code{neg.paired}}
 }
 \value{
 A \code{list} including the following:

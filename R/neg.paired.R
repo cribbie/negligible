@@ -335,6 +335,10 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
   }
 }
 
+#' @rdname neg.paired
+#' @param x object of class \code{neg.paired}
+#' @export
+#'
 
 print.neg.paired <- function(x, ...) {
   cat("---- Evaluating the Equivalence of the Central Tendencies of Paired Samples----\n\n")
@@ -393,12 +397,4 @@ print.neg.paired <- function(x, ...) {
            oe = x$oe)
   }
 }
-
-#wide format
-ID<-rep(1:20)
-control<-rnorm(20)
-intervention<-rnorm(20)
-d<-data.frame(ID, control, intervention)
-head(d)
-neg.paired(var1=control,var2=intervention,eil=-1,eiu=1,plot=TRUE,data=d)
 

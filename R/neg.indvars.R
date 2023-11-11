@@ -62,13 +62,15 @@ neg.indvars<-function(dv, iv, eps = .5, alpha = .05,
     dv<-as.numeric(data[[dv]])
     iv<-as.factor(data[[iv]])
   }
+  iv<-factor(iv)
+  levelsiv = levels(iv)
   medians <- tapply(dv, iv, stats::median)
   n <- tapply(dv, iv, length)
   resp.median <- abs(dv - medians[iv])
   ngroup<-length(unique(iv))
   vars<-(tapply(dv, iv, stats::var))
   ratio_lsvar<-max(vars)/min(vars)
-  
+
   ## Equivalence test for Equivalence of Variances ##
   LWW_md<-stats::oneway.test(resp.median~iv)$statistic*((ngroup-1)/(mean(n)))
   crit_LWW_md<-((ngroup-1)/(mean(n)))*stats::qf(p=alpha, df1=ngroup-1,
@@ -77,7 +79,8 @@ neg.indvars<-function(dv, iv, eps = .5, alpha = .05,
   ifelse (LWW_md <= crit_LWW_md,
           decis_equiv<-"The null hypothesis that the differences between the population variances falls outside the equivalence interval can be rejected. A negligible difference among the population variances can be concluded. Be sure to interpret the magnitude (and precision) of the effect size.",
           decis_equiv<-"The null hypothesis that the differences between the population variances falls outside the equivalence interval cannot be rejected. A negligible difference among the population variances cannot be concluded. Be sure to interpret the magnitude (and precision) of the effect size.")
-  ret <- data.frame(vars = vars,
+  ret <- data.frame(levelsiv = levelsiv,
+                    vars = vars,
                     sds = tapply(dv,iv,stats::sd),
                     mads = tapply(dv,iv,stats::mad),
                     ratio = ratio_lsvar,
@@ -97,7 +100,7 @@ neg.indvars<-function(dv, iv, eps = .5, alpha = .05,
 print.neg.indvars <- function(x, ...) {
   cat("-- Equivalence of Population Variances --\n")
   cat("-- Independent Groups --\n\n")
-  cat("Group Variances: ", "\n", x$vars, "\n\n")
+  cat("Group Variances: ", "\n", x$levelsiv, "\n", x$vars, "\n\n")
   cat("Group Standard Deviations: ", "\n", x$sds, "\n\n")
   cat("Group Median Absolute Deviations: ", "\n", x$mads,"\n\n")
   cat("**********************\n\n")

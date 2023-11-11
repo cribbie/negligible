@@ -72,8 +72,6 @@ eiU is set to .2 by default, but should be set based on the context of the resea
 Users can input either the names of the categorical variables (v1, v2) or a frequency (contingency) table (tab).
 
 The proportional distance (V/eiU) estimates the proportional distance of the effect from 0 to eiU, and acts as an alternative effect size measure.
-
-The confidence interval for the proportional distance is computed via bootstrapping (percentile bootstrap).
 }
 \examples{
 sex<-rep(c("m","f"),c(12,22))
@@ -82,4 +80,9 @@ d <- data.frame(sex,haircol)
 tab<-table(sex,haircol)
 neg.cat(tab=tab, alpha=.05, nbootpd=5)
 neg.cat(v1=sex, v2=haircol, data=d, nbootpd=5)
+}
+\author{
+Rob Cribbie \email{cribbie@yorku.ca}
+
+The confidence interval for the proportional distance is computed via bootstrapping (percentile bootstrap).
 }

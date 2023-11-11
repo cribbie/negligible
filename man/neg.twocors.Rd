@@ -140,6 +140,9 @@ neg.twocors(r1v1=v1a,r1v2=v2a,r2v1=v1b,r2v2=v2b,data=dat,eiu=.15,eil=-.15,nboot=
 neg.twocors(r1=0.5,n1=300,r2=0.6,n2=500,eiu=.15,eil=-0.15, dep=TRUE, r3=0.51)
 # end.
 
+
+
+
 }
 \author{
 Rob Cribbie \email{cribbie@yorku.ca} and

@@ -90,6 +90,9 @@
 #' neg.twocors(r1v1=v1a,r1v2=v2a,r2v1=v1b,r2v2=v2b,data=dat,eiu=.15,eil=-.15,nboot=50, dep=FALSE)
 #' neg.twocors(r1=0.5,n1=300,r2=0.6,n2=500,eiu=.15,eil=-0.15, dep=TRUE, r3=0.51)
 #' # end.
+#' 
+#' 
+#' 
 #'
 neg.twocors <- function(data=NULL, r1v1=NULL, r1v2=NULL, r2v1=NULL, r2v2=NULL, # specific arguments when data is available
                         r1=NULL, n1=NULL, r2=NULL, n2=NULL, # specific arguments when data is NOT available
@@ -514,7 +517,7 @@ print.neg.twocors<- function(x,...) {
     neg.pd(effect=x$rawdiff, PD = x$pd, eil=x$eil, eiu=x$eiu, PDcil=x$pd.l.ci, PDciu=x$pd.u.ci, cil=x$l.ci.2a,
            ciu=x$u.ci.2a, Elevel=100*(1-2*x$alpha), Plevel=100*(1-x$alpha), save = x$saveplots, oe=x$oe)
     if (x$test=="AH"){
-      cat("\n*Note that NHST decisions using the AH-\u03C1 and AH-\u03C1-D procedures may not match KTOST-\u03C1 and TOST-\u03C1-D results or the Symmetric CI Approach at 100*(1-2\u03B1)% illustrated in the plot. \n")
+      cat("\n*Note that NHST decisions using the AH-\u03C1 and AH-\u03C1 procedures may not match KTOST-\u03C1 and TOST-\u03C1-D results or the Symmetric CI Approach at 100*(1-2\u03B1)% illustrated in the plot. \n")
     }
   }
   cat("\n**********************\n\n")
@@ -525,11 +528,5 @@ print.neg.twocors<- function(x,...) {
   cat("*******************", "\n\n")
 }
 
-v1a<-stats::rnorm(10)
-v2a<-stats::rnorm(10)
-v1b <- stats::rnorm(10)
-v2b <- stats::rnorm(10)
-dat<-data.frame(v1a, v2a, v1b, v2b)
-neg.twocors(r1v1=v1a,r1v2=v2a,r2v1=v1b,r2v2=v2b,data=dat,eiu=.15,eil=-.15,nboot=50, dep=FALSE)
 
 

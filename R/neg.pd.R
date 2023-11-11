@@ -26,13 +26,13 @@ neg.pd<-function(effect, PD, eil, eiu,
   
   EIu<-c(eiu,0) #actual value
   EIl<-c(eil,0) #actual value
-  if(oe=='CFI'){PDp<-c(1-(abs(PD)/abs(PDcil)),1)} else {PDp<-c(effect,1)}
+  if(oe=='CFI' | oe=="Shapiro-Wilk W"){PDp<-c(1-(abs(PD)/abs(PDcil)),1)} else {PDp<-c(effect,1)}
   effectp<-c(effect,0) #actual value
-  if(oe=='CFI'){start1<-c(1,1)} else{start1<-c(0,1)}
-  if(oe=='CFI'){start2<-c(1,0)} else{start2<-c(0,0)}
+  if(oe=='CFI' | oe=="Shapiro-Wilk W"){start1<-c(1,1)} else{start1<-c(0,1)}
+  if(oe=='CFI' | oe=="Shapiro-Wilk W"){start2<-c(1,0)} else{start2<-c(0,0)}
   
   #calculate 1/4 of the total 100*(1-x$alpha) distance to create the length of the scales (note that this is an arbritrary number)
-  if(oe=='CFI') {onefourth<- 1/4} else {onefourth<-(abs((cil/2)+ (PDcil*effect/PD)) + abs((ciu/2)+ (PDciu*effect/PD)))/4}
+  if(oe=='CFI' | oe=="Shapiro-Wilk W") {onefourth<- 1/4} else {onefourth<-(abs((cil/2)+ (PDcil*effect/PD)) + abs((ciu/2)+ (PDciu*effect/PD)))/4}
   a<- -3*onefourth
   if(a>eil)
   {a<-eil}
@@ -41,9 +41,9 @@ neg.pd<-function(effect, PD, eil, eiu,
   if(b<eiu)
   {b<-eiu}
   extraL<-c(a,0)
-  if(oe=='CFI') {extraU<-c(1,0)} else{extraU<-c(b,0)}
+  if(oe=='CFI' | oe=="Shapiro-Wilk W") {extraU<-c(1,0)} else{extraU<-c(b,0)}
   PDextraL<-c(a,1)
-  if(oe=='CFI') {PDextraU<-c(1,1)} else{PDextraU<-c(b,1)}
+  if(oe=='CFI' | oe=="Shapiro-Wilk W") {PDextraU<-c(1,1)} else{PDextraU<-c(b,1)}
   
   #individual scale values after the (0,0) co-ordinate
   if (b==eiu & a==eil) {onefourth=eiu/3}
@@ -103,13 +103,13 @@ neg.pd<-function(effect, PD, eil, eiu,
     ggplot2::annotate("text",x=a, y=2.6, label="    Equivalence Interval (EI) Boundary", size=3.5, colour = "blue4", hjust = 0) +
     ggplot2::geom_point(ggplot2::aes(x=a, y=2.6), shape = 8, colour="blue", size = 3) +
     ggplot2::annotate("text",x=a, y=3, label=(paste0("    Proportional Distance and its ",Plevel, "% CI")), size=3.5, colour = "darkred", hjust = 0) +
-   ggplot2::geom_point(ggplot2::aes(x=a, y=3), shape = 22, colour="red", size = 4, fill = "grey") +
-   ggplot2::geom_point(ggplot2::aes(x=a, y=3), shape = 18, colour="darkred", size = 3) +
-   ggplot2::theme(panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(), axis.title = ggplot2::element_blank(),
-                  panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_blank(), axis.ticks= ggplot2::element_blank(), axis.text = ggplot2::element_blank())
- 
-   print(
-      p+
+    ggplot2::geom_point(ggplot2::aes(x=a, y=3), shape = 22, colour="red", size = 4, fill = "grey") +
+    ggplot2::geom_point(ggplot2::aes(x=a, y=3), shape = 18, colour="darkred", size = 3) +
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(), axis.title = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_blank(), axis.ticks= ggplot2::element_blank(), axis.text = ggplot2::element_blank())
+  
+  print(
+    p+
       ggplot2::ylim(-0.5, 3) + ggplot2::annotate("rect", xmin = cil, xmax = ciu, ymin = -0.05, ymax = 0.05, alpha = .2,fill = "blue") +
       ggplot2::geom_step(data=dat[4:5,], color = "darkred") +
       ggplot2::geom_step(data=dat[14:15,], color = "blue") +
@@ -134,13 +134,13 @@ neg.pd<-function(effect, PD, eil, eiu,
       ggplot2::annotate("text",x=-2*onefourth, y=0.88, label=format(round((-2*onefourth*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
       ggplot2::annotate("text",x=onefourth, y=0.88, label=format(round((onefourth*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
       ggplot2::annotate("text",x=2*onefourth, y=0.88, label=format(round((2*onefourth*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
-      ggplot2::annotate("text",x=a, y=1.4, label=paste("The Proportional Distance (",oe,expression("-\u03BB"),"'"," / |EI",expression("-\u03BB"),"'","|)", sep = ""), size=3, hjust = 0) +
+      ggplot2::annotate("text",x=a, y=1.4, label=paste("The Proportional Distance from the Effect to the EI Bound of the Same Sign as the Effect"), size=3, hjust = 0) +
       ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 22, colour="blue", size = 4, fill = "grey") +
       ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 16, colour="purple", size = 3) 
   )
-  if(oe=="RMSEA" | oe=="Cramer's V"){
+  if(oe=="RMSEA" | oe=="Cramer's V" | oe=="SRMR"){
     print(
-        p+
+      p+
         ggplot2::ylim(-0.5, 3) + ggplot2::annotate("segment", x = ciu, xend = ciu, y = .08, yend = -.08, colour = "purple", size=2, alpha=0.6) +
         ggplot2::annotate("rect", xmin = PDcil*effect/PD, xmax = PDciu*effect/PD, ymin = 0.95, ymax = 1.05, alpha = .2,fill = "red") +
         ggplot2::annotate("text",x=effect, y=1.12, label=format(round(PD, 2), nsmall = 2), size=3, colour = "darkred") +
@@ -159,9 +159,9 @@ neg.pd<-function(effect, PD, eil, eiu,
         ggplot2::geom_point(ggplot2::aes(x=a, y=1.8), shape = 15, colour="purple", size = 3, alpha =1/50) +
         ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 16, colour="purple", size = 3) 
     )}
-  if(oe=='CFI') {
+  if(oe=='CFI' | oe=="Shapiro-Wilk W") {
     print(
-        p+
+      p+
         ggplot2::ylim(-0.5, 3) + ggplot2::annotate("segment", x = ciu, xend = ciu, y = .08, yend = -.08, colour = "purple", size=2, alpha=0.6) +
         ggplot2::annotate("rect", xmin = 0, xmax = 1-(PDciu/PDcil), ymin = 0.95, ymax = 1.05, alpha = .2,fill = "red") +
         ggplot2::annotate("text",x=1-(abs(PD)/abs(PDcil)), y=1.12, label=format(round(PD, 2), nsmall = 2), size=3, colour = "darkred") +
@@ -193,3 +193,4 @@ neg.pd<-function(effect, PD, eil, eiu,
     }
   }
 }
+

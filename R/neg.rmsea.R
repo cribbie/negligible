@@ -83,7 +83,7 @@ neg.rmsea <- function(mod, alpha = .05, eq.bound, modif.eq.bound = FALSE,
   if (modif.eq.bound == TRUE) {
     if(eq.bound != .01 & eq.bound != .05 & eq.bound != .08 &  eq.bound != .1) stop("The specified equivalence bound must either be .01, .05, .08, or .10 when using modified equivalence bounds.")
 
-    n <- lavaan::lavInspect(fit1, what = "nobs")-1
+    n <- lavaan::lavInspect(mod, what = "nobs")-1
     df <- lavaan::fitmeasures(mod)[4]
 
     if (eq.bound == .01) {

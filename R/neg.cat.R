@@ -37,6 +37,8 @@
 #'
 #' The proportional distance (V/eiU) estimates the proportional distance of the effect from 0 to eiU, and acts as an alternative effect size measure.
 #'
+#' @author Rob Cribbie \email{cribbie@@yorku.ca}
+#'
 #' The confidence interval for the proportional distance is computed via bootstrapping (percentile bootstrap).
 #'
 #' @examples

@@ -296,7 +296,7 @@ print.neg.twoindmeans <- function(x, ...) {
   cat("Group MADs: ", x$madx, ", ", x$mady, "\n\n", sep="")
   cat("**********************\n\n")
   cat("Standardized Mean Difference (SMD):", x$effsized, "\n")
-  cat(100*(1-2*x$alpha), "% CI for SMD: ", "(", x$cild, ", ", x$ciud, ")", "\n\n", sep="")
+  cat(100*(1-x$alpha), "% CI for SMD: ", "(", x$cild, ", ", x$ciud, ")", "\n\n", sep="")
   cat("**********************\n\n")
   cat("Equivalence Interval:","Lower =", x$eiL, ",", "Upper =", x$eiU, "\n\n")
   cat("**********************\n\n")
