@@ -39,6 +39,10 @@
 #'
 #' The confidence interval for the proportional distance is computed via bootstrapping (percentile bootstrap).
 #'
+#' @author Rob Cribbie \email{cribbie@@yorku.ca}
+#' @export neg.intcont
+#'
+#'
 #' @examples
 #' y<-rnorm(25)
 #' x1<-rnorm(25)
@@ -173,6 +177,11 @@ neg.intcont <- function (outcome = NULL, pred1 = NULL,
   return(ret)
 }
 
+#' @rdname neg.intcont
+#' @param x object of class \code{neg.intcont}
+#' @param ... extra arguments
+#' @export
+#'
 
 print.neg.intcont <- function(x, ...) {
   cat("-- Evaluating Negligible Interaction with --\n")

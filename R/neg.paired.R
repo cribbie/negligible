@@ -8,8 +8,8 @@
 #' @param outcome Dependent Variable (if var1 and var2 are omitted)
 #' @param group Dichotomous Predictor/Independent Variable (if var1 and var2 are omitted)
 #' @param ID participant ID (if var1 and var2 are omitted)
-#' @param eil Lower Bound of the Equivalence Interval
-#' @param eiu Upper Bound of the Equivalence Interval
+#' @param neiL Lower Bound of the Equivalence Interval
+#' @param neiU Upper Bound of the Equivalence Interval
 #' @param normality Are the population variances (and hence the residuals) assumed to be normally distributed?
 #' @param nboot Number of bootstrap samples for calculating CIs
 #' @param alpha Nominal Type I Error rate
@@ -29,8 +29,8 @@
 #'   \item \code{sdy} Sample standard deviation of the second population/group.
 #'   \item \code{madx} Sample median absolute deviation of the first population/group.
 #'   \item \code{mady} Sample median absolute deviation of the second population/group.
-#'   \item \code{eil} Lower bound of the negligible effect (equivalence) interval.
-#'   \item \code{eiu} Upper bound of the negligible effect (equivalence) interval.
+#'   \item \code{neiL} Lower bound of the negligible effect (equivalence) interval.
+#'   \item \code{neiU} Upper bound of the negligible effect (equivalence) interval.
 #'   \item \code{effsizeraw} Simple difference in the means (or medians if normality = FALSE)
 #'   \item \code{cilraw2} Lower bound of the 1-alpha CI for the raw mean difference.
 #'   \item \code{ciuraw2} Upper bound of the 1-alpha CI for the raw mean difference.
@@ -69,10 +69,10 @@
 #' intervention<-rnorm(20)
 #' d<-data.frame(ID, control, intervention)
 #' head(d)
-#' neg.paired(var1=control,var2=intervention,eil=-1,eiu=1,plot=TRUE,
+#' neg.paired(var1=control,var2=intervention,neiL=-1,neiU=1,plot=TRUE,
 #'            data=d)
-#' neg.paired(var1=d$control,var2=d$intervention,eil=-1,eiu=1,plot=TRUE)
-#' neg.paired(var1=d$control,var2=d$intervention,eil=-1,eiu=1,normality=FALSE,
+#' neg.paired(var1=d$control,var2=d$intervention,neiL=-1,neiU=1,plot=TRUE)
+#' neg.paired(var1=d$control,var2=d$intervention,neiL=-1,neiU=1,normality=FALSE,
 #'            nboot=10,plot=TRUE)
 #'
 #' \dontrun{
@@ -83,9 +83,9 @@
 #' group<-rep(c("control","intervention"),c(20,20))
 #' outcome<-c(control,intervention)
 #' d<-data.frame(ID,group,outcome)
-#' neg.paired(outcome=outcome,group=group,ID=ID,eil=-1,eiu=1,plot=TRUE,data=d)
-#' neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,eil=-1,eiu=1,plot=TRUE)
-#' neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,eil=-1,eiu=1,plot=TRUE, normality=FALSE)
+#' neg.paired(outcome=outcome,group=group,ID=ID,neiL=-1,neiU=1,plot=TRUE,data=d)
+#' neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,neiL=-1,neiU=1,plot=TRUE)
+#' neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,neiL=-1,neiU=1,plot=TRUE, normality=FALSE)
 #'
 #' #long format with multiple variables
 #' sample1<-sample(1:20, 20, replace=FALSE)
@@ -95,8 +95,8 @@
 #' group<-rep(c("control","intervention"),c(20,20))
 #' outcome<-c(control,intervention)
 #' d<-data.frame(ID,group,outcome,attendance)
-#' neg.paired(outcome=outcome,group=group,ID=ID,eil=-1,eiu=1,plot=TRUE,data=d)
-#' neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,eil=-1,eiu=1,plot=TRUE)
+#' neg.paired(outcome=outcome,group=group,ID=ID,neiL=-1,neiU=1,plot=TRUE,data=d)
+#' neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,neiL=-1,neiU=1,plot=TRUE)
 #'
 #' #open a dataset
 #' library(negligible)
@@ -104,19 +104,19 @@
 #' names(d)
 #' head(d)
 #' neg.paired(var1=atqpre.total,var2=atqpost.total,
-#'            eil=-10,eiu=10,data=d)
+#'            neiL=-10,neiU=10,data=d)
 #'
 #' #Dataset with missing data
 #' x<-rnorm(10)
 #' x[c(3,6)]<-NA
 #' y<-rnorm(10)
 #' y[c(7)]<-NA
-#' neg.paired(x,y,eil=-1,eiu=1, normality=FALSE)
+#' neg.paired(x,y,neiL=-1,neiU=1, normality=FALSE)
 #' }
 
 neg.paired <- function(var1 = NULL, var2 = NULL,
                        outcome = NULL, group = NULL, ID = NULL,
-                       eil, eiu, normality = TRUE,
+                       neiL, neiU, normality = TRUE,
                        nboot = 10000, alpha = 0.05,
                        plot = TRUE, saveplot = FALSE,
                        data=NULL, seed = NA,...) {
@@ -139,7 +139,7 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     names(d)[2] <- "group"
     names(d)[3] <- "outcome"
     d <- d[stats::complete.cases(d),]
-    d_wide <- tidyr::spread(d, group, outcome)
+    d_wide <- stats::reshape(d,idvar="ID",timevar="group",direction="wide")
     var1<-as.numeric(unlist(d_wide[2]))
     var2<-as.numeric(unlist(d_wide[3]))
   }
@@ -162,7 +162,7 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
   if (is.null(var1) & is.null(var2) & is.null(data)) {
     d<-data.frame(ID,group,outcome)
     d <- d[stats::complete.cases(d),]
-    d_wide <- tidyr::spread(d, group, outcome)
+    d_wide <- stats::reshape(d,idvar="ID",timevar="group",direction="wide")
     var1<-as.numeric(unlist(d_wide[2]))
     var2<-as.numeric(unlist(d_wide[3]))
   }
@@ -180,8 +180,8 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     sdif<-sqrt(stats::sd(var1)^2+stats::sd(var2)^2-2*r12*stats::sd(var1)*stats::sd(var2))
     se<-sdif/sqrt(length(var1)-1)
     dft<-length(var1) - 1
-    t1<-(mean(var1) - mean(var2) - eiu)/se
-    t2 <- (mean(var1) - mean(var2) - eil)/se
+    t1<-(mean(var1) - mean(var2) - neiU)/se
+    t2 <- (mean(var1) - mean(var2) - neiL)/se
     probt1<-stats::pt(t1, dft, lower.tail=TRUE)
     probt2<-stats::pt(t2, dft, lower.tail=FALSE)
     ifelse(probt1 <= alpha & probt2 <= alpha,
@@ -190,8 +190,8 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
     effsize_raw<-mean(var1)-mean(var2)
     difference = var1-var2
     effsize_d<-(mean(var1)-mean(var2))/stats::sd(difference)
-    ifelse(sign(mean(var1)-mean(var2))==sign(eil),
-           ein<-eil,ein<-eiu)
+    ifelse(sign(mean(var1)-mean(var2))==sign(neiL),
+           ein<-neiL,ein<-neiU)
     effsize_pd<-(mean(var1)-mean(var2))/abs(ein)
     bsraw<-numeric(nboot)
     bsd<-numeric(nboot)
@@ -203,12 +203,14 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
       bsd[i]<-(mean(bsx)-mean(bsy))/
         sqrt((((length(bsx) - 1) * stats::sd(bsx)^2) + ((length(bsy) - 1) * stats::sd(bsy)^2))/
                (length(bsx) + length(bsy) - 2))
-      ifelse(sign(mean(bsx)-mean(bsy))==sign(eil),
-             ein2<-eil,ein2<-eiu)
+      ifelse(sign(mean(bsx)-mean(bsy))==sign(neiL),
+             ein2<-neiL,ein2<-neiU)
       bspd[i]<-(mean(bsx)-mean(bsy))/abs(ein2)
     }
-    ci_raw2<-stats::quantile(bsraw,probs=c(alpha/2,1-alpha/2))
-    ci_raw<-stats::quantile(bsraw,probs=c(alpha,1-alpha))
+    ci_raw2 <- stats::t.test(var1,var2,paired=TRUE,conf.level=1-alpha/2)$conf.int[1:2]
+    ci_raw <- stats::t.test(var1,var2,paired=TRUE,conf.level=1-alpha)$conf.int[1:2]
+    #ci_raw2<-stats::quantile(bsraw,probs=c(alpha/2,1-alpha/2))
+    #ci_raw<-stats::quantile(bsraw,probs=c(alpha,1-alpha))
     ci_d<-stats::quantile(bsd,probs=c(alpha,1-alpha))
     ci_pd<-stats::quantile(bspd,probs=c(alpha/2,1-alpha/2))
     title <- "Two One-Sided Test of Equivalence for Paired-Samples (TOST-P)"
@@ -221,8 +223,8 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
                       sdy = stats::sd(var2),
                       madx = stats::mad(var1),
                       mady = stats::mad(var2),
-                      eil = eil,
-                      eiu = eiu,
+                      neiL = neiL,
+                      neiU = neiU,
                       eisign = ein,
                       effsizeraw = effsize_raw,
                       cilraw2 = ci_raw2[1],
@@ -255,8 +257,8 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
   }
   if (normality == FALSE) {
     ##NPAR
-    s1 <- var1 - var2 - eiu
-    s2 <- var1 - var2 - eil
+    s1 <- var1 - var2 - neiU
+    s2 <- var1 - var2 - neiL
     dft <- length(var1)
     r1 <- rank(abs(s1))
     r2 <- rank(abs(s2))
@@ -271,8 +273,8 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
            decis <- "The null hypothesis that the difference between the means exceeds the equivalence interval cannot be rejected. Be sure to interpret the magnitude of the effect size.")
     effsize_raw<-stats::median(var1)-stats::median(var2)
     effsize_d<-(stats::median(var1)-stats::median(var2))/mean(c(stats::mad(var1),stats::mad(var2)))
-    ifelse(sign(mean(var1)-mean(var2))==sign(eil),
-           ein<-eil,ein<-eiu)
+    ifelse(sign(mean(var1)-mean(var2))==sign(neiL),
+           ein<-neiL,ein<-neiU)
     effsize_pd<-(mean(var1)-mean(var2))/abs(ein)
     bsraw<-numeric(nboot)
     bsd<-numeric(nboot)
@@ -283,8 +285,8 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
       bsraw[i]<-stats::median(bsx)-stats::median(bsy)
       bsd[i]<-(stats::median(bsx)-stats::median(bsy))/
         mean(c(stats::mad(bsx),stats::mad(bsy)))
-      ifelse(sign(mean(bsx)-mean(bsy))==sign(eil),
-             ein2<-eil,ein2<-eiu)
+      ifelse(sign(mean(bsx)-mean(bsy))==sign(neiL),
+             ein2<-neiL,ein2<-neiU)
       bspd[i]<-(mean(bsx)-mean(bsy))/abs(ein2)
     }
     ci_raw2<-stats::quantile(bsraw,probs=c(alpha/2,1-alpha/2))
@@ -301,8 +303,8 @@ neg.paired <- function(var1 = NULL, var2 = NULL,
                       sdy = stats::sd(var2),
                       madx = stats::mad(var1),
                       mady = stats::mad(var2),
-                      eil = eil,
-                      eiu = eiu,
+                      neiL = neiL,
+                      neiU = neiU,
                       eisign = ein,
                       effsizeraw = effsize_raw,
                       cilraw2 = ci_raw2[1],
@@ -350,7 +352,7 @@ print.neg.paired <- function(x, ...) {
   cat("SDs: ", x$sdx, ", ", x$sdy, "\n", sep="")
   cat("MADs: ", x$madx, ", ", x$mady, "\n\n", sep="")
   cat("**********************\n\n")
-  cat("Equivalence Interval:","Lower =", x$eil, ",", "Upper =", x$eiu, "\n\n")
+  cat("Equivalence Interval:","Lower =", x$neiL, ",", "Upper =", x$neiU, "\n\n")
   cat("**********************\n\n")
   cat("Effect Sizes:", x$title2, "\n")
   cat("Standardized Mean Difference (SMD):", x$effsized, "\n")
@@ -369,13 +371,13 @@ print.neg.paired <- function(x, ...) {
   cat(100*(1-x$alpha), "% CI for PD:", "(", x$cilpd, ", ", x$ciupd, ")", "\n\n", sep="")
   cat("**********************\n\n")
   if(x$norm == TRUE) {
-    cat("TOST Test Statistics:", "\n\n", "Ho: \u03BC1 - \u03BC2 \u2265 eiu:", "\n", "t = ", x$t1,
-        " (df = ", x$df1, ")", ", p = ", x$pval1, "\n\n", "Ho: \u03BC1 - \u03BC2 \u2264 eil:", "\n", "t = ", x$t2,
+    cat("TOST Test Statistics:", "\n\n", "Ho: \u03BC1 - \u03BC2 \u2265 neiU:", "\n", "t = ", x$t1,
+        " (df = ", x$df1, ")", ", p = ", x$pval1, "\n\n", "Ho: \u03BC1 - \u03BC2 \u2264 neiL:", "\n", "t = ", x$t2,
         " (df = ", x$df1, ")", ", p = ", x$pval2, "\n\n", sep="")
   }
   else {
-    cat("TOST Test Statistics:", "\n\n", "Ho: \u03BC1 - \u03BC2 \u2265 eiu:", "\n", "z = ", x$z1,
-        " (df = ", x$df1, ")", ", p = ", x$pval1, "\n\n", "Ho: \u03BC1 - \u03BC2 \u2264 eil:", "\n", "z = ", x$z2,
+    cat("TOST Test Statistics:", "\n\n", "Ho: \u03BC1 - \u03BC2 \u2265 neiU:", "\n", "z = ", x$z1,
+        " (df = ", x$df1, ")", ", p = ", x$pval1, "\n\n", "Ho: \u03BC1 - \u03BC2 \u2264 neiL:", "\n", "z = ", x$z2,
         " (df = ", x$df1, ")", ", p = ", x$pval2, "\n\n", sep="")
   }
   cat("**********************\n\n")
@@ -385,8 +387,8 @@ print.neg.paired <- function(x, ...) {
   if (x$pl == TRUE) {
     neg.pd(effect = x$effsizeraw,
            PD = x$effsizepd,
-           eil=x$eil,
-           eiu=x$eiu,
+           eil=x$neiL,
+           eiu=x$neiU,
            PDcil=x$cilpd,
            PDciu=x$ciupd,
            cil=x$cilraw,

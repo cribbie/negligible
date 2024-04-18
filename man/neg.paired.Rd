@@ -11,8 +11,8 @@ neg.paired(
   outcome = NULL,
   group = NULL,
   ID = NULL,
-  eil,
-  eiu,
+  neiL,
+  neiU,
   normality = TRUE,
   nboot = 10000,
   alpha = 0.05,
@@ -36,9 +36,9 @@ neg.paired(
 
 \item{ID}{participant ID (if var1 and var2 are omitted)}
 
-\item{eil}{Lower Bound of the Equivalence Interval}
+\item{neiL}{Lower Bound of the Equivalence Interval}
 
-\item{eiu}{Upper Bound of the Equivalence Interval}
+\item{neiU}{Upper Bound of the Equivalence Interval}
 
 \item{normality}{Are the population variances (and hence the residuals) assumed to be normally distributed?}
 
@@ -69,8 +69,8 @@ A \code{list} including the following:
   \item \code{sdy} Sample standard deviation of the second population/group.
   \item \code{madx} Sample median absolute deviation of the first population/group.
   \item \code{mady} Sample median absolute deviation of the second population/group.
-  \item \code{eil} Lower bound of the negligible effect (equivalence) interval.
-  \item \code{eiu} Upper bound of the negligible effect (equivalence) interval.
+  \item \code{neiL} Lower bound of the negligible effect (equivalence) interval.
+  \item \code{neiU} Upper bound of the negligible effect (equivalence) interval.
   \item \code{effsizeraw} Simple difference in the means (or medians if normality = FALSE)
   \item \code{cilraw2} Lower bound of the 1-alpha CI for the raw mean difference.
   \item \code{ciuraw2} Upper bound of the 1-alpha CI for the raw mean difference.
@@ -111,10 +111,10 @@ control<-rnorm(20)
 intervention<-rnorm(20)
 d<-data.frame(ID, control, intervention)
 head(d)
-neg.paired(var1=control,var2=intervention,eil=-1,eiu=1,plot=TRUE,
+neg.paired(var1=control,var2=intervention,neiL=-1,neiU=1,plot=TRUE,
            data=d)
-neg.paired(var1=d$control,var2=d$intervention,eil=-1,eiu=1,plot=TRUE)
-neg.paired(var1=d$control,var2=d$intervention,eil=-1,eiu=1,normality=FALSE,
+neg.paired(var1=d$control,var2=d$intervention,neiL=-1,neiU=1,plot=TRUE)
+neg.paired(var1=d$control,var2=d$intervention,neiL=-1,neiU=1,normality=FALSE,
            nboot=10,plot=TRUE)
 
 \dontrun{
@@ -125,9 +125,9 @@ ID<-c(sample1, sample2)
 group<-rep(c("control","intervention"),c(20,20))
 outcome<-c(control,intervention)
 d<-data.frame(ID,group,outcome)
-neg.paired(outcome=outcome,group=group,ID=ID,eil=-1,eiu=1,plot=TRUE,data=d)
-neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,eil=-1,eiu=1,plot=TRUE)
-neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,eil=-1,eiu=1,plot=TRUE, normality=FALSE)
+neg.paired(outcome=outcome,group=group,ID=ID,neiL=-1,neiU=1,plot=TRUE,data=d)
+neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,neiL=-1,neiU=1,plot=TRUE)
+neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,neiL=-1,neiU=1,plot=TRUE, normality=FALSE)
 
 #long format with multiple variables
 sample1<-sample(1:20, 20, replace=FALSE)
@@ -137,8 +137,8 @@ attendance<-sample(1:3, 20, replace=TRUE)
 group<-rep(c("control","intervention"),c(20,20))
 outcome<-c(control,intervention)
 d<-data.frame(ID,group,outcome,attendance)
-neg.paired(outcome=outcome,group=group,ID=ID,eil=-1,eiu=1,plot=TRUE,data=d)
-neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,eil=-1,eiu=1,plot=TRUE)
+neg.paired(outcome=outcome,group=group,ID=ID,neiL=-1,neiU=1,plot=TRUE,data=d)
+neg.paired(outcome=d$outcome,group=d$group,ID=d$ID,neiL=-1,neiU=1,plot=TRUE)
 
 #open a dataset
 library(negligible)
@@ -146,14 +146,14 @@ d<-perfectionism
 names(d)
 head(d)
 neg.paired(var1=atqpre.total,var2=atqpost.total,
-           eil=-10,eiu=10,data=d)
+           neiL=-10,neiU=10,data=d)
 
 #Dataset with missing data
 x<-rnorm(10)
 x[c(3,6)]<-NA
 y<-rnorm(10)
 y[c(7)]<-NA
-neg.paired(x,y,eil=-1,eiu=1, normality=FALSE)
+neg.paired(x,y,neiL=-1,neiU=1, normality=FALSE)
 }
 }
 \author{

@@ -2,6 +2,7 @@
 % Please edit documentation in R/neg.intcont.R
 \name{neg.intcont}
 \alias{neg.intcont}
+\alias{print.neg.intcont}
 \title{Negligible Interaction Test for Continuous Predictors}
 \usage{
 neg.intcont(
@@ -17,6 +18,8 @@ neg.intcont(
   plot = TRUE,
   save = FALSE
 )
+
+\method{print}{neg.intcont}(x, ...)
 }
 \arguments{
 \item{outcome}{continuous outcome variable}
@@ -40,6 +43,10 @@ neg.intcont(
 \item{plot}{logical; should a plot be printed out with the effect and the proportional distance}
 
 \item{save}{logical; should the plot be saved}
+
+\item{x}{object of class \code{neg.intcont}}
+
+\item{...}{extra arguments}
 }
 \value{
 A \code{list} containing the following:
@@ -79,4 +86,7 @@ x2<-rnorm(25)
 d<-data.frame(y,x1,x2)
 neg.intcont(outcome = y, pred1 = x1, pred2 = x2, data = d,
 eiL = -.25, eiU = .25, standardized = TRUE, nbootpd = 100)
+}
+\author{
+Rob Cribbie \email{cribbie@yorku.ca}
 }

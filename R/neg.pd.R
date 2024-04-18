@@ -95,15 +95,15 @@ neg.pd<-function(effect, PD, eil, eiu,
   p<-ggplot2::ggplot(data=dat, ggplot2::aes(x=X1,y=X2)) +
     ggplot2::geom_step(data=dat[6:7,], color = "black") +
     ggplot2::geom_step(data=dat[18:19,], color = "black") +
-    ggplot2::geom_point(shape=c(3,3,3,3,23,3,3,3,3,3,3,3,3,3,21,8,8,16,16,3,3,3), fill=c("black" ,"black", "black","black", "darkred", "black", "black" ,"black", "black" ,"black", "black" ,"black", "black" ,"black" ,"purple","blue","blue", "black", "black","black", "black","black"), color=c("black" ,"black", "black","black", "darkred", "black", "black" ,"black", "black" ,"black", "black" ,"black", "black" ,"black" ,"purple","blue", "blue", "black", "black","black", "black","black"), linewidth=c(3,3,3,3,2,3,3,3,3,3,3,3,3,3,2,2,2,0.1,0.1,3,3,3), stroke = 0.7) +
-    ggplot2::annotate("text",x=extraU[1], y=-0.12, label=format(round(extraU[1], 2), nsmall = 2), linewidth=3, colour = "black") +
-    ggplot2::annotate("text",x=extraL[1], y=-0.12, label=format(round(extraL[1], 2), nsmall = 2), linewidth=3, colour = "black") +
-    ggplot2::annotate("text",x=a, y=0.4, label=(paste0(oe," (Original Units)")), linewidth=3, hjust = 0) +
-    ggplot2::annotate("text",x=a, y=2.6, label="    Equivalence Interval (EI) Boundary", linewidth=3.5, colour = "blue4", hjust = 0) +
-    ggplot2::geom_point(ggplot2::aes(x=a, y=2.6), shape = 8, colour="blue", linewidth = 3) +
-    ggplot2::annotate("text",x=a, y=3, label=(paste0("    Proportional Distance and its ",Plevel, "% CI")), linewidth=3.5, colour = "darkred", hjust = 0) +
-    ggplot2::geom_point(ggplot2::aes(x=a, y=3), shape = 22, colour="red", linewidth = 4, fill = "grey") +
-    ggplot2::geom_point(ggplot2::aes(x=a, y=3), shape = 18, colour="darkred", linewidth = 3) +
+    ggplot2::geom_point(shape=c(3,3,3,3,23,3,3,3,3,3,3,3,3,3,21,8,8,16,16,3,3,3), fill=c("black" ,"black", "black","black", "darkred", "black", "black" ,"black", "black" ,"black", "black" ,"black", "black" ,"black" ,"purple","blue","blue", "black", "black","black", "black","black"), color=c("black" ,"black", "black","black", "darkred", "black", "black" ,"black", "black" ,"black", "black" ,"black", "black" ,"black" ,"purple","blue", "blue", "black", "black","black", "black","black"), size=c(3,3,3,3,2,3,3,3,3,3,3,3,3,3,2,2,2,0.1,0.1,3,3,3), stroke = 0.7) +
+    ggplot2::annotate("text",x=extraU[1], y=-0.12, label=format(round(extraU[1], 2), nsmall = 2), size=3, colour = "black") +
+    ggplot2::annotate("text",x=extraL[1], y=-0.12, label=format(round(extraL[1], 2), nsmall = 2), size=3, colour = "black") +
+    ggplot2::annotate("text",x=a, y=0.4, label=(paste0(oe," (Original Units)")), size=3, hjust = 0) +
+    ggplot2::annotate("text",x=a, y=2.6, label="    Equivalence Interval (EI) Boundary", size=3.5, colour = "blue4", hjust = 0) +
+    ggplot2::geom_point(ggplot2::aes(x=a, y=2.6), shape = 8, colour="blue", size = 3) +
+    ggplot2::annotate("text",x=a, y=3, label=(paste0("    Proportional Distance and its ",Plevel, "% CI")), size=3.5, colour = "darkred", hjust = 0) +
+    ggplot2::geom_point(ggplot2::aes(x=a, y=3), shape = 22, colour="red", size = 4, fill = "grey") +
+    ggplot2::geom_point(ggplot2::aes(x=a, y=3), shape = 18, colour="darkred", size = 3) +
     ggplot2::theme(panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(), axis.title = ggplot2::element_blank(),
                    panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_blank(), axis.ticks= ggplot2::element_blank(), axis.text = ggplot2::element_blank())
 
@@ -113,78 +113,78 @@ neg.pd<-function(effect, PD, eil, eiu,
       ggplot2::ylim(-0.5, 3) + ggplot2::annotate("rect", xmin = cil, xmax = ciu, ymin = -0.05, ymax = 0.05, alpha = .2,fill = "blue") +
       ggplot2::geom_step(data=dat[4:5,], color = "darkred") +
       ggplot2::geom_step(data=dat[14:15,], color = "blue") +
-      ggplot2::annotate("text",x=a, y=2.2, label=(paste0("    ",oe," and its ",Elevel,"% CI")), linewidth=3.5, colour = "purple", hjust=0) +
+      ggplot2::annotate("text",x=a, y=2.2, label=(paste0("    ",oe," and its ",Elevel,"% CI")), size=3.5, colour = "purple", hjust=0) +
       ggplot2::annotate("rect", xmin = PDcil*effect/PD, xmax = PDciu*effect/PD, ymin = 0.95, ymax = 1.05, alpha = .2,fill = "red") +
-      ggplot2::annotate("text",x=effect, y=1.12, label=format(round(PD, 2), nsmall = 2), linewidth=3, colour = "darkred") +
-      ggplot2::annotate("text",x=PDextraU[1], y=0.88, label=format(round((PDextraU[1]*PD)/effect, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=PDextraL[1], y=0.88, label=format(round((PDextraL[1]*PD)/effect, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=effect, y=0.12, label=format(round(effect, 2), nsmall = 2), linewidth=3, colour = "purple") +
-      ggplot2::annotate("text",x=cil, y=0.12, label=format(round(cil, 2), nsmall = 2), linewidth=3, colour = "purple") +
-      ggplot2::annotate("text",x=ciu, y=0.12, label=format(round(ciu, 2), nsmall = 2), linewidth=3, colour = "purple") +
-      ggplot2::annotate("text",x=PDcil*effect/PD, y=1.12, label=format(round(PDcil, 2), nsmall = 2), linewidth=3, colour = "darkred") +
-      ggplot2::annotate("text",x=PDciu*effect/PD, y=1.12, label=format(round(PDciu, 2), nsmall = 2), linewidth=3, colour = "darkred") +
-      ggplot2::annotate("text",x=onefourth, y=-0.12, label=format(round(onefourth, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=2*onefourth, y=-0.12, label=format(round(2*onefourth, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=3*onefourth, y=-0.12, label=format(round(3*onefourth, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=-onefourth, y=-0.12, label=format(round(-onefourth, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=-2*onefourth, y=-0.12, label=format(round(-2*onefourth, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=a, y=-0.12, label=format(round(a, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=0, y=-0.12, label=0, linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=0, y=0.88, label=0, linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=-onefourth, y=0.88, label=format(round((-onefourth*PD)/effect, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=-2*onefourth, y=0.88, label=format(round((-2*onefourth*PD)/effect, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=onefourth, y=0.88, label=format(round((onefourth*PD)/effect, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=2*onefourth, y=0.88, label=format(round((2*onefourth*PD)/effect, 2), nsmall = 2), linewidth=3, colour = "black") +
-      ggplot2::annotate("text",x=a, y=1.4, label=paste("The Proportional Distance from the Effect to the EI Bound of the Same Sign as the Effect"), linewidth=3, hjust = 0) +
-      ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 22, colour="blue", linewidth = 4, fill = "grey") +
-      ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 16, colour="purple", linewidth = 3)
+      ggplot2::annotate("text",x=effect, y=1.12, label=format(round(PD, 2), nsmall = 2), size=3, colour = "darkred") +
+      ggplot2::annotate("text",x=PDextraU[1], y=0.88, label=format(round((PDextraU[1]*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=PDextraL[1], y=0.88, label=format(round((PDextraL[1]*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=effect, y=0.12, label=format(round(effect, 2), nsmall = 2), size=3, colour = "purple") +
+      ggplot2::annotate("text",x=cil, y=0.12, label=format(round(cil, 2), nsmall = 2), size=3, colour = "purple") +
+      ggplot2::annotate("text",x=ciu, y=0.12, label=format(round(ciu, 2), nsmall = 2), size=3, colour = "purple") +
+      ggplot2::annotate("text",x=PDcil*effect/PD, y=1.12, label=format(round(PDcil, 2), nsmall = 2), size=3, colour = "darkred") +
+      ggplot2::annotate("text",x=PDciu*effect/PD, y=1.12, label=format(round(PDciu, 2), nsmall = 2), size=3, colour = "darkred") +
+      ggplot2::annotate("text",x=onefourth, y=-0.12, label=format(round(onefourth, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=2*onefourth, y=-0.12, label=format(round(2*onefourth, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=3*onefourth, y=-0.12, label=format(round(3*onefourth, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=-onefourth, y=-0.12, label=format(round(-onefourth, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=-2*onefourth, y=-0.12, label=format(round(-2*onefourth, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=a, y=-0.12, label=format(round(a, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=0, y=-0.12, label=0, size=3, colour = "black") +
+      ggplot2::annotate("text",x=0, y=0.88, label=0, size=3, colour = "black") +
+      ggplot2::annotate("text",x=-onefourth, y=0.88, label=format(round((-onefourth*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=-2*onefourth, y=0.88, label=format(round((-2*onefourth*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=onefourth, y=0.88, label=format(round((onefourth*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=2*onefourth, y=0.88, label=format(round((2*onefourth*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
+      ggplot2::annotate("text",x=a, y=1.4, label=paste("The Proportional Distance from the Effect to the EI Bound of the Same Sign as the Effect"), size=3, hjust = 0) +
+      ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 22, colour="blue", size = 4, fill = "grey") +
+      ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 16, colour="purple", size = 3)
   )}
   if(oe=="RMSEA" | oe=="Cramer's V" | oe=="SRMR"){
     print(
       p+
-        ggplot2::ylim(-0.5, 3) + ggplot2::annotate("segment", x = ciu, xend = ciu, y = .08, yend = -.08, colour = "purple", linewidth=2, alpha=0.6) +
+        ggplot2::ylim(-0.5, 3) + ggplot2::annotate("segment", x = ciu, xend = ciu, y = .08, yend = -.08, colour = "purple", size=2, alpha=0.6) +
         ggplot2::annotate("rect", xmin = PDcil*effect/PD, xmax = PDciu*effect/PD, ymin = 0.95, ymax = 1.05, alpha = .2,fill = "red") +
-        ggplot2::annotate("text",x=effect, y=1.12, label=format(round(PD, 2), nsmall = 2), linewidth=3, colour = "darkred") +
-        ggplot2::annotate("text",x=PDextraU[1], y=0.88, label=format(round((PDextraU[1]*PD)/effect, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=PDextraL[1], y=0.88, label=format(round((PDextraL[1]*PD)/effect, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=effect, y=0.12, label=format(round(effect, 2), nsmall = 2), linewidth=3, colour = "purple") +
-        ggplot2::annotate("text",x=ciu, y=0.12, label=format(round(ciu, 2), nsmall = 2), linewidth=3, colour = "purple") +
-        ggplot2::annotate("text",x=onefourth, y=-0.12, label=format(round(onefourth, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=2*onefourth, y=-0.12, label=format(round(2*onefourth, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=3*onefourth, y=-0.12, label=format(round(3*onefourth, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=a, y=-0.12, label=format(round(a, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=onefourth, y=0.88, label=format(round((onefourth*PD)/effect, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=2*onefourth, y=0.88, label=format(round((2*onefourth*PD)/effect, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=a, y=2.2, label=(paste0("    ",oe)), linewidth=3.5, colour = "purple", hjust=0) +
-        ggplot2::annotate("text",x=a, y=1.4, label=(paste0("The Proportional Distance (",oe,"-0 / |EI-0|)")), linewidth=3, hjust = 0) +
-        ggplot2::annotate("text",x=a, y=1.8, label=(paste0("    The upper ",Elevel,"% CI boundary for the ",oe)), linewidth=3.5, colour = "purple", hjust=0) +
-        ggplot2::geom_point(ggplot2::aes(x=a, y=1.8), shape = 15, colour="purple", linewidth = 3, alpha =1/50) +
-        ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 16, colour="purple", linewidth = 3)
+        ggplot2::annotate("text",x=effect, y=1.12, label=format(round(PD, 2), nsmall = 2), size=3, colour = "darkred") +
+        ggplot2::annotate("text",x=PDextraU[1], y=0.88, label=format(round((PDextraU[1]*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=PDextraL[1], y=0.88, label=format(round((PDextraL[1]*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=effect, y=0.12, label=format(round(effect, 2), nsmall = 2), size=3, colour = "purple") +
+        ggplot2::annotate("text",x=ciu, y=0.12, label=format(round(ciu, 2), nsmall = 2), size=3, colour = "purple") +
+        ggplot2::annotate("text",x=onefourth, y=-0.12, label=format(round(onefourth, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=2*onefourth, y=-0.12, label=format(round(2*onefourth, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=3*onefourth, y=-0.12, label=format(round(3*onefourth, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=a, y=-0.12, label=format(round(a, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=onefourth, y=0.88, label=format(round((onefourth*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=2*onefourth, y=0.88, label=format(round((2*onefourth*PD)/effect, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=a, y=2.2, label=(paste0("    ",oe)), size=3.5, colour = "purple", hjust=0) +
+        ggplot2::annotate("text",x=a, y=1.4, label=(paste0("The Proportional Distance (",oe,"-0 / |EI-0|)")), size=3, hjust = 0) +
+        ggplot2::annotate("text",x=a, y=1.8, label=(paste0("    The upper ",Elevel,"% CI boundary for the ",oe)), size=3.5, colour = "purple", hjust=0) +
+        ggplot2::geom_point(ggplot2::aes(x=a, y=1.8), shape = 15, colour="purple", size = 3, alpha =1/50) +
+        ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 16, colour="purple", size = 3)
     )}
   if(oe=='CFI' | oe=="Shapiro-Wilk W") {
     print(
       p+
-        ggplot2::ylim(-0.5, 3) + ggplot2::annotate("segment", x = ciu, xend = ciu, y = .08, yend = -.08, colour = "purple", linewidth=2, alpha=0.6) +
+        ggplot2::ylim(-0.5, 3) + ggplot2::annotate("segment", x = ciu, xend = ciu, y = .08, yend = -.08, colour = "purple", size=2, alpha=0.6) +
         ggplot2::annotate("rect", xmin = 0, xmax = 1-(PDciu/PDcil), ymin = 0.95, ymax = 1.05, alpha = .2,fill = "red") +
-        ggplot2::annotate("text",x=1-(abs(PD)/abs(PDcil)), y=1.12, label=format(round(PD, 2), nsmall = 2), linewidth=3, colour = "darkred") +
-        ggplot2::annotate("text",x=PDextraU[1], y=0.88, label=0.00, linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=PDextraL[1], y=0.88, label=format(round(PDcil, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=0, y=1.12, label=format(round(PDcil, 2), nsmall = 2), linewidth=3, colour = "darkred") +
-        ggplot2::annotate("text",x=1-(PDciu/PDcil), y=1.12, label=format(round(PDciu, 2), nsmall = 2), linewidth=3, colour = "darkred") +
-        ggplot2::annotate("text",x=effect, y=0.12, label=format(round(effect, 2), nsmall = 2), linewidth=3, colour = "purple") +
-        ggplot2::annotate("text",x=cil, y=-0.12, label=format(round(cil, 2), nsmall = 2), linewidth=3, colour = "purple") +
-        ggplot2::annotate("text",x=onefourth, y=-0.12, label=format(round(onefourth, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=2*onefourth, y=-0.12, label=format(round(2*onefourth, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=3*onefourth, y=-0.12, label=format(round(3*onefourth, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=a, y=-0.12, label=format(round(a, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=onefourth, y=0.88, label=format(-round(abs(PDcil)-(abs(PDcil)/4), 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=2*onefourth, y=0.88, label=format(-round((abs(PDcil)-(abs(PDcil)/4))-abs(PDcil)/4, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=3*onefourth, y=0.88, label=format(-round(((abs(PDcil)-(abs(PDcil)/4))-abs(PDcil)/4)-abs(PDcil)/4, 2), nsmall = 2), linewidth=3, colour = "black") +
-        ggplot2::annotate("text",x=a, y=2.2, label=(paste0("    ",oe)), linewidth=3.5, colour = "purple", hjust=0) +
-        ggplot2::annotate("text",x=a, y=1.4, label=(paste0("The Proportional Distance (",oe,"-1 / |EI-1|)")), linewidth=3, hjust = 0) +
-        ggplot2::annotate("text",x=a, y=1.8, label=(paste0("    The lower ",Elevel,"% CI boundary for the ",oe)), linewidth=3.5, colour = "purple", hjust=0) +
-        ggplot2::geom_point(ggplot2::aes(x=a, y=1.8), shape = 15, colour="purple", linewidth = 3, alpha =1/50) +
-        ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 16, colour="purple", linewidth = 3)
+        ggplot2::annotate("text",x=1-(abs(PD)/abs(PDcil)), y=1.12, label=format(round(PD, 2), nsmall = 2), size=3, colour = "darkred") +
+        ggplot2::annotate("text",x=PDextraU[1], y=0.88, label=0.00, size=3, colour = "black") +
+        ggplot2::annotate("text",x=PDextraL[1], y=0.88, label=format(round(PDcil, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=0, y=1.12, label=format(round(PDcil, 2), nsmall = 2), size=3, colour = "darkred") +
+        ggplot2::annotate("text",x=1-(PDciu/PDcil), y=1.12, label=format(round(PDciu, 2), nsmall = 2), size=3, colour = "darkred") +
+        ggplot2::annotate("text",x=effect, y=0.12, label=format(round(effect, 2), nsmall = 2), size=3, colour = "purple") +
+        ggplot2::annotate("text",x=cil, y=-0.12, label=format(round(cil, 2), nsmall = 2), size=3, colour = "purple") +
+        ggplot2::annotate("text",x=onefourth, y=-0.12, label=format(round(onefourth, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=2*onefourth, y=-0.12, label=format(round(2*onefourth, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=3*onefourth, y=-0.12, label=format(round(3*onefourth, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=a, y=-0.12, label=format(round(a, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=onefourth, y=0.88, label=format(-round(abs(PDcil)-(abs(PDcil)/4), 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=2*onefourth, y=0.88, label=format(-round((abs(PDcil)-(abs(PDcil)/4))-abs(PDcil)/4, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=3*onefourth, y=0.88, label=format(-round(((abs(PDcil)-(abs(PDcil)/4))-abs(PDcil)/4)-abs(PDcil)/4, 2), nsmall = 2), size=3, colour = "black") +
+        ggplot2::annotate("text",x=a, y=2.2, label=(paste0("    ",oe)), size=3.5, colour = "purple", hjust=0) +
+        ggplot2::annotate("text",x=a, y=1.4, label=(paste0("The Proportional Distance (",oe,"-1 / |EI-1|)")), size=3, hjust = 0) +
+        ggplot2::annotate("text",x=a, y=1.8, label=(paste0("    The lower ",Elevel,"% CI boundary for the ",oe)), size=3.5, colour = "purple", hjust=0) +
+        ggplot2::geom_point(ggplot2::aes(x=a, y=1.8), shape = 15, colour="purple", size = 3, alpha =1/50) +
+        ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 16, colour="purple", size = 3)
     )
   }
   if (!(save == FALSE)) {
