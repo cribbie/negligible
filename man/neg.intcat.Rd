@@ -43,9 +43,33 @@ neg.intcat(
 \value{
 A \code{list} including the following:
 \itemize{
+  \item \code{meanx} Sample mean of the first population/group.
+  \item \code{meany} Sample mean of the second population/group.
+  \item \code{trmeanx} Sample trimmed mean of the first population/group.
+  \item \code{trmeany} Sample trimmed mean of the second population/group.
+  \item \code{sdx} Sample standard deviation of the first population/group.
+  \item \code{sdy} Sample standard deviation of the second population/group.
+  \item \code{madx} Sample median absolute deviation of the first population/group.
+  \item \code{mady} Sample median absolute deviation of the second population/group.
   \item \code{eiL} Lower bound of the negligible effect (equivalence) interval.
   \item \code{eiU} Upper bound of the negligible effect (equivalence) interval.
-  \item \code{gen_eta2} Generalized eta-squared for the omnibus interaction.
+  \item \code{effsizeraw} Simple difference in the means (or trimmed means if normality = FALSE)
+  \item \code{cilraw2} Lower bound of the 1-alpha CI for the raw mean difference.
+  \item \code{ciuraw2} Upper bound of the 1-alpha CI for the raw mean difference.
+  \item \code{cilraw} Lower bound of the 1-2*alpha CI for the raw mean difference.
+  \item \code{ciuraw} Upper bound of the 1-2*alpha CI for the raw mean difference.
+  \item \code{effsized} Standardized mean (or trimmed mean if normality = FALSE) difference.
+  \item \code{cild} Lower bound of the 1-alpha CI for the standardized mean (or trimmed mean if normality = FALSE) difference.
+  \item \code{ciud} Upper bound of the 1-alpha CI for the standardized mean (or trimmed mean if normality = FALSE) difference.
+  \item \code{effsizepd} Proportional distance statistic.
+  \item \code{cilpd} Lower bound of the 1-alpha CI for the proportional distance statistic.
+  \item \code{ciupd} Upper bound of the 1-alpha CI for the proportional distance statistic.
+  \item \code{t1} First t-statistic from the TOST procedure.
+  \item \code{t1} Second t-statistic from the TOST procedure.
+  \item \code{df1} Degrees of freedom for the first t-statistic from the TOST procedure.
+  \item \code{df2} Degrees of freedom for the second t-statistic from the TOST procedure.
+  \item \code{p1} p value associated with the first t-statistic from the TOST procedure.
+  \item \code{p2} p value associated with the second t-statistic from the TOST procedure.
   \item \code{alpha} Nominal Type I error rate
 }
 }

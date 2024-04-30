@@ -13,8 +13,6 @@
 #' @param neiU Upper bound of the negligible effect interval
 #' @param nboot Number of bootstrap samples for calculating CIs
 #' @param alpha Nominal Type I Error rate
-#' @param plot Should a plot of the results be produced?
-#' @param saveplot Should the plot be saved?
 #' @param data Dataset containing iv1, iv2 and dv
 #'
 #' @return A \code{list} including the following:
@@ -78,8 +76,7 @@
 #' iv_2<-rep(c("young","middle","old"),each=10,times=2)
 #' d<-data.frame(iv_1,iv_2,outcome)
 #' neg.intcat(iv1=iv_1,iv2=iv_2,dv=outcome,neiL=-15,neiU=15,nboot=10)
-#' neg.intcat(iv1=iv_1,iv2=iv_2,dv=outcome,neiL=-15,neiU=15,nboot=10
-#'   data=d)
+#' neg.intcat(iv1=iv_1,iv2=iv_2,dv=outcome,neiL=-15,neiU=15,nboot=10,data=d)
 
 neg.intcat <- function(iv1 = NULL, iv2 = NULL, dv = NULL,
                             neiL, neiU, nboot = 50, alpha = 0.05,
@@ -115,23 +112,24 @@ neg.intcat <- function(iv1 = NULL, iv2 = NULL, dv = NULL,
 
   means<-tapply(dat$dv, dat$iv1:dat$iv2, mean)
   rownames(means)<-NULL
-  
+
   ##################################################################
   ######################### means table ############################
-  means_data <- dat %>%
-    group_by(iv1, iv2) %>%
-    summarise(mean_value = mean(dv, na.rm = TRUE), .groups = "keep") %>%
-    ungroup()
-  
-  means_table <- xtabs(
+
+  grouped_data <- dplyr::group_by(dat, iv1, iv2)
+  summarized_data <- dplyr::summarise(grouped_data, mean_value = mean(dv, na.rm = TRUE), .groups = "keep")
+  ungrouped_data <- dplyr::ungroup(summarized_data)
+  means_data <- ungrouped_data
+
+  means_table <- stats::xtabs(
   formula = mean_value ~ iv1 + iv2,
   data = means_data
 )
 
   means_table <- as.data.frame.matrix(means_table)
   ##################################################################
-  
-  
+
+
   dat$id<-factor(1:nrow(dat))
   gen_eta2 <- suppressMessages(ez::ezANOVA(dat,between=c(iv1,iv2),dv=dv,wid=id,
                           white.adjust = FALSE)$ANOVA$ges[3])
@@ -160,21 +158,21 @@ neg.intcat <- function(iv1 = NULL, iv2 = NULL, dv = NULL,
           }
   ifelse (q == 1, res<-c(iv1_lev[j],iv1_lev[k],iv2_lev[l],iv2_lev[m]),
                 res<-rbind(res,c(iv1_lev[j],iv1_lev[k],iv2_lev[l],iv2_lev[m])))
-  ifelse (quantile(bootb[,q],alpha)>neiL &
-            quantile(bootb[,q],1-alpha)<neiU,
+  ifelse (stats::quantile(bootb[,q],alpha)>neiL &
+            stats::quantile(bootb[,q],1-alpha)<neiU,
           bootres[1,q]<-1,bootres[1,q]<-0)
   ifelse(bootres[1,q]==1, omn_res[q,1]<-"Sig",omn_res[q,1]<-"NS")
-  ifelse (quantile(bootb[,q],alpha/div)>neiL &
-            quantile(bootb[,q],1-alpha/div)<neiU,
+  ifelse (stats::quantile(bootb[,q],alpha/div)>neiL &
+            stats::quantile(bootb[,q],1-alpha/div)<neiU,
           bootresmcp[1,q]<-1,bootresmcp[1,q]<-0)
   ifelse(bootresmcp[1,q]==1, ic_res[q,1]<-"Sig",ic_res[q,1]<-"NS")
 
-  omn_ci[q,1]<-quantile(bootb[,q],alpha)
-  omn_ci[q,2]<-quantile(bootb[,q],1-alpha)
+  omn_ci[q,1]<-stats::quantile(bootb[,q],alpha)
+  omn_ci[q,2]<-stats::quantile(bootb[,q],1-alpha)
   omn_res[q,2]<-round(omn_ci[q,1],3)
   omn_res[q,3]<-round(omn_ci[q,2],3)
-  ic_ci[q,1]<-quantile(bootb[,q],alpha/div)
-  ic_ci[q,2]<-quantile(bootb[,q],1-(alpha/div))
+  ic_ci[q,1]<-stats::quantile(bootb[,q],alpha/div)
+  ic_ci[q,2]<-stats::quantile(bootb[,q],1-(alpha/div))
   ic_res[q,2]<-round(ic_ci[q,1],3)
   ic_res[q,3]<-round(ic_ci[q,2],3)
         }
@@ -194,7 +192,7 @@ neg.intcat <- function(iv1 = NULL, iv2 = NULL, dv = NULL,
   iv2levs<-rep(iv2_lev, times=a)
   cells<-a*b
   title<-"Bootstrap-based Intersection Union Test of Negligible Interaction Among Two Categorical Variables"
-  
+
   ret <- data.frame(title=title,
                     iv1 = iv1,
                     iv2 = iv2,
@@ -243,21 +241,16 @@ print.neg.intcat <- function(x, ...) {
   cat("\n", x$ret$title[1], "\n\n", sep="")
   cat("**********************************************\n\n")
   cat("\n", "Cell Means for the Two-Way Design", "\n\n", sep="")
-  # aa<-cbind(x$ret$iv1levs[1:x$ret$cells[1]], x$ret$iv2levs[1:x$ret$cells[1]], x$ret$means[1:x$ret$cells[1]])
-  # aa<-data.frame(aa)
-  # colnames(aa)<-c("IV1","IV2","Mean")
-  # aa$Mean <- as.numeric(aa$Mean)
-  # print(aa)
   ##################################################################
   ######################### means table ############################
-  print(x$means_table)
+  print(round(x$means_table,3))
   ##################################################################
   cat("\n\n", "Generalized Eta-Squared for the Interaction:", "\n\n", sep="")
   cat( round(x$ret$gen_eta2[1],3), sep="", "\n")
   cat("\n\n", "Negligible Effect Interval:", "\n\n", sep="")
   cat("{", x$ret$neiL[1], ", ", x$ret$neiU[1], "}", "\n", sep="")
-  cat("\n\n", "Omnibus Test Result:","\n\n", x$ret$outomn[1], sep="")
-  cat("\n\n\n", "Interaction Contrast Results (No Multiplicity Control):", "\n", sep="")
+  cat("\n\n", "Omnibus Test Result (Negligible Interaction):","\n\n", x$ret$outomn[1], sep="")
+  cat("\n\n\n", "Negligible Interaction Contrast Results (No Multiplicity Control):", "\n", sep="")
   cat("\n", "Each row is one interaction contrast involving the 2 x 2 matrix made up of IV1 (iv1a, iv1b) and IV2 (iv2a, iv2b)", "\n\n", sep="")
   xx<-data.frame(x$ret$nomcp_iv1a[1:x$ret$q[1]],x$ret$nomcp_iv1b[1:x$ret$q[1]],
            x$ret$nomcp_iv2a[1:x$ret$q[1]],x$ret$nomcp_iv2b[1:x$ret$q[1]],
@@ -265,7 +258,7 @@ print.neg.intcat <- function(x, ...) {
            x$ret$nomcp_ciu[1:x$ret$q[1]])
   colnames(xx)<-c("iv1a","iv1b","iv2a","iv2b","Sig?","CI_l","CI_u")
   print(xx)
-  cat("\n\n", "Interaction Contrast Results (Multiplicity Control):", "\n", sep="")
+  cat("\n\n", "Negligible Interaction Contrast Results (Multiplicity Control):", "\n", sep="")
   cat("\n", "See Cribbie, Ragoonanan & Cousell (2016) for details regarding the multiplicity control", "\n", sep="")
   cat("\n", "Each row is one interaction contrast involving the 2 x 2 matrix made up of IV1 (iv1a, iv1b) and IV2 (iv2a, iv2b)", "\n\n", sep="")
   yy<-data.frame(x$ret$mcp_iv1a[1:x$ret$q[1]],x$ret$mcp_iv1b[1:x$ret$q[1]],
@@ -276,14 +269,3 @@ print.neg.intcat <- function(x, ...) {
   print(yy)
 }
 
-
-## Example
-
-
-outcome<-rnorm(60,mean=50,sd=10)
-iv_1<-rep(c("male","female"),each=30)
-iv_2<-rep(c("young","middle","old"),each=10,times=2)
-d<-data.frame(iv_1,iv_2,outcome)
-
-neg.intcat(iv1=iv_1,iv2=iv_2,dv=outcome,neiL=-15,neiU=15, data = d)
-neg.intcat(iv1=iv_1,iv2=iv_2,dv=outcome,neiL=-15,neiU=15)
