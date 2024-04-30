@@ -487,12 +487,3 @@ cat("* SRMR-Based Test: *","\n")
 print.neg.srmr(srmr.res)
 }
 
-# Try it out
-
-library(lavaan)
-d <- lavaan::HolzingerSwineford1939
-hs.mod <- 'visual =~ x1 + x2 + x3
-textual =~ x4 + x5 + x6
-speed =~ x7 + x8 + x9'
-fit1 <- lavaan::cfa(hs.mod, data = d)
-neg.semfit(mod = fit1)
