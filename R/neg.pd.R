@@ -108,7 +108,7 @@ neg.pd<-function(effect, PD, eil, eiu,
                    panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_blank(), axis.ticks= ggplot2::element_blank(), axis.text = ggplot2::element_blank())
 
   if(oe=="Mean Difference" | oe=="Correlation Coefficients' Difference" | oe=="Regression Coefficient" | oe=="Interaction Coefficient" | oe=="Direct Effect" | oe=="Correlation (r)"){
-  print(
+    suppressWarnings(print(
     p+
       ggplot2::ylim(-0.5, 3) + ggplot2::annotate("rect", xmin = cil, xmax = ciu, ymin = -0.05, ymax = 0.05, alpha = .2,fill = "blue") +
       ggplot2::geom_step(data=dat[4:5,], color = "darkred") +
@@ -138,9 +138,9 @@ neg.pd<-function(effect, PD, eil, eiu,
       ggplot2::annotate("text",x=a, y=1.4, label=paste("The Proportional Distance from the Effect to the EI Bound of the Same Sign as the Effect"), size=3, hjust = 0) +
       ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 22, colour="blue", size = 4, fill = "grey") +
       ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 16, colour="purple", size = 3)
-  )}
+  ))}
   if(oe=="RMSEA" | oe=="Cramer's V" | oe=="SRMR"){
-    print(
+    suppressWarnings(print(
       p+
         ggplot2::ylim(-0.5, 3) + ggplot2::annotate("segment", x = ciu, xend = ciu, y = .08, yend = -.08, colour = "purple", size=2, alpha=0.6) +
         ggplot2::annotate("rect", xmin = PDcil*effect/PD, xmax = PDciu*effect/PD, ymin = 0.95, ymax = 1.05, alpha = .2,fill = "red") +
@@ -160,9 +160,9 @@ neg.pd<-function(effect, PD, eil, eiu,
         ggplot2::annotate("text",x=a, y=1.8, label=(paste0("    The upper ",Elevel,"% CI boundary for the ",oe)), size=3.5, colour = "purple", hjust=0) +
         ggplot2::geom_point(ggplot2::aes(x=a, y=1.8), shape = 15, colour="purple", size = 3, alpha =1/50) +
         ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 16, colour="purple", size = 3)
-    )}
+    ))}
   if(oe=='CFI' | oe=="Shapiro-Wilk W") {
-    print(
+    suppressWarnings(print(
       p+
         ggplot2::ylim(-0.5, 3) + ggplot2::annotate("segment", x = ciu, xend = ciu, y = .08, yend = -.08, colour = "purple", size=2, alpha=0.6) +
         ggplot2::annotate("rect", xmin = 0, xmax = 1-(PDciu/PDcil), ymin = 0.95, ymax = 1.05, alpha = .2,fill = "red") +
@@ -185,7 +185,7 @@ neg.pd<-function(effect, PD, eil, eiu,
         ggplot2::annotate("text",x=a, y=1.8, label=(paste0("    The lower ",Elevel,"% CI boundary for the ",oe)), size=3.5, colour = "purple", hjust=0) +
         ggplot2::geom_point(ggplot2::aes(x=a, y=1.8), shape = 15, colour="purple", size = 3, alpha =1/50) +
         ggplot2::geom_point(ggplot2::aes(x=a, y=2.2), shape = 16, colour="purple", size = 3)
-    )
+    ))
   }
   if (!(save == FALSE)) {
     if (save == "png") {
