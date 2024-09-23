@@ -1,7 +1,7 @@
 Package: negligible
 Type: Package
 Title: A Collection of Functions for Negligible Effect/Equivalence Testing
-Version: 0.1.8
+Version: 0.1.9
 Authors@R:
     c(person(given = "Robert",
              family = "Cribbie",
@@ -46,5 +46,5 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports: DescTools, ez, lavaan, WRS2, ggplot2, nptest, dplyr, fungible, rockchalk, MBESS, stats, e1071
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Depends: R (>= 2.10)

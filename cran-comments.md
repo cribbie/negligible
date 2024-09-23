@@ -1,7 +1,7 @@
 ---
 title: "CRAN Comments"
 author: "Rob Cribbie"
-date: "2024-04-30"
+date: "2024-08-13"
 output: html_document
 ---
 
@@ -9,4 +9,3 @@ output: html_document
 
 There were no ERRORs, WARNINGs, or NOTEs. 
 
-Sorry to submit twice in a day, there was an open example after a function that ran each time you installed the package through CRAN. My apologies.

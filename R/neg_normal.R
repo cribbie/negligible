@@ -53,6 +53,11 @@ neg.normal <- function(x, eiL = .95, nboot = 1000,
   if (is.null(data)) {
     x <- x[!is.na(x)]
   }
+  samp_message <- NULL
+  if (length(x) > 5000) {
+    x <- sample(x, 5000, replace = FALSE)
+    samp_message <- "Since N > 5000, the test is conducted on a random sample of 5000 cases sampled without replacement."
+  }
   smean <- mean(x)
   smed <- stats::median(x)
   strmean <- mean(x, tr=.2)
@@ -91,7 +96,8 @@ neg.normal <- function(x, eiL = .95, nboot = 1000,
 
 
   pdCI<- c(CI95L, 0)
-  ret <- data.frame(sw = sw,
+  ret <- data.frame(samp_message = samp_message,
+                    sw = sw,
                     swp = swp,
                     decist = decist,
                     sskew = sskew,
@@ -123,6 +129,9 @@ neg.normal <- function(x, eiL = .95, nboot = 1000,
 #'
 print.neg.normal <- function(x, ...) {
   cat("*******************************", "\n\n")
+  if (!is.null(x$samp_message)) {
+    cat(x$samp_message, "\n\n")
+  }
   cat("Descriptive Measures Regarding the Distribution\n\n")
   cat("Sample Skewness (Type 2): ", x$sskew, "\n", sep="")
   cat("Sample Kurtosis (Type 2): ", x$skurt, "\n\n", sep="")
