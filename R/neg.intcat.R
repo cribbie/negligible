@@ -108,7 +108,7 @@ neg.intcat <- function(iv1 = NULL, iv2 = NULL, dv = NULL,
   iv2_lev <- levels(dat$iv2)
 
   S<-(a*(a-1)/2)*(b*(b-1)/2)
-  div<-2*S/3
+  ifelse((a>2|b>2),div<-2*S/3,div<-1)
 
   means<-tapply(dat$dv, dat$iv1:dat$iv2, mean)
   rownames(means)<-NULL
@@ -156,7 +156,7 @@ neg.intcat <- function(iv1 = NULL, iv2 = NULL, dv = NULL,
               (mean(dvbdat$dv[dvbdat$iv1==k & dvbdat$iv2==l])-
                  mean(dvbdat$dv[dvbdat$iv1==k & dvbdat$iv2==m]))
           }
-  ifelse (q == 1, res<-c(iv1_lev[j],iv1_lev[k],iv2_lev[l],iv2_lev[m]),
+  ifelse (q == 1, res<-matrix(c(iv1_lev[j],iv1_lev[k],iv2_lev[l],iv2_lev[m]),nrow=1,ncol=4),
                 res<-rbind(res,c(iv1_lev[j],iv1_lev[k],iv2_lev[l],iv2_lev[m])))
   ifelse (stats::quantile(bootb[,q],alpha)>neiL &
             stats::quantile(bootb[,q],1-alpha)<neiU,
@@ -194,9 +194,6 @@ neg.intcat <- function(iv1 = NULL, iv2 = NULL, dv = NULL,
   title<-"Bootstrap-based Intersection Union Test of Negligible Interaction Among Two Categorical Variables"
 
   ret <- data.frame(title=title,
-                    iv1 = iv1,
-                    iv2 = iv2,
-                    dv = dv,
                     gen_eta2 = gen_eta2,
                     iv1levs = iv1levs,
                     iv2levs = iv2levs,
@@ -222,7 +219,8 @@ neg.intcat <- function(iv1 = NULL, iv2 = NULL, dv = NULL,
                     mcp_cil<-res_mcp[,6],
                     mcp_ciu<-res_mcp[,7],
                     outomn<-outomn,
-                    q<-q
+                    q<-q,
+                    row.names=NULL
                     )
   ret <- list(ret=ret, means_table=as.data.frame(means_table))
   class(ret) <- "neg.intcat"
